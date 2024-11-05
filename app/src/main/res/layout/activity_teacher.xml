@@ -5,30 +5,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".TeacherActivity">
 
-    <!-- Title of the App -->
+    <!-- Title for the Teacher Dashboard -->
     <TextView
-        android:id="@+id/appTitle"
+        android:id="@+id/teacherPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EduTest Dashboard"
+        android:text="Teacher Dashboard"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="32dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"/>
+        android:gravity="center" />
 
-    <!-- Teacher Button -->
+    <!-- "Create New Assignment" Button -->
     <Button
-        android:id="@+id/teacherButton"
+        android:id="@+id/createAssignmentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Teacher"
+        android:text="Create New Assignment"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/appTitle"
+        app:layout_constraintTop_toBottomOf="@id/teacherPageTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center" />
+
+    <!-- "Create New Quiz" Button -->
+    <Button
+        android:id="@+id/createQuizButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create New Quiz"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/createAssignmentButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center" />

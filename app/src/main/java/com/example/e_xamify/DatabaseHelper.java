@@ -1,6 +1,7 @@
 package com.example.e_xamify;
 
 
+    import android.content.ContentValues;
     import android.content.Context;
     import android.database.sqlite.SQLiteDatabase;
     import android.database.sqlite.SQLiteOpenHelper;
@@ -48,6 +49,13 @@ package com.example.e_xamify;
             db.execSQL("DROP TABLE IF EXISTS feedback");
             db.execSQL("DROP TABLE IF EXISTS user_role");
             onCreate(db);
+        }
+        public void addStudent(String email, String password, String name, int role_id, String joined_date) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("user_email", email);
+            values.put("user_password", password);
+            
         }
     }
 

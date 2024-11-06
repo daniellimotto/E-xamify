@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
         // Log the database path to ensure it's created
         Log.d("Database Path", getDatabasePath("examify.db").getAbsolutePath());
 
-        // Sample database operation to trigger creation (optional)
-        dbHelper.addStudent("test@example.com", "password", "Test User", 1, "2024-11-06");
 
         // Find the teacher button and set up the click listener
         teacherButton = findViewById(R.id.teacherButton);

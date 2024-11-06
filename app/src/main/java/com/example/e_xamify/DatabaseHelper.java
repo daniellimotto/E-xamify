@@ -1,6 +1,4 @@
 package com.example.e_xamify;
-
-
     import android.content.ContentValues;
     import android.content.Context;
     import android.database.sqlite.SQLiteDatabase;

@@ -1,7 +1,7 @@
 package com.example.e_xamify;
 
 public class Quiz {
-    private int quiz_id;
+    private long quiz_id;
     private int quiz_type_id;
     private String quiz_title;
     private int quiz_duration;
@@ -12,12 +12,16 @@ public class Quiz {
     private int quiz_tab_restrictor;
     private int question_randomize;
 
-    public Quiz(int quiz_id, int quiz_type_id, String quiz_title, int quiz_duration, String instructions, int quiz_attempts, int user_id, int quiz_navigable, int quiz_tab_restrictor, int question_randomize) {
+    public Quiz(long quiz_id, int quiz_type_id, String quiz_title, int quiz_duration, String instructions, int quiz_attempts, int user_id, int quiz_navigable, int quiz_tab_restrictor, int question_randomize) {
         this.quiz_id = quiz_id;
         this.quiz_type_id = quiz_type_id;
     }
+    public Quiz(long id,String title){
+        this.quiz_id = id;
+        this.quiz_title = title;
+    }
 
-    public int getQuizId() {
+    public long getQuizId() {
         return quiz_id;
     }
 

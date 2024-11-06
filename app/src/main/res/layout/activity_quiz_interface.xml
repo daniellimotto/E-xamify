@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuizInterface">
+
+    <!-- Title Input -->
+    <TextView
+        android:id="@+id/titleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <EditText
+        android:id="@+id/titleInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleLabel"
+        android:layout_marginHorizontal="16dp"
+        android:hint="Enter quiz title" />
+
+    <!-- Duration Input -->
+    <TextView
+        android:id="@+id/durationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/titleInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <EditText
+        android:id="@+id/durationInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/durationLabel"
+        android:layout_marginHorizontal="16dp"
+        android:hint="Enter duration in minutes" />
+
+    <!-- Instructions Input -->
+    <TextView
+        android:id="@+id/instructionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Instructions"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/durationInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <EditText
+        android:id="@+id/instructionInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructionLabel"
+        android:layout_marginHorizontal="16dp"
+        android:hint="Enter instructions" />
+
+    <!-- Attempts Input -->
+    <TextView
+        android:id="@+id/attemptsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attempts"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/instructionInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <EditText
+        android:id="@+id/attemptsInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attemptsLabel"
+        android:layout_marginHorizontal="16dp"
+        android:hint="Enter number of attempts" />
+
+    <!-- Navigable Option: Yes / No Switch -->
+    <TextView
+        android:id="@+id/navigableLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Navigable"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/attemptsInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <Switch
+        android:id="@+id/navigableSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/navigableLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp" />
+
+    <!-- Restrict Tab Option: Yes / No Switch -->
+    <TextView
+        android:id="@+id/tabRestrictLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restrict Tab"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/navigableSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <Switch
+        android:id="@+id/tabRestrictSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tabRestrictLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp" />
+
+    <!-- Randomize Question Option: Yes / No Switch -->
+    <TextView
+        android:id="@+id/randomizeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Randomize Question"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tabRestrictSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <Switch
+        android:id="@+id/randomizeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/randomizeLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/createMCQButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="proceed to create MCQ"
+        app:layout_constraintTop_toBottomOf="@id/randomizeSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,14 +28,55 @@
         android:layout_marginHorizontal="16dp"
         android:hint="Enter quiz title" />
 
+    <!-- Quiz Type Spinner -->
+    <TextView
+        android:id="@+id/quizTypeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quiz Type"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/titleInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <Spinner
+        android:id="@+id/quizTypeSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quizTypeLabel"
+        android:layout_marginHorizontal="16dp" />
+
+    <!-- Module Spinner -->
+    <TextView
+        android:id="@+id/moduleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quiz Type"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/quizTypeSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
+
+    <Spinner
+        android:id="@+id/moduleSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/moduleLabel"
+        android:layout_marginHorizontal="16dp" />
+
+
     <!-- Duration Input -->
     <TextView
         android:id="@+id/durationLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Duration"
+        android:text="Duration (minutes)"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/titleInput"
+        app:layout_constraintTop_toBottomOf="@id/moduleSpinner"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp" />
 
@@ -43,6 +84,7 @@
         android:id="@+id/durationInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:inputType="number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/durationLabel"
@@ -70,6 +112,7 @@
         android:layout_marginHorizontal="16dp"
         android:hint="Enter instructions" />
 
+
     <!-- Attempts Input -->
     <TextView
         android:id="@+id/attemptsLabel"
@@ -81,15 +124,15 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp" />
 
-    <EditText
-        android:id="@+id/attemptsInput"
+    <Spinner
+        android:id="@+id/attemptsSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/attemptsLabel"
         android:layout_marginHorizontal="16dp"
-        android:hint="Enter number of attempts" />
+        />
 
     <!-- Navigable Option: Yes / No Switch -->
     <TextView
@@ -98,7 +141,7 @@
         android:layout_height="wrap_content"
         android:text="Navigable"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/attemptsInput"
+        app:layout_constraintTop_toBottomOf="@id/attemptsSpinner"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp" />
 
@@ -153,7 +196,7 @@
         android:id="@+id/createMCQButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="proceed to create MCQ"
+        android:text="Proceed to Create MCQ"
         app:layout_constraintTop_toBottomOf="@id/randomizeSwitch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

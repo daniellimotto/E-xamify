@@ -2,35 +2,37 @@ package com.example.e_xamify;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button teacherButton;
-    private DatabaseHelper dbHelper;
+    private Button signInButton;
+    private Button signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize the database helper (this will create the database)
-        dbHelper = new DatabaseHelper(this);
+        signInButton = findViewById(R.id.signInButton);
+        signUpButton = findViewById(R.id.signUpButton);
 
-        // Log the database path to ensure it's created
-        Log.d("Database Path", getDatabasePath("examify.db").getAbsolutePath());
-
-
-        // Find the teacher button and set up the click listener
-        teacherButton = findViewById(R.id.teacherButton);
-        teacherButton.setOnClickListener(new View.OnClickListener() {
+        // Handle Sign In button click
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to TeacherActivity
-                Intent intent = new Intent(MainActivity.this, TeacherActivity.class);
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Handle Sign Up button click
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });

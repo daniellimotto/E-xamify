@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,6 +32,8 @@ public class QuizInterface extends AppCompatActivity {
     private Switch randomizeSwitch;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
+    private int user_id = 1;
+    private int quiz_id = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,21 +125,40 @@ public class QuizInterface extends AppCompatActivity {
         String type_name = quizTypeSpinner.getSelectedItem().toString();
         String moduleName = moduleSpinner.getSelectedItem().toString();
 
-        // Get the selected module ID from the database
-        Cursor cursorQuizType = db.rawQuery("SELECT quiz_type_id FROM quiz_type WHERE type_name = ?", new String[]{type_name});
+        // Get the selected quiz type ID from the database
         int quizTypeId = -1;
-        if (cursorQuizType.moveToFirst()) {
-            quizTypeId = cursorQuizType.getInt(0);
+        try (Cursor cursorQuizType = db.rawQuery("SELECT quiz_type_id FROM quiz_type WHERE type_name = ?", new String[]{type_name})) {
+            if (cursorQuizType.moveToFirst()) {
+                quizTypeId = cursorQuizType.getInt(0);
+            }
         }
-        cursorQuizType.close();
-        // Get the selected module ID from the database
-        Cursor cursorModule = db.rawQuery("SELECT module_id FROM module WHERE module_name = ?", new String[]{moduleName});
-        int moduleId = -1;
-        if (cursorModule.moveToFirst()) {
-            moduleId = cursorModule.getInt(0);
+        if (quizTypeId == -1) {
+            Toast.makeText(this, "Invalid quiz type selected", Toast.LENGTH_SHORT).show();
+            return;
         }
-        cursorModule.close();
 
+        // Get the selected module ID from the database
+        int moduleId = -1;
+        try (Cursor cursorModule = db.rawQuery("SELECT module_id FROM module WHERE module_name = ?", new String[]{moduleName})) {
+            if (cursorModule.moveToFirst()) {
+                moduleId = cursorModule.getInt(0);
+            }
+        }
+        if (moduleId == -1) {
+            Toast.makeText(this, "Invalid module selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if user exists (important if user_id is a foreign key)
+        Cursor cursorUser = db.rawQuery("SELECT user_id FROM user WHERE user_id = ?", new String[]{String.valueOf(user_id)});
+        if (!cursorUser.moveToFirst()) {
+            Toast.makeText(this, "User ID does not exist", Toast.LENGTH_SHORT).show();
+            cursorUser.close();
+            return;
+        }
+        cursorUser.close();
+
+        // Insert quiz details into the database
         ContentValues quizValues = new ContentValues();
         quizValues.put("quiz_title", quizTitle);
         quizValues.put("quiz_duration", quizDuration);
@@ -146,18 +168,23 @@ public class QuizInterface extends AppCompatActivity {
         quizValues.put("quiz_tab_restrictor", quizTabRestrictor);
         quizValues.put("question_randomize", questionRandomize);
         quizValues.put("quiz_type_id", quizTypeId);
-        quizValues.put("module_id", moduleId); // Store the module ID
+        quizValues.put("module_id", moduleId);
+        quizValues.put("user_id", user_id);
+        quizValues.put("quiz_id", quiz_id);
 
-        long quiz_id = db.insert("quiz", null, quizValues);
-        if (quiz_id == -1) {
-            Toast.makeText(this, "Failed to create quiz", Toast.LENGTH_SHORT).show();
-            return;
+        db.insert("quiz", null, quizValues);
+        Cursor cursor = db.rawQuery("SELECT quiz_id FROM quiz WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
+        if (cursor.getCount() != 0) {
+            Log.e("DatabaseHelper", "quiz_id " + quiz_id + " does exist in quiz table");
         }
-
+        Toast.makeText(this, "Quiz Created Successfully with ID: " + quiz_id, Toast.LENGTH_SHORT).show();
         // Pass the quiz ID and title to MCQEditorActivity
         Intent intent = new Intent(QuizInterface.this, MCQEditorActivity.class);
         intent.putExtra("quiz_id", quiz_id);
         intent.putExtra("quiz_title", quizTitle);
+        intent.putExtra("quiz_type_id", quizTypeId);
         startActivity(intent);
+        quiz_id++;
     }
+
 }

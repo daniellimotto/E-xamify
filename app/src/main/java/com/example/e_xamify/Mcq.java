@@ -1,46 +1,86 @@
 package com.example.e_xamify;
+
 import android.content.ContentValues;
 
-public class Mcq {
-    private int option_id;
-    private int question_id;
-    private String option_text;
-    private int is_correct;
+public class Mcq extends Question {
+    private String optionA;
+    private String optionB;
+    private String optionC;
+    private String optionD;
+    private int correctOption;
+    private int question_id; // 1 for A, 2 for B, 3 for C, 4 for D
 
-    public Mcq(int option_id, int question_id, String option_text, int is_correct) {
-        this.option_id = option_id;
+    public Mcq(int question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url, String optionA, String optionB, String optionC, String optionD, int correctOption) {
+        super(question_id, quiz_id, question_num, question_text, question_type_id, question_img_url); // Call the superclass constructor
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
+        this.correctOption = correctOption;
         this.question_id = question_id;
-        this.option_text = option_text;
-        this.is_correct = is_correct;
     }
 
-    public int getOptionId() {
-        return option_id;
+    public Mcq() {
+        super(); // Call the superclass constructor
     }
 
     public int getQuestionId() {
         return question_id;
     }
 
-    public String getOptionText() {
-        return option_text;
+    public String getOptionA() {
+        return optionA;
     }
 
-    public int getIsCorrect() {
-        return is_correct;
-    }
-    
-    public ContentValues toContentValues() {
-        ContentValues values = new ContentValues();
-        values.put("question_id", question_id);
-        values.put("option_text", option_text);
-        values.put("is_correct", is_correct);
-        return values;
+    public String getOptionB() {
+        return optionB;
     }
 
+    public String getOptionC() {
+        return optionC;
+    }
+
+    public String getOptionD() {
+        return optionD;
+    }
+
+    public int getCorrectOption() {
+        return correctOption;
+    }
+
+    public void setOptionA(String optionA) {
+        this.optionA = optionA;
+    }
+
+    public void setOptionB(String optionB) {
+        this.optionB = optionB;
+    }
+
+    public void setOptionC(String optionC) {
+        this.optionC = optionC;
+    }
+
+    public void setOptionD(String optionD) {
+        this.optionD = optionD;
+    }
+
+    public void setCorrectOption(int correctOption) {
+        this.correctOption = correctOption;
+    }
+
+    public void setQuestionId(int question_id) {
+        this.question_id = question_id;
+    }
+
+    @Override
     public String toString() {
         return "Mcq{" +
-                "option_id=" + option_id +
+                "question_id=" + question_id +
+                ", optionA='" + optionA + '\'' +
+                ", optionB='" + optionB + '\'' +
+                ", optionC='" + optionC + '\'' +
+                ", optionD='" + optionD + '\'' +
+                ", correctOption=" + correctOption +
                 '}';
     }
 }

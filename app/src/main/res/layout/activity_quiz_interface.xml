@@ -53,7 +53,7 @@
         android:id="@+id/moduleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quiz Type"
+        android:text="Module"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/quizTypeSpinner"
         app:layout_constraintStart_toStartOf="parent"

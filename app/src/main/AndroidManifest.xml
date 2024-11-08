@@ -21,10 +21,17 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".SignInActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity
             android:name=".TeacherActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".InstitutionActivity" />
+        <activity android:name=".StudentActivity" />
+        <activity android:name=".StudentEnrollmentActivity" />
+        <activity android:name=".TeacherEnrollmentActivity" />
+        <activity android:name=".ModuleActivity" />
         <activity android:name=".QuizInterface" />
         <activity android:name=".MCQEditorActivity" />
         <activity android:name=".QuizFeedbackActivity" />

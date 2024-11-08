@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".TeacherActivity">
 
-    <!-- Title for the Teacher Dashboard -->
     <TextView
         android:id="@+id/teacherPageTitle"
         android:layout_width="wrap_content"
@@ -66,5 +65,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
+    <!-- New Enroll Button -->
+    <Button
+        android:id="@+id/enrollButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enroll in Institution"
+        app:layout_constraintTop_toBottomOf="@id/deleteAllQuizzesButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

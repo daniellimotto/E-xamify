@@ -32,14 +32,13 @@ public class QuizInterface extends AppCompatActivity {
     private Switch randomizeSwitch;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
-    private int user_id = 1;
-    private int quiz_id = 1;
+    private int user_id ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_interface);
-
+        user_id = getIntent().getIntExtra("user_id", -1);
         titleInput = findViewById(R.id.titleInput);
         durationInput = findViewById(R.id.durationInput);
         instructionInput = findViewById(R.id.instructionInput);
@@ -149,14 +148,7 @@ public class QuizInterface extends AppCompatActivity {
             return;
         }
 
-        // Check if user exists (important if user_id is a foreign key)
-        Cursor cursorUser = db.rawQuery("SELECT user_id FROM user WHERE user_id = ?", new String[]{String.valueOf(user_id)});
-        if (!cursorUser.moveToFirst()) {
-            Toast.makeText(this, "User ID does not exist", Toast.LENGTH_SHORT).show();
-            cursorUser.close();
-            return;
-        }
-        cursorUser.close();
+
 
         // Insert quiz details into the database
         ContentValues quizValues = new ContentValues();
@@ -170,21 +162,23 @@ public class QuizInterface extends AppCompatActivity {
         quizValues.put("quiz_type_id", quizTypeId);
         quizValues.put("module_id", moduleId);
         quizValues.put("user_id", user_id);
-        quizValues.put("quiz_id", quiz_id);
 
-        db.insert("quiz", null, quizValues);
-        Cursor cursor = db.rawQuery("SELECT quiz_id FROM quiz WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
-        if (cursor.getCount() != 0) {
-            Log.e("DatabaseHelper", "quiz_id " + quiz_id + " does exist in quiz table");
+
+
+        int quiz_id = (int) db.insert("quiz", null, quizValues);
+        if (quiz_id == -1) {
+            Toast.makeText(this, "Failed to create quiz", Toast.LENGTH_SHORT).show();
+            return;
         }
         Toast.makeText(this, "Quiz Created Successfully with ID: " + quiz_id, Toast.LENGTH_SHORT).show();
         // Pass the quiz ID and title to MCQEditorActivity
         Intent intent = new Intent(QuizInterface.this, MCQEditorActivity.class);
-        intent.putExtra("quiz_id", quiz_id);
+
         intent.putExtra("quiz_title", quizTitle);
         intent.putExtra("quiz_type_id", quizTypeId);
+        intent.putExtra("quiz_id", quiz_id);
+        intent.putExtra("user_id", user_id);
         startActivity(intent);
-        quiz_id++;
     }
 
 }

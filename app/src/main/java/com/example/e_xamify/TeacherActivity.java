@@ -20,7 +20,7 @@ public class TeacherActivity extends AppCompatActivity {
     private Button viewQuizzesButton;
     private Button enrollButton; // Button to go to enrollment page
 
-    private long userId; // User ID received from intent
+    private int userId; // User ID received from intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class TeacherActivity extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
 
         // Retrieve the user ID passed from SignInActivity
-        userId = getIntent().getLongExtra("userId", -1);
+        userId = getIntent().getIntExtra("userId", -1);
         if (userId == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
@@ -79,7 +79,7 @@ public class TeacherActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TeacherActivity.this, TeacherEnrollmentActivity.class);
-                intent.putExtra("userId", userId); // Pass user ID to the enrollment activity
+                intent.putExtra("user_id", userId); // Pass user ID to the enrollment activity
                 startActivity(intent);
             }
         });
@@ -88,6 +88,7 @@ public class TeacherActivity extends AppCompatActivity {
     private void createNewQuiz() {
         // Navigate to QuizInterface to enter quiz details
         Intent intent = new Intent(TeacherActivity.this, QuizInterface.class);
+        intent.putExtra("user_id", userId); // Pass user ID to the QuizInterface
         startActivity(intent);
     }
 

@@ -1,16 +1,14 @@
 package com.example.e_xamify;
 
-import android.content.ContentValues;
-
 public class Mcq extends Question {
     private String optionA;
     private String optionB;
     private String optionC;
     private String optionD;
     private int correctOption;
-    private int question_id; // 1 for A, 2 for B, 3 for C, 4 for D
+    private String question_id; // 1 for A, 2 for B, 3 for C, 4 for D
 
-    public Mcq(int question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url, String optionA, String optionB, String optionC, String optionD, int correctOption) {
+    public Mcq(String question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url, String optionA, String optionB, String optionC, String optionD, int correctOption) {
         super(question_id, quiz_id, question_num, question_text, question_type_id, question_img_url); // Call the superclass constructor
         this.optionA = optionA;
         this.optionB = optionB;
@@ -24,7 +22,7 @@ public class Mcq extends Question {
         super(); // Call the superclass constructor
     }
 
-    public int getQuestionId() {
+    public String getQuestionId() {
         return question_id;
     }
 
@@ -68,7 +66,7 @@ public class Mcq extends Question {
         this.correctOption = correctOption;
     }
 
-    public void setQuestionId(int question_id) {
+    public void setQuestionId(String question_id) {
         this.question_id = question_id;
     }
 

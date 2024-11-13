@@ -17,21 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/enrollmentKeyInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Enrollment Key"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
-    <Button
-        android:id="@+id/enrollButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enroll"
-        android:layout_marginBottom="16dp" />
-
     <ListView
         android:id="@+id/quizListView"
         android:layout_width="match_parent"

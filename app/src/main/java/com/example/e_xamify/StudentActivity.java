@@ -13,7 +13,7 @@ public class StudentActivity extends AppCompatActivity {
     private TextView welcomeText;
     private Button dashboardButton;
     private Button enrollButton;
-    private long userId;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class StudentActivity extends AppCompatActivity {
         enrollButton = findViewById(R.id.enrollButton);
 
         // Get user ID from intent
-        userId = getIntent().getLongExtra("userId", -1);
+        userId = getIntent().getIntExtra("userId", -1);
         if (userId == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();

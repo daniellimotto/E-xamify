@@ -19,7 +19,7 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
     private EditText enrollmentKeyInput;
     private Button enrollButton;
     private DatabaseHelper dbHelper;
-    private long userId; // User ID passed from StudentActivity
+    private int userId; // User ID passed from StudentActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         // Retrieve user ID from the Intent
-        userId = getIntent().getLongExtra("userId", -1);
+        userId = getIntent().getIntExtra("userId", -1);
         if (userId == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();

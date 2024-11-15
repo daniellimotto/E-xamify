@@ -1,7 +1,7 @@
 package com.example.e_xamify;
 
 public class Quiz {
-    private long quiz_id;
+    private int quiz_id;
     private int quiz_type_id;
     private String quiz_title;
     private int quiz_duration;
@@ -14,7 +14,7 @@ public class Quiz {
     private int module_id;  // Added to align with the schema
     private int num_questions;  // New field added as per schema
 
-    public Quiz(long quiz_id, int quiz_type_id, String quiz_title, int quiz_duration, String instructions, int quiz_attempts, int user_id, int quiz_navigable, int quiz_tab_restrictor, int question_randomize, int module_id, int num_questions) {
+    public Quiz(int quiz_id, int quiz_type_id, String quiz_title, int quiz_duration, String instructions, int quiz_attempts, int user_id, int quiz_navigable, int quiz_tab_restrictor, int question_randomize, int module_id, int num_questions) {
         this.quiz_id = quiz_id;
         this.quiz_type_id = quiz_type_id;
         this.quiz_title = quiz_title;
@@ -29,7 +29,7 @@ public class Quiz {
         this.num_questions = num_questions;
     }
 
-    public Quiz(long id, String title) {
+    public Quiz(int id, String title) {
         this.quiz_id = id;
         this.quiz_title = title;
     }
@@ -41,7 +41,7 @@ public class Quiz {
     }
 
     // Getters
-    public long getQuizId() {
+    public int getQuizId() {
         return quiz_id;
     }
 

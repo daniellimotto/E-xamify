@@ -3,7 +3,7 @@ package com.example.e_xamify;
 import java.util.List;
 
 public class Question {
-    private String question_id;
+    private int question_id;
     private int quiz_id;
     private String question_text;
     private int question_type_id;
@@ -14,7 +14,7 @@ public class Question {
         // Default constructor
     }
 
-    public Question(String question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url) {
+    public Question(int question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url) {
         this.question_id = question_id;
         this.quiz_id = quiz_id;
         this.question_num = question_num;
@@ -24,7 +24,7 @@ public class Question {
     }
 
     // Getters
-    public String getQuestionId() {
+    public int getQuestionId() {
         return question_id;
     }
 
@@ -53,7 +53,7 @@ public class Question {
         this.question_text = questionText;
     }
 
-    public void setQuestionId(String question_id) {
+    public void setQuestionId(int question_id) {
         this.question_id = question_id;
     }
 

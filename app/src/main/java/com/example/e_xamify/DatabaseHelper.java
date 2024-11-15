@@ -3,6 +3,7 @@ package com.example.e_xamify;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "examify.db";
@@ -29,9 +30,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (2, 'Teacher', 'Roles identification for teachers')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (3, 'Student', 'Roles identification for students')");
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) VALUES (1, 'teacher@example.com', 'password', 'John Doe', 1, '2023-01-01')");
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date, teacher_img_url) VALUES (1, 'John Doe', 'Mathematics', '2023-01-01', 'url/to/image')");
-
         db.execSQL("INSERT INTO question_type (question_type_id, type_name, type_description) VALUES (1, 'MCQ', 'Multiple Choice Question')");
+
+        // Insert institution user
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (100, '1', '1', 'MIT', 1, '2024-01-01')");
+
+        // Insert institution details
+        db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
+                "VALUES (100, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MIT2024ENROLLMENT123', '2024-01-01')");
+
+        // Insert teacher user
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (101, '2', '2', 'John Smith', 2, '2024-01-01')");
+
+        // Insert teacher details
+        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date) " +
+                "VALUES (101, 'Prof. John Smith', 'Computer Science', '2024-01-01')");
+
+        // Create teacher enrollment in institution
+        db.execSQL("INSERT INTO teacher_institution (user_id, institution_enrolment_key) " +
+                "VALUES (101, 'MIT2024ENROLLMENT123')");
     }
 
     @Override
@@ -46,11 +65,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE question_type (question_type_id INTEGER PRIMARY KEY, type_name TEXT, type_description TEXT)");
         db.execSQL("CREATE TABLE student (user_id INTEGER PRIMARY KEY, student_name TEXT, student_img_url TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");
         db.execSQL("CREATE TABLE teacher (user_id INTEGER PRIMARY KEY, teacher_name TEXT, teacher_field TEXT, teacher_joined_date TEXT, teacher_img_url TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");
-        db.execSQL("CREATE TABLE question (question_id TEXT PRIMARY KEY, question_number INTEGER, quiz_id INTEGER, question_text TEXT, question_type_id INTEGER, question_img_url TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(question_type_id) REFERENCES question_type(question_type_id))");
-        db.execSQL("CREATE TABLE mcq (option_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id TEXT, optionA TEXT, optionB TEXT, optionC TEXT, optionD TEXT, correctOption INTEGER, FOREIGN KEY(question_id) REFERENCES question(question_id))");
+        db.execSQL("CREATE TABLE question (question_id INTEGER PRIMARY KEY AUTOINCREMENT, question_number INTEGER, quiz_id INTEGER, question_text TEXT, question_type_id INTEGER, question_img_url TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(question_type_id) REFERENCES question_type(question_type_id),  UNIQUE(quiz_id, question_number)) ");
+        db.execSQL("CREATE TABLE mcq (option_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, optionA TEXT, optionB TEXT, optionC TEXT, optionD TEXT, correctOption INTEGER, FOREIGN KEY(question_id) REFERENCES question(question_id))");
         db.execSQL("CREATE TABLE assignment (assignment_id INTEGER PRIMARY KEY, quiz_id INTEGER, user_id INTEGER, status TEXT, attempt_number_left INTEGER, mark INTEGER, assignment_start_date TEXT, assignment_end_date TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(user_id) REFERENCES student(user_id))");
         db.execSQL("CREATE TABLE feedback (feedback_id INTEGER PRIMARY KEY, user_id INTEGER, assignment_id INTEGER, feedback_text TEXT, is_visible INTEGER, FOREIGN KEY(user_id) REFERENCES teacher(user_id), FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id))");
-        db.execSQL("CREATE TABLE quiz_submission (submission_id INTEGER PRIMARY KEY, assignment_id INTEGER, question_id TEXT, user_id INTEGER, selected_option_id INTEGER, answer_text TEXT, is_correct INTEGER, submission_date TEXT, FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id), FOREIGN KEY(question_id) REFERENCES question(question_id), FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(selected_option_id) REFERENCES mcq(option_id))");
+        db.execSQL("CREATE TABLE quiz_submission (submission_id INTEGER PRIMARY KEY, assignment_id INTEGER, question_id INTEGER, user_id INTEGER, selected_option_id INTEGER, answer_text TEXT, is_correct INTEGER, submission_date TEXT, FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id), FOREIGN KEY(question_id) REFERENCES question(question_id), FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(selected_option_id) REFERENCES mcq(option_id))");
         db.execSQL("CREATE TABLE student_module (student_module_ID INTEGER PRIMARY KEY, user_id INTEGER, module_id INTEGER, enrollment_date TEXT, FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(module_id) REFERENCES module(module_id))");
         db.execSQL("CREATE TABLE student_institution (student_institution_id INTEGER PRIMARY KEY, student_id INTEGER NOT NULL, institution_id INTEGER NOT NULL, enrollment_date TEXT, FOREIGN KEY(student_id) REFERENCES student(user_id), FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
         db.execSQL("CREATE TABLE teacher_institution (teacher_enrolment_ID INTEGER PRIMARY KEY, user_id INTEGER, institution_enrolment_key TEXT, FOREIGN KEY(user_id) REFERENCES teacher(user_id), FOREIGN KEY(institution_enrolment_key) REFERENCES institution(institution_enrolment_key))");
@@ -73,6 +92,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "    FOREIGN KEY(user_id) REFERENCES teacher(user_id),\n" +
                 "    FOREIGN KEY(module_id) REFERENCES module(module_id)\n" +
                 ");\n");
+
+        db.execSQL("CREATE TABLE quiz_attempt (" +
+                "attempt_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "quiz_id INTEGER, " +
+                "user_id INTEGER, " +
+                "start_time TEXT, " +
+                "end_time TEXT, " +
+                "score INTEGER, " +
+                "status TEXT, " + // 'in_progress', 'completed', 'abandoned'
+                "FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), " +
+                "FOREIGN KEY(user_id) REFERENCES user(user_id))");
+
+        db.execSQL("CREATE TABLE student_answer (" +
+                "answer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "attempt_id INTEGER, " +
+                "question_id INTEGER, " +
+                "selected_option TEXT, " +
+                "is_correct INTEGER, " +
+                "FOREIGN KEY(attempt_id) REFERENCES quiz_attempt(attempt_id), " +
+                "FOREIGN KEY(question_id) REFERENCES question(question_id))");
 
         seedDatabase(db);
     }
@@ -104,5 +143,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    public boolean isTeacherEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 2", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    public boolean isStudentEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 3", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    public boolean isInstitutionEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 1", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 }

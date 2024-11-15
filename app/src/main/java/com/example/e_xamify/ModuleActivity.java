@@ -14,6 +14,7 @@ public class ModuleActivity extends AppCompatActivity {
     private EditText moduleNameInput, moduleDescriptionInput;
     private Button createModuleButton;
     private DatabaseHelper dbHelper;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,14 @@ public class ModuleActivity extends AppCompatActivity {
 
         // Initialize the database helper
         dbHelper = new DatabaseHelper(this);
+        userId = getIntent().getIntExtra("userId", -1);
+
+        // Add debug logging
+        if (userId == -1) {
+            Toast.makeText(this, "Error: Institution ID not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         moduleNameInput = findViewById(R.id.moduleNameInput);
         moduleDescriptionInput = findViewById(R.id.moduleDescriptionInput);
@@ -48,6 +57,7 @@ public class ModuleActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put("module_name", moduleName);
         values.put("module_description", moduleDescription);
+        values.put("institution_id", userId);
 
         long newModuleId = db.insert("module", null, values);
         if (newModuleId == -1) {

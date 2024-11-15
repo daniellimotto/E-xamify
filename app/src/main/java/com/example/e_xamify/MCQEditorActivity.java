@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,8 +89,7 @@ public class MCQEditorActivity extends AppCompatActivity {
             }
         });
 
-        // Load questions from the database
-        questions = loadQuestionsFromDatabase();
+        questions = new ArrayList<>(); // Initialize the questions list
 
         // If no questions exist, initialize with a default question
         if (questions.isEmpty()) {
@@ -123,92 +123,97 @@ public class MCQEditorActivity extends AppCompatActivity {
         // Validate inputs
         if (questionText.isEmpty() || optionA.isEmpty() || optionB.isEmpty() || optionC.isEmpty() || optionD.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-        } else {
-            // Check if a correct option is selected
-            if (selectedCorrectOptionId == -1) {
-                Toast.makeText(this, "Please select the correct option", Toast.LENGTH_SHORT).show();
-            }
-            try {
-                Cursor cursor = db.rawQuery("SELECT quiz_id FROM quiz WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
-                if (!cursor.moveToFirst()) {
-                    Toast.makeText(this, "Quiz ID" + quiz_id + " not found. Please create a quiz first.", Toast.LENGTH_LONG).show();
-                    cursor.close();
-                    return -1;
-                }
-                cursor.close();
-
-                // Generate question_id as a string combining quiz_id and questionNum
-                String questionId = quiz_id + "_" + questionNum;
-
-                // Insert or update question in the question table
-                ContentValues questionValues = new ContentValues();
-                questionValues.put("question_id", questionId);
-                questionValues.put("quiz_id", quiz_id);
-                questionValues.put("question_text", questionText);
-                questionValues.put("question_type_id", question_type_id);
-                questionValues.put("question_number", questionNum);
-
-                long result = db.insertWithOnConflict("question", null, questionValues, SQLiteDatabase.CONFLICT_REPLACE);
-
-                if (result == -1) {
-                    throw new Exception("Failed to insert or update question");
-                }
-
-                // Check if the question already exists in mcq table to decide between insert and update
-                cursor = db.rawQuery("SELECT * FROM mcq WHERE question_id = ?", new String[]{questionId});
-                ContentValues mcqValues = new ContentValues();
-                mcqValues.put("question_id", questionId);
-                mcqValues.put("optionA", optionA);
-                mcqValues.put("optionB", optionB);
-                mcqValues.put("optionC", optionC);
-                mcqValues.put("optionD", optionD);
-                mcqValues.put("correctOption", getCorrectOption());
-
-                if (cursor.moveToFirst()) {
-                    db.update("mcq", mcqValues, "question_id = ?", new String[]{questionId});
-                    Log.d("SaveQuestion", "MCQ options updated for question_id: " + questionId);
-                } else {
-                    db.insert("mcq", null, mcqValues);
-                    Log.d("SaveQuestion", "MCQ options inserted for question_id: " + questionId);
-                }
-                cursor.close();
-
-                // Show a toast message indicating the question was saved successfully with question ID
-                Toast.makeText(this, "Question saved successfully with question id: " + questionId, Toast.LENGTH_SHORT).show();
-
-                // Update the current question in the list and set the questionId for reference
-                Question currentQuestion;
-                if (questionNum <= questions.size()) {
-                    currentQuestion = questions.get(questionNum - 1);
-                } else {
-                    currentQuestion = new Question();
-                    questions.add(currentQuestion);
-                }
-
-                currentQuestion.setQuestionText(questionText);
-                currentQuestion.setQuestionNum(questionNum);
-                currentQuestion.setQuestionId(questionId);
-                clearInputs();
-
-                if (questionNum < questions.size()) {
-                    questionNum++;
-                    displayQuestion(questionNum);
-                } else {
-                    Question newQuestion = new Question();
-                    newQuestion.setQuestionNum(questionNum + 1);
-                    questions.add(newQuestion);
-                    questionNum++;
-                    questionNumberTextView.setText("Question " + questionNum);
-                }
-            } catch (Exception e) {
-                Log.e("SaveQuestionError", "Error saving question: ", e);
-                Toast.makeText(this, "Error saving question: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                return -1;
-            }
-            return 1;
+            return -1;
+        } else if (optionA.equals(optionB) || optionA.equals(optionC) || optionA.equals(optionD) ||
+                optionB.equals(optionC) || optionB.equals(optionD) || optionC.equals(optionD)) {
+            Toast.makeText(this, "Options A to D must be unique", Toast.LENGTH_SHORT).show();
+            return -1;
+        } else if (selectedCorrectOptionId == -1) {
+            Toast.makeText(this, "Please select the correct option", Toast.LENGTH_SHORT).show();
+            return -1;
         }
-        return -1;
+
+        int questionId = -1;  // Initialize questionId
+        try {
+            // Insert or update question in the question table
+            ContentValues questionValues = new ContentValues();
+            questionValues.put("quiz_id", quiz_id);
+            questionValues.put("question_text", questionText);
+            questionValues.put("question_type_id", question_type_id);
+            questionValues.put("question_number", questionNum);
+
+            Cursor cursor = db.rawQuery("SELECT question_id FROM question WHERE question_number = ?", new String[]{String.valueOf(questionNum)});
+            if (cursor.moveToFirst()) {
+                // If the question exists, get its question_id
+                questionId = cursor.getInt(cursor.getColumnIndex("question_id"));
+                db.update("question", questionValues, "question_id = ?", new String[]{String.valueOf(questionId)});
+            } else {
+                // Insert new question and retrieve its ID
+                long insertedQuestionId = db.insert("question", null, questionValues);
+                if (insertedQuestionId == -1) {
+                    throw new Exception("Failed to insert question into the question table");
+                }
+                questionId = (int) insertedQuestionId;
+            }
+            cursor.close();
+
+            if (questionId == -1) {
+                throw new Exception("Question ID is invalid after insertion.");
+            }
+
+            // Proceed with inserting or updating options in mcq table
+            ContentValues mcqValues = new ContentValues();
+            mcqValues.put("question_id", questionId);
+            mcqValues.put("optionA", optionA);
+            mcqValues.put("optionB", optionB);
+            mcqValues.put("optionC", optionC);
+            mcqValues.put("optionD", optionD);
+            mcqValues.put("correctOption", getCorrectOption());
+
+            cursor = db.rawQuery("SELECT * FROM mcq WHERE question_id = ?", new String[]{String.valueOf(questionId)});
+            if (cursor.moveToFirst()) {
+                db.update("mcq", mcqValues, "question_id = ?", new String[]{String.valueOf(questionId)});
+                Log.d("SaveQuestion", "MCQ options updated for question_id: " + questionId);
+            } else {
+                db.insert("mcq", null, mcqValues);
+                Log.d("SaveQuestion", "MCQ options inserted for question_id: " + questionId);
+            }
+            cursor.close();
+
+            Toast.makeText(this, "Question and options saved successfully with Question ID: " + questionId, Toast.LENGTH_SHORT).show();
+
+            // Update the current question in the list and set the questionId for reference
+            Question currentQuestion;
+            if (questionNum <= questions.size()) {
+                currentQuestion = questions.get(questionNum - 1);
+            } else {
+                currentQuestion = new Question();
+                questions.add(currentQuestion);
+            }
+
+            currentQuestion.setQuestionText(questionText);
+            currentQuestion.setQuestionNum(questionNum);
+            currentQuestion.setQuestionId(questionId);
+            clearInputs();
+
+            if (questionNum < questions.size()) {
+                questionNum++;
+                displayQuestion(questionNum);
+            } else {
+                Question newQuestion = new Question();
+                newQuestion.setQuestionNum(questionNum + 1);
+                questions.add(newQuestion);
+                questionNum++;
+                questionNumberTextView.setText("Question " + questionNum);
+            }
+        } catch (Exception e) {
+            Log.e("SaveQuestionError", "Error saving question: ", e);
+            Toast.makeText(this, "Error saving question: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            return -1;
+        }
+        return 1;
     }
+
 
 
 private int getCorrectOption() {
@@ -281,20 +286,40 @@ private void displayQuestion(int questionNum) {
     private void navigateToNextQuestion() {
         if (questionNum < questions.size()) {
             questionNum++;
-            clearInputs(); // Clear inputs before displaying the next question
+            //clearInputs();
             displayQuestion(questionNum);
         }
     }
 
     private void deleteCurrentQuestion() {
         if (questions.size() > 0) {
-            questions.remove(questionNum - 1);
-            // Update database to remove the question
-            // db.delete("question", "id=?", new String[]{String.valueOf(question.getId())});
-            if (questionNum > questions.size()) {
-                questionNum = questions.size();
+            Question questionToDelete = questions.get(questionNum - 1);
+            int deletedQuestionNum = questionToDelete.getQuestionNum();
+            try {
+                // Delete from mcq table first to remove dependent records
+                int mcqRowsDeleted = db.delete("mcq", "question_id=?", new String[]{String.valueOf(questionToDelete.getQuestionId())});
+                // Now delete from question table
+                int questionRowsDeleted = db.delete("question", "question_id=?", new String[]{String.valueOf(questionToDelete.getQuestionId())});
+                questions.remove(questionNum - 1);
+
+                for (int i = deletedQuestionNum -1; i < questions.size(); i++) {
+                    Question q = questions.get(i);
+                    q.setQuestionNum(i + 1);
+                    ContentValues values = new ContentValues();
+                    values.put("question_number", i + 1);
+                    db.update("question", values, "question_id=?", new String[]{String.valueOf(q.getQuestionId())});
+                }
+                if (questions.size() > 0) {
+                    displayQuestion(questionNum);
+                } else {
+                    clearInputs();
+                    questionNumberTextView.setText("No questions available");
+                }
+                Toast.makeText(this, "Question deleted successfully", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e("DeleteError", "Error deleting question: ", e);
+                Toast.makeText(this, "Error deleting question: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            displayQuestion(questionNum);
         }
     }
 
@@ -307,11 +332,6 @@ private void displayQuestion(int questionNum) {
                 .show();
     }
 
-    private List<Question> loadQuestionsFromDatabase() {
-        // Load questions from the database and return as a list
-        // This is a placeholder for actual database loading logic
-        return new ArrayList<>();
-    }
 
     private void clearInputs() {
         questionInput.setText("");
@@ -327,7 +347,7 @@ private void displayQuestion(int questionNum) {
         Intent intent = new Intent(MCQEditorActivity.this, TeacherActivity.class);
         intent.putExtra("userId", user_id); // Pass the user ID to the TeacherActivity
         startActivity(intent);
-        finish(); // Finish the current activity to remove it from the back stack
+        finish(); 
     }
 
     @Override

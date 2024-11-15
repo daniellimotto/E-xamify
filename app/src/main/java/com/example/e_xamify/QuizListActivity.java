@@ -1,5 +1,6 @@
 package com.example.e_xamify;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ public class QuizListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz_list); // Create this layout file
+        setContentView(R.layout.activity_quiz_list);
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getReadableDatabase();
 
@@ -32,6 +33,15 @@ public class QuizListActivity extends AppCompatActivity {
         quizzes = loadQuizzesFromDatabase();
         quizAdapter = new QuizAdapter(quizzes);
         quizzesRecyclerView.setAdapter(quizAdapter);
+
+        quizAdapter.setOnItemClickListener(new QuizAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Quiz quiz) {
+                Intent intent = new Intent(QuizListActivity.this, EditQuizInterface.class);
+                intent.putExtra("quiz_id", (int) quiz.getQuizId()); // Ensure quiz_id is passed as int
+                startActivity(intent);
+            }
+        });
     }
 
     private List<Quiz> loadQuizzesFromDatabase() {
@@ -41,8 +51,8 @@ public class QuizListActivity extends AppCompatActivity {
         if (cursor != null) {
             try {
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                    String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_id"));
+                    String title = cursor.getString(cursor.getColumnIndexOrThrow("quiz_title"));
                     Quiz quiz = new Quiz(id, title);
                     quizList.add(quiz);
                 }

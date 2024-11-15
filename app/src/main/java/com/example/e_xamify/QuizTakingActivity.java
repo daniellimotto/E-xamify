@@ -106,7 +106,7 @@ public class QuizTakingActivity extends AppCompatActivity {
 
         while (cursor.moveToNext()) {
             Mcq question = new Mcq(
-                    cursor.getString(0),  // question_id
+                    cursor.getInt(0),  // question_id
                     cursor.getInt(1),     // quiz_id
                     cursor.getInt(2),     // question_num
                     cursor.getString(3),  // question_text
@@ -186,7 +186,7 @@ public class QuizTakingActivity extends AppCompatActivity {
         });
     }
 
-    private void saveAnswer(String questionId, String selectedOption) {
+    private void saveAnswer(int questionId, String selectedOption) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("attempt_id", attemptId);
@@ -196,7 +196,7 @@ public class QuizTakingActivity extends AppCompatActivity {
         // Check if answer is correct
         Cursor cursor = db.rawQuery(
                 "SELECT correct_option FROM mcq WHERE question_id = ?",
-                new String[]{questionId}
+                new String[]{String.valueOf(questionId)}
         );
 
         if (cursor.moveToFirst()) {

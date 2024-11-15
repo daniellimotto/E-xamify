@@ -65,6 +65,10 @@ public class QuizInterface extends AppCompatActivity {
                 createMCQ();
             }
         });
+
+        Intent intent = getIntent();
+        int quizId = intent.getIntExtra("quiz_id", -1); // Retrieve quiz_id as int
+
     }
 
     private void populateQuizTypeSpinner() {
@@ -179,6 +183,12 @@ public class QuizInterface extends AppCompatActivity {
         intent.putExtra("quiz_id", quiz_id);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
     }
 
 }

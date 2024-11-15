@@ -113,7 +113,7 @@ public class QuizFeedbackActivity extends AppCompatActivity {
         List<Question> quizData = new ArrayList<>();
 
         Question q1 = new Mcq(
-                "1_1",  // question_id
+                123,  // question_id
                 1,
                 1,// quiz_id
                 "What is the capital of France?",
@@ -129,7 +129,7 @@ public class QuizFeedbackActivity extends AppCompatActivity {
 
         // Question 2
         Question q2 = new Mcq(
-                "1_2",  // question_id
+                146,  // question_id
                 1,  // quiz_id
                 1,
                 "Which planet is known as the Red Planet?",

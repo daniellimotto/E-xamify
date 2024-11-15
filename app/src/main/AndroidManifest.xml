@@ -35,7 +35,7 @@
         <activity android:name=".QuizInterface" />
         <activity android:name=".MCQEditorActivity" />
         <activity android:name=".QuizFeedbackActivity" />
-
+        <activity android:name=".AssignmentLauncherActivity" />
         <activity android:name=".StudentDashboardActivity" />
         <activity android:name=".QuizListActivity" />
         <activity android:name=".EditQuizInterface" />

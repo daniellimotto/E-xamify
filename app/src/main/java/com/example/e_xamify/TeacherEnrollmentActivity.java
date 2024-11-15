@@ -77,8 +77,8 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
 
             // Insert the enrollment record
             ContentValues values = new ContentValues();
+            values.put("institution_user_id", institutionUserId);
             values.put("user_id", userId);
-            values.put("institution_user_id", institutionUserId); // Store the institution user ID
             values.put("enrollment_date", getCurrentDate());
 
             long newEnrollmentId = db.insert("teacher_institution", null, values);

@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class InstitutionActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
-    private int   userId; // User ID received from SignInActivity
+    private int userId; // User ID received from SignInActivity
     private Button showEnrollmentKeyButton;
     private Button createModuleButton;
 
@@ -36,9 +36,9 @@ public class InstitutionActivity extends AppCompatActivity {
         showEnrollmentKeyButton = findViewById(R.id.showEnrollmentKeyButton);
         createModuleButton = findViewById(R.id.createModuleButton);
 
-        showEnrollmentKeyButton.setOnClickListener(v -> showEnrollmentKey());
         createModuleButton.setOnClickListener(v -> {
             Intent intent = new Intent(InstitutionActivity.this, ModuleActivity.class);
+            intent.putExtra("userId", userId);  // Pass the userId to ModuleActivity
             startActivity(intent);
         });
     }

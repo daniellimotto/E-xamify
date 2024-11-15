@@ -1,5 +1,6 @@
 package com.example.e_xamify;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -161,7 +162,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             List<Quiz> quizzes = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
+                int id = cursor.getInt(0);
                 String title = cursor.getString(1);
                 quizzes.add(new Quiz(id, title));
             }
@@ -186,9 +187,11 @@ public class StudentDashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void startQuiz(long quizId) {
-        // TODO: Implement quiz starting logic
-        Toast.makeText(this, "Starting quiz with ID: " + quizId, Toast.LENGTH_SHORT).show();
+    private void startQuiz(int quizId) {
+        Intent intent = new Intent(this, QuizDetailsActivity.class);
+        intent.putExtra("quizId", quizId);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
     }
 
     private void handleDatabaseError(Exception e) {
@@ -229,10 +232,10 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private static class Quiz {
-        long id;
+        int id;
         String title;
 
-        Quiz(long id, String title) {
+        Quiz(int id, String title) {
             this.id = id;
             this.title = title;
         }

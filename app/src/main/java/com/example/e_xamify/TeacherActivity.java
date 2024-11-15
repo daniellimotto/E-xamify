@@ -52,7 +52,9 @@ public class TeacherActivity extends AppCompatActivity {
         createAssignmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle creating new assignment (existing functionality)
+                Intent intent = new Intent(TeacherActivity.this, AssignmentLauncherActivity.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
             }
         });
 

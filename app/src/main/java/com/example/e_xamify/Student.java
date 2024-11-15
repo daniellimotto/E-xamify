@@ -8,7 +8,9 @@ public class Student {
     private String student_joined_date;
     private int student_role_id;
     private int institution_id;  // Represents enrollment in an institution
-
+    public Student(int user_id){
+        this.user_id = user_id;
+    }
     public Student(int user_id, String student_email, String student_password, String student_name, String student_joined_date, int student_role_id, int institution_id) {
         this.user_id = user_id;
         this.student_email = student_email;

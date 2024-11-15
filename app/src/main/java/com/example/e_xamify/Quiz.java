@@ -34,6 +34,12 @@ public class Quiz {
         this.quiz_title = title;
     }
 
+    public Quiz(int quizId, int moduleId, int quizAttempts) {
+        this.quiz_id = quizId;
+        this.module_id = moduleId;
+        this.quiz_attempts = quizAttempts;
+    }
+
     // Getters
     public long getQuizId() {
         return quiz_id;

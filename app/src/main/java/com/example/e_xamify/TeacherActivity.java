@@ -90,6 +90,7 @@ public class TeacherActivity extends AppCompatActivity {
     private void createNewQuiz() {
         // Navigate to QuizInterface to enter quiz details
         Intent intent = new Intent(TeacherActivity.this, QuizInterface.class);
+        intent.putExtra("user_id", userId); // Pass user ID to the QuizInterface
         startActivity(intent);
     }
 

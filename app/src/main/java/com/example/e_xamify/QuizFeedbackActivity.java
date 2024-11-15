@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class QuizFeedbackActivity extends AppCompatActivity {
 
     private LinearLayout questionsContainer;
@@ -51,7 +53,8 @@ public class QuizFeedbackActivity extends AppCompatActivity {
 
             questionTextView.setText(String.format("Question %d: %s", i + 1, question.getQuestionText()));
 
-            String[] options = {question.getOptionA(), question.getOptionB(), question.getOptionC(), question.getOptionD()};
+            Mcq mcq = (Mcq) question;
+            String[] options = {mcq.getOptionA(), mcq.getOptionB(), mcq.getOptionC(), mcq.getOptionD()};
             for (int j = 0; j < options.length; j++) {
                 RadioButton radioButton = new RadioButton(this);
                 radioButton.setText(options[j]);
@@ -79,7 +82,8 @@ public class QuizFeedbackActivity extends AppCompatActivity {
             for (int j = 0; j < optionsRadioGroup.getChildCount(); j++) {
                 RadioButton radioButton = (RadioButton) optionsRadioGroup.getChildAt(j);
                 if (showingFeedback) {
-                    if (j + 1 == question.getCorrectOption()) {
+                    Mcq mcq = (Mcq) question;
+                    if (j + 1 == mcq.getCorrectOption()) {
                         radioButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                     }
                     // Note: We don't have student's answer in this structure, so we can't highlight wrong answers
@@ -91,6 +95,7 @@ public class QuizFeedbackActivity extends AppCompatActivity {
             feedbackEditText.setVisibility(showingFeedback ? View.VISIBLE : View.GONE);
         }
     }
+
 
     private void submitFeedback() {
         List<String> feedbackList = new ArrayList<>();
@@ -107,13 +112,13 @@ public class QuizFeedbackActivity extends AppCompatActivity {
     private List<Question> getMockQuizData() {
         List<Question> quizData = new ArrayList<>();
 
-        // Question 1
-        Question q1 = new Question(
-                1,  // question_id
-                1,  // quiz_id
+        Question q1 = new Mcq(
+                "1_1",  // question_id
+                1,
+                1,// quiz_id
                 "What is the capital of France?",
                 1,  // question_type_id (assuming 1 is for MCQ)
-                null,  // question_img_url
+                "null",  // question_img_url
                 "London",
                 "Berlin",
                 "Paris",
@@ -123,12 +128,13 @@ public class QuizFeedbackActivity extends AppCompatActivity {
         quizData.add(q1);
 
         // Question 2
-        Question q2 = new Question(
-                2,  // question_id
+        Question q2 = new Mcq(
+                "1_2",  // question_id
                 1,  // quiz_id
+                1,
                 "Which planet is known as the Red Planet?",
                 1,  // question_type_id (assuming 1 is for MCQ)
-                null,  // question_img_url
+                "null",  // question_img_url
                 "Venus",
                 "Mars",
                 "Jupiter",

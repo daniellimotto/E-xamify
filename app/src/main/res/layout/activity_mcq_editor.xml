@@ -17,12 +17,11 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"/>
         
-        <TextView
+    <TextView
         android:id="@+id/questionNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/quizTitleTextView"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quizTitleTextView"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"/>
 
@@ -126,23 +125,23 @@
     </RadioGroup>
 
     <Button
+        android:id="@+id/prevButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Previous"
+        app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save Question"
         app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
-    <Button
-        android:id="@+id/prevButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Previous"
-        app:layout_constraintTop_toBottomOf="@id/saveButton"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@id/prevButton"
+        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"/>
 
     <Button
@@ -150,10 +149,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next"
+        app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
+        app:layout_constraintStart_toEndOf="@id/saveButton"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <Button
+        android:id="@+id/completeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete Quiz"
         app:layout_constraintTop_toBottomOf="@id/saveButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/deleteButton"

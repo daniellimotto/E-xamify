@@ -3,40 +3,28 @@ package com.example.e_xamify;
 import java.util.List;
 
 public class Question {
-    private int question_id;
+    private String question_id;
     private int quiz_id;
     private String question_text;
     private int question_type_id;
     private String question_img_url;
+    private int question_num;
 
-    // Fields for options
-    private String optionA;
-    private String optionB;
-    private String optionC;
-    private String optionD;
+    public Question() {
+        // Default constructor
+    }
 
-    // Field for correct answer (1 for A, 2 for B, 3 for C, 4 for D)
-    private int correctOption;
-
-    public Question(int question_id, int quiz_id, String question_text, int question_type_id,
-                    String question_img_url, String optionA, String optionB, String optionC, String optionD, int correctOption) {
+    public Question(String question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url) {
         this.question_id = question_id;
         this.quiz_id = quiz_id;
+        this.question_num = question_num;
         this.question_text = question_text;
         this.question_type_id = question_type_id;
         this.question_img_url = question_img_url;
-        this.optionA = optionA;
-        this.optionB = optionB;
-        this.optionC = optionC;
-        this.optionD = optionD;
-        this.correctOption = correctOption;
-    }
-    public Question(){
-        
     }
 
     // Getters
-    public int getQuestionId() {
+    public String getQuestionId() {
         return question_id;
     }
 
@@ -56,24 +44,8 @@ public class Question {
         return question_img_url;
     }
 
-    public String getOptionA() {
-        return optionA;
-    }
-
-    public String getOptionB() {
-        return optionB;
-    }
-
-    public String getOptionC() {
-        return optionC;
-    }
-
-    public String getOptionD() {
-        return optionD;
-    }
-
-    public int getCorrectOption() {
-        return correctOption;
+    public int getQuestionNum() {
+        return question_num;
     }
 
     // Setters
@@ -81,37 +53,30 @@ public class Question {
         this.question_text = questionText;
     }
 
-    public void setOptionA(String optionA) {
-        this.optionA = optionA;
+    public void setQuestionId(String question_id) {
+        this.question_id = question_id;
     }
 
-    public void setOptionB(String optionB) {
-        this.optionB = optionB;
+    public void SetQuizId(int quiz_id) {
+        this.quiz_id = quiz_id;
     }
 
-    public void setOptionC(String optionC) {
-        this.optionC = optionC;
+    public void setQuestionNum(int question_num) {
+        this.question_num = question_num;
     }
 
-    public void setOptionD(String optionD) {
-        this.optionD = optionD;
-    }
-
-    public void setCorrectOption(int correctOption) {
-        this.correctOption = correctOption;
+    public void setQuestionTypeId(int question_type_id) {
+        this.question_type_id = question_type_id;
     }
 
     // toString() method for easy display of the question details
     @Override
     public String toString() {
-        return "Question{" +
-                "question_id=" + question_id +
-                ", question_text='" + question_text + '\'' +
-                ", optionA='" + optionA + '\'' +
-                ", optionB='" + optionB + '\'' +
-                ", optionC='" + optionC + '\'' +
-                ", optionD='" + optionD + '\'' +
-                ", correctOption=" + correctOption +
-                '}';
+        return "Question ID: " + question_id + "\n" +
+                "Quiz ID: " + quiz_id + "\n" +
+                "Question Text: " + question_text + "\n" +
+                "Question Type ID: " + question_type_id + "\n" +
+                "Question Image URL: " + question_img_url + "\n" +
+                "Question Number: " + question_num;
     }
 }

@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class InstitutionActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
-    private long userId; // User ID received from SignInActivity
+    private int userId; // User ID received from SignInActivity
     private Button showEnrollmentKeyButton;
     private Button createModuleButton;
 
@@ -25,7 +25,7 @@ public class InstitutionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_institution);
 
         dbHelper = new DatabaseHelper(this);
-        userId = getIntent().getLongExtra("userId", -1); // Retrieve user ID from Intent
+        userId = getIntent().getIntExtra("userId", -1); // Retrieve user ID from Intent
 
         if (userId == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
@@ -36,9 +36,9 @@ public class InstitutionActivity extends AppCompatActivity {
         showEnrollmentKeyButton = findViewById(R.id.showEnrollmentKeyButton);
         createModuleButton = findViewById(R.id.createModuleButton);
 
-        showEnrollmentKeyButton.setOnClickListener(v -> showEnrollmentKey());
         createModuleButton.setOnClickListener(v -> {
             Intent intent = new Intent(InstitutionActivity.this, ModuleActivity.class);
+            intent.putExtra("userId", userId);  // Pass the userId to ModuleActivity
             startActivity(intent);
         });
     }

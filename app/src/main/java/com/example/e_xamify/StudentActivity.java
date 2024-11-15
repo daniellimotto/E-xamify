@@ -10,38 +10,55 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class StudentActivity extends AppCompatActivity {
 
-    private Button enrollButton;
     private TextView welcomeText;
-    private long userId; // User ID retrieved from Intent
+    private Button dashboardButton;
+    private Button enrollButton;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
-        // Retrieve the user ID passed from MainActivity
-        userId = getIntent().getLongExtra("userId", -1); // Default value of -1 if not found
+        // Initialize views
+        welcomeText = findViewById(R.id.welcomeText);
+        dashboardButton = findViewById(R.id.dashboardButton);
+        enrollButton = findViewById(R.id.enrollButton);
+
+        // Get user ID from intent
+        userId = getIntent().getIntExtra("userId", -1);
         if (userId == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
-            finish(); // Close the activity if user ID is not valid
+            finish();
             return;
         }
 
-        welcomeText = findViewById(R.id.welcomeText);
-        enrollButton = findViewById(R.id.enrollButton);
-
-        // Display a welcome message
+        // Set welcome message
         welcomeText.setText("Welcome, Student!");
 
-        // Set up the enroll button click listener
-        enrollButton.setOnClickListener(new View.OnClickListener() {
+        // Set up button click listeners
+        dashboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent to navigate to EnrollmentActivity
-                Intent intent = new Intent(StudentActivity.this, StudentEnrollmentActivity.class);
-                intent.putExtra("userId", userId); // Pass the user ID to EnrollmentActivity
+                Intent intent = new Intent(StudentActivity.this, StudentDashboardActivity.class);
+                intent.putExtra("userId", userId);
                 startActivity(intent);
             }
         });
+
+        enrollButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentActivity.this, StudentEnrollmentActivity.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data if needed when returning to this activity
     }
 }

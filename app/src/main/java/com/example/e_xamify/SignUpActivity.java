@@ -26,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     private RadioGroup userRoleLayout;
     private Button signUpButton;
     private DatabaseHelper dbHelper;
-    private HashMap<String, Integer> roleIdMap; // To store role names and IDs
+    private HashMap<String, Integer> roleIdMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         dbHelper = new DatabaseHelper(this);
-        roleIdMap = new HashMap<>(); // Initialize the map
+        roleIdMap = new HashMap<>();
 
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
@@ -49,10 +49,8 @@ public class SignUpActivity extends AppCompatActivity {
         teacherFieldInput = findViewById(R.id.teacherFieldInput);
         studentNameInput = findViewById(R.id.studentNameInput);
 
-        // Load user roles from the database
         loadUserRoles();
 
-        // Handle user role selection
         userRoleLayout.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton selectedRadioButton = findViewById(checkedId);
             if (selectedRadioButton != null) {
@@ -73,14 +71,13 @@ public class SignUpActivity extends AppCompatActivity {
             int roleId = cursor.getInt(1);
             RadioButton radioButton = new RadioButton(this);
             radioButton.setText(roleName);
-            userRoleLayout.addView(radioButton); // Add RadioButton to RadioGroup
-            roleIdMap.put(roleName, roleId); // Store the role ID in the map
+            userRoleLayout.addView(radioButton);
+            roleIdMap.put(roleName, roleId);
         }
         cursor.close();
     }
 
     private void handleUserRoleSelection(String userRole) {
-        // Show/hide fields based on user role
         if ("Institution".equals(userRole)) {
             institutionNameInput.setVisibility(View.VISIBLE);
             institutionPhoneInput.setVisibility(View.VISIBLE);
@@ -121,10 +118,17 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // Get selected user role
         String userRole = getSelectedUserRole();
         if (userRole == null) {
             Toast.makeText(this, "Please select a user role.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (("Student".equals(userRole) && (dbHelper.isStudentEmailExists(email) || dbHelper.isInstitutionEmailExists(email) || dbHelper.isTeacherEmailExists(email))) ||
+                ("Institution".equals(userRole) && (dbHelper.isInstitutionEmailExists(email) || dbHelper.isStudentEmailExists(email) || dbHelper.isTeacherEmailExists(email))) ||
+                ("Teacher".equals(userRole) && (dbHelper.isTeacherEmailExists(email) || dbHelper.isStudentEmailExists(email) || dbHelper.isInstitutionEmailExists(email)))) {
+
+            Toast.makeText(this, "This email is already registered.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -134,19 +138,17 @@ public class SignUpActivity extends AppCompatActivity {
         userValues.put("user_password", password);
         userValues.put("user_name", username);
         userValues.put("joined_date", getCurrentDate());
-        userValues.put("user_role_id", roleIdMap.get(userRole)); // Use the role ID from the map
+        userValues.put("user_role_id", roleIdMap.get(userRole));
 
-        // Insert into the user table and get the new user ID
         long newUserId = db.insert("user", null, userValues);
         if (newUserId == -1) {
             Toast.makeText(this, "Sign up failed. Please try again.", Toast.LENGTH_SHORT).show();
-            return; // Exit if user insertion fails
+            return;
         }
 
-        // Include details based on the selected role
         ContentValues roleValues = new ContentValues();
         if ("Institution".equals(userRole)) {
-            roleValues.put("user_id", newUserId); // Foreign key
+            roleValues.put("user_id", newUserId);
             roleValues.put("institution_name", institutionNameInput.getText().toString().trim());
             roleValues.put("institution_phone", institutionPhoneInput.getText().toString().trim());
             roleValues.put("institution_address", institutionAddressInput.getText().toString().trim());
@@ -156,7 +158,7 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, "Institution details insertion failed.", Toast.LENGTH_SHORT).show();
             }
         } else if ("Teacher".equals(userRole)) {
-            roleValues.put("user_id", newUserId); // Foreign key
+            roleValues.put("user_id", newUserId);
             roleValues.put("teacher_name", teacherNameInput.getText().toString().trim());
             roleValues.put("teacher_field", teacherFieldInput.getText().toString().trim());
             long teacherId = db.insert("teacher", null, roleValues);
@@ -164,7 +166,7 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, "Teacher details insertion failed.", Toast.LENGTH_SHORT).show();
             }
         } else if ("Student".equals(userRole)) {
-            roleValues.put("user_id", newUserId); // Foreign key
+            roleValues.put("user_id", newUserId);
             roleValues.put("student_name", studentNameInput.getText().toString().trim());
             long studentId = db.insert("student", null, roleValues);
             if (studentId == -1) {
@@ -173,24 +175,23 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show();
-        finish(); // Close this activity
+        finish();
     }
-
 
     private String generateEnrollmentKey() {
         StringBuilder enrollmentKey = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 25; i++) {
-            enrollmentKey.append((char) (random.nextInt(26) + 'A')); // Generate random uppercase letters
+            enrollmentKey.append((char) (random.nextInt(26) + 'A'));
         }
         return enrollmentKey.toString();
     }
 
     private String getSelectedUserRole() {
-        int selectedId = userRoleLayout.getCheckedRadioButtonId(); // Get selected RadioButton ID
+        int selectedId = userRoleLayout.getCheckedRadioButtonId();
         if (selectedId != -1) {
-            RadioButton radioButton = findViewById(selectedId); // Find the selected RadioButton
-            return radioButton.getText().toString(); // Return the text of the selected RadioButton
+            RadioButton radioButton = findViewById(selectedId);
+            return radioButton.getText().toString();
         }
         return null;
     }

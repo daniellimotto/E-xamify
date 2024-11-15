@@ -3,6 +3,7 @@ package com.example.e_xamify;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "examify.db";
@@ -29,9 +30,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (2, 'Teacher', 'Roles identification for teachers')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (3, 'Student', 'Roles identification for students')");
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) VALUES (1, 'teacher@example.com', 'password', 'John Doe', 1, '2023-01-01')");
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date, teacher_img_url) VALUES (1, 'John Doe', 'Mathematics', '2023-01-01', 'url/to/image')");
-
         db.execSQL("INSERT INTO question_type (question_type_id, type_name, type_description) VALUES (1, 'MCQ', 'Multiple Choice Question')");
+
+        // Insert institution user
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (100, '1', '1', 'MIT', 1, '2024-01-01')");
+
+        // Insert institution details
+        db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
+                "VALUES (100, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MIT2024ENROLLMENT123', '2024-01-01')");
+
+        // Insert teacher user
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (101, '2', '2', 'John Smith', 2, '2024-01-01')");
+
+        // Insert teacher details
+        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date) " +
+                "VALUES (101, 'Prof. John Smith', 'Computer Science', '2024-01-01')");
+
+        // Create teacher enrollment in institution
+        db.execSQL("INSERT INTO teacher_institution (user_id, institution_enrolment_key) " +
+                "VALUES (101, 'MIT2024ENROLLMENT123')");
     }
 
     @Override
@@ -74,6 +93,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "    FOREIGN KEY(module_id) REFERENCES module(module_id)\n" +
                 ");\n");
 
+        db.execSQL("CREATE TABLE quiz_attempt (" +
+                "attempt_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "quiz_id INTEGER, " +
+                "user_id INTEGER, " +
+                "start_time TEXT, " +
+                "end_time TEXT, " +
+                "score INTEGER, " +
+                "status TEXT, " + // 'in_progress', 'completed', 'abandoned'
+                "FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), " +
+                "FOREIGN KEY(user_id) REFERENCES user(user_id))");
+
+        db.execSQL("CREATE TABLE student_answer (" +
+                "answer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "attempt_id INTEGER, " +
+                "question_id INTEGER, " +
+                "selected_option TEXT, " +
+                "is_correct INTEGER, " +
+                "FOREIGN KEY(attempt_id) REFERENCES quiz_attempt(attempt_id), " +
+                "FOREIGN KEY(question_id) REFERENCES question(question_id))");
+
         seedDatabase(db);
     }
 
@@ -104,5 +143,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    public boolean isTeacherEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 2", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    public boolean isStudentEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 3", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    public boolean isInstitutionEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT user_email FROM user WHERE user_email = ? AND user_role_id = 1", new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 }

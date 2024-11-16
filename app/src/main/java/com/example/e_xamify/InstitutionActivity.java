@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class InstitutionActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
-    private int userId; // User ID received from SignInActivity
+    private int user_id; // User ID received from SignInActivity
     private Button showEnrollmentKeyButton;
     private Button createModuleButton;
 
@@ -25,9 +25,9 @@ public class InstitutionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_institution);
 
         dbHelper = new DatabaseHelper(this);
-        userId = getIntent().getIntExtra("userId", -1); // Retrieve user ID from Intent
+        user_id = getIntent().getIntExtra("user_id", -1); // Retrieve user ID from Intent
 
-        if (userId == -1) {
+        if (user_id == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -36,9 +36,12 @@ public class InstitutionActivity extends AppCompatActivity {
         showEnrollmentKeyButton = findViewById(R.id.showEnrollmentKeyButton);
         createModuleButton = findViewById(R.id.createModuleButton);
 
+        showEnrollmentKeyButton.setOnClickListener(v ->{
+            showEnrollmentKey();
+        });
         createModuleButton.setOnClickListener(v -> {
             Intent intent = new Intent(InstitutionActivity.this, ModuleActivity.class);
-            intent.putExtra("userId", userId);  // Pass the userId to ModuleActivity
+            intent.putExtra("user_id", user_id);  // Pass the user_id to ModuleActivity
             startActivity(intent);
         });
     }
@@ -50,7 +53,7 @@ public class InstitutionActivity extends AppCompatActivity {
 
         // Fetch the enrollment key from the database
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT institution_enrolment_key FROM institution WHERE user_id = ?", new String[]{String.valueOf(userId)});
+        Cursor cursor = db.rawQuery("SELECT institution_enrolment_key FROM institution WHERE user_id = ?", new String[]{String.valueOf(user_id)});
 
         if (cursor.moveToFirst()) {
             String enrollmentKey = cursor.getString(0);

@@ -13,7 +13,7 @@ public class StudentActivity extends AppCompatActivity {
     private TextView welcomeText;
     private Button dashboardButton;
     private Button enrollButton;
-    private int userId;
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,8 @@ public class StudentActivity extends AppCompatActivity {
         enrollButton = findViewById(R.id.enrollButton);
 
         // Get user ID from intent
-        userId = getIntent().getIntExtra("userId", -1);
-        if (userId == -1) {
+        user_id = getIntent().getIntExtra("user_id", -1);
+        if (user_id == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -41,7 +41,7 @@ public class StudentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StudentActivity.this, StudentDashboardActivity.class);
-                intent.putExtra("userId", userId);
+                intent.putExtra("user_id", user_id);
                 startActivity(intent);
             }
         });
@@ -50,7 +50,7 @@ public class StudentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StudentActivity.this, StudentEnrollmentActivity.class);
-                intent.putExtra("userId", userId);
+                intent.putExtra("user_id", user_id);
                 startActivity(intent);
             }
         });

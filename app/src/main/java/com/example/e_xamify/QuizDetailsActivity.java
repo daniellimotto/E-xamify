@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class QuizDetailsActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private int quizId;
-    private int userId;
+    private int user_id;
     private TextView quizTitleText;
     private TextView instructionsText;
     private TextView durationText;
@@ -33,9 +33,9 @@ public class QuizDetailsActivity extends AppCompatActivity {
 
         // Get quiz ID and user ID from intent
         quizId = getIntent().getIntExtra("quizId", -1);
-        userId = getIntent().getIntExtra("userId", -1);
+        user_id = getIntent().getIntExtra("user_id", -1);
 
-        if (quizId == -1 || userId == -1) {
+        if (quizId == -1 || user_id == -1) {
             Toast.makeText(this, "Error loading quiz details", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -72,7 +72,7 @@ public class QuizDetailsActivity extends AppCompatActivity {
     private void startQuiz() {
         Intent intent = new Intent(this, QuizTakingActivity.class);
         intent.putExtra("quizId", quizId);
-        intent.putExtra("userId", userId);
+        intent.putExtra("user_id", user_id);
         startActivity(intent);
         finish();
     }

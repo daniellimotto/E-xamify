@@ -49,7 +49,7 @@ public class SignInActivity extends AppCompatActivity {
                 new String[]{email, password});
         if (cursor.moveToFirst()) {
             int userRoleId = cursor.getInt(0);
-            long user_id = cursor.getLong(1);
+            int user_id = cursor.getInt(1);
             navigateToRoleActivity(userRoleId, user_id);
         } else {
             Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
@@ -57,7 +57,7 @@ public class SignInActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    private void navigateToRoleActivity(int userRoleId, long user_id) {
+    private void navigateToRoleActivity(int userRoleId, int user_id) {
         Intent intent;
         switch (userRoleId) {
             case 1: // Institution
@@ -73,7 +73,7 @@ public class SignInActivity extends AppCompatActivity {
                 Toast.makeText(this, "Unknown role.", Toast.LENGTH_SHORT).show();
                 return;
         }
-        intent.putExtra("userId", user_id);
+        intent.putExtra("user_id", user_id);
         startActivity(intent);
         finish(); // Close SignInActivity
     }

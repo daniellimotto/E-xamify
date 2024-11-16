@@ -21,7 +21,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     private Spinner moduleSpinner;
     private ListView quizListView;
     private DatabaseHelper dbHelper;
-    private int userId;
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +29,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_dashboard);
 
         dbHelper = new DatabaseHelper(this);
-        userId = getIntent().getIntExtra("userId", -1);
+        user_id = getIntent().getIntExtra("user_id", -1);
 
-        if (userId == -1) {
+        if (user_id == -1) {
             Log.e(TAG, "Invalid user ID received");
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
@@ -80,7 +80,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                     "SELECT i.user_id, i.institution_name FROM institution i " +
                             "INNER JOIN student_institution si ON i.user_id = si.institution_id " +
                             "WHERE si.student_id = ?",
-                    new String[]{String.valueOf(userId)}
+                    new String[]{String.valueOf(user_id)}
             );
             List<Institution> institutions = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             }
 
             if (institutions.isEmpty()) {
-                Log.w(TAG, "No institutions found for user ID: " + userId);
+                Log.w(TAG, "No institutions found for user ID: " + user_id);
                 Toast.makeText(this, "You are not enrolled in any institutions. Please enroll first.", Toast.LENGTH_LONG).show();
                 // Instead of finishing the activity, you might want to show a message or redirect to an enrollment page
                 // finish();
@@ -190,7 +190,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     private void startQuiz(int quizId) {
         Intent intent = new Intent(this, QuizDetailsActivity.class);
         intent.putExtra("quizId", quizId);
-        intent.putExtra("userId", userId);
+        intent.putExtra("user_id", user_id);
         startActivity(intent);
     }
 

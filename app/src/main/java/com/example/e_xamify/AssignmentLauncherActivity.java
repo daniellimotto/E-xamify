@@ -20,7 +20,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
     private Spinner quizSpinner;
     private EditText startDateEditText, endDateEditText;
     private Button launchAssignmentButton;
-    private long userId;
+    private int user_id;
     private SQLiteDatabase db;
 
     @Override
@@ -29,7 +29,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_assignment_launcher);
 
         // Retrieve teacher's user ID from intent
-        userId = getIntent().getLongExtra("userId", -1);
+        user_id = getIntent().getIntExtra("user_id", -1);
 
         quizSpinner = findViewById(R.id.spinner_quiz);
         startDateEditText = findViewById(R.id.editText_start_date);
@@ -52,7 +52,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
 
         // Query to get only quiz titles for this teacher
         String query = "SELECT quiz_title FROM quiz WHERE user_id = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user_id)});
 
         if (cursor.moveToFirst()) {
             do {
@@ -106,7 +106,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
 
     private Quiz getQuizByTitle(String quizTitle) {
         String query = "SELECT quiz_id, module_id, quiz_attempts FROM quiz WHERE quiz_title = ? AND user_id = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{quizTitle, String.valueOf(userId)});
+        Cursor cursor = db.rawQuery(query, new String[]{quizTitle, String.valueOf(user_id)});
         Quiz quiz = null;
 
         if (cursor.moveToFirst()) {
@@ -119,18 +119,18 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         return quiz;
     }
 
-    private boolean isAlreadyAssigned(int studentUserId, long quizId) {
+    private boolean isAlreadyAssigned(int studentuser_id, long quizId) {
         String query = "SELECT 1 FROM assignment WHERE user_id = ? AND quiz_id = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(studentUserId), String.valueOf(quizId)});
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(studentuser_id), String.valueOf(quizId)});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
     }
 
-    private void insertAssignment(int studentUserId, long quizId, String startDate, String endDate, int attemptNumber) {
+    private void insertAssignment(int studentuser_id, long quizId, String startDate, String endDate, int attemptNumber) {
         ContentValues values = new ContentValues();
         values.put("quiz_id", quizId);
-        values.put("user_id", studentUserId);
+        values.put("user_id", studentuser_id);
         values.put("status", "pending");
         values.put("attempt_number_left", attemptNumber);
         values.put("assignment_start_date", startDate);
@@ -147,8 +147,8 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             do {
-                int studentUserId = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
-                students.add(new Student(studentUserId)); // Assuming Student class constructor takes user_id
+                int studentuser_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
+                students.add(new Student(studentuser_id)); // Assuming Student class constructor takes user_id
             } while (cursor.moveToNext());
         }
         cursor.close();

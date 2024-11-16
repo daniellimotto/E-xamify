@@ -19,7 +19,7 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
     private EditText enrollmentKeyInput;
     private Button enrollButton;
     private DatabaseHelper dbHelper;
-    private int userId; // User ID passed from StudentActivity
+    private int user_id; // User ID passed from StudentActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +30,8 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         // Retrieve user ID from the Intent
-        userId = getIntent().getIntExtra("userId", -1);
-        if (userId == -1) {
+        user_id = getIntent().getIntExtra("user_id", -1);
+        if (user_id == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -62,11 +62,11 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
         Cursor cursor = db.rawQuery("SELECT user_id FROM institution WHERE institution_enrolment_key = ?", new String[]{enrollmentKey});
 
         if (cursor.moveToFirst()) {
-            long institutionUserId = cursor.getLong(0);
+            long institutionuser_id = cursor.getLong(0);
 
             // Check if the user is already enrolled in this institution
             Cursor checkCursor = db.rawQuery("SELECT * FROM student_institution WHERE student_id = ? AND institution_id = ?",
-                    new String[]{String.valueOf(userId), String.valueOf(institutionUserId)});
+                    new String[]{String.valueOf(user_id), String.valueOf(institutionuser_id)});
 
             if (checkCursor.getCount() > 0) {
                 Toast.makeText(this, "You are already enrolled in this institution.", Toast.LENGTH_SHORT).show();
@@ -79,8 +79,8 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
             // Insert the enrollment record
             ContentValues values = new ContentValues();
 
-            values.put("institution_user_id", institutionUserId);
-            values.put("user_id", userId);
+            values.put("student_id", user_id);
+            values.put("institution_id", institutionuser_id);
 
             values.put("enrollment_date", getCurrentDate());
 

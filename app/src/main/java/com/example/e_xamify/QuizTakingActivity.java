@@ -22,7 +22,7 @@ import java.util.Locale;
 public class QuizTakingActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private int quizId;
-    private int userId;
+    private int user_id;
     private List<Mcq> questions;
     private int currentQuestionIndex = 0;
     private CountDownTimer timer;
@@ -46,9 +46,9 @@ public class QuizTakingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_taking);
 
         quizId = getIntent().getIntExtra("quizId", -1);
-        userId = getIntent().getIntExtra("userId", -1);
+        user_id = getIntent().getIntExtra("user_id", -1);
 
-        if (quizId == -1 || userId == -1) {
+        if (quizId == -1 || user_id == -1) {
             Toast.makeText(this, "Error loading quiz", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -139,7 +139,7 @@ public class QuizTakingActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("quiz_id", quizId);
-        values.put("user_id", userId);
+        values.put("user_id", user_id);
         values.put("start_time", getCurrentDateTime());
         values.put("status", "in_progress");
 

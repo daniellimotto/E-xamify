@@ -48,9 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date) " +
                 "VALUES (101, 'Prof. John Smith', 'Computer Science', '2024-01-01')");
 
-        // Create teacher enrollment in institution
-        db.execSQL("INSERT INTO teacher_institution (user_id, institution_enrolment_key) " +
-                "VALUES (101, 'MIT2024ENROLLMENT123')");
     }
 
     @Override
@@ -72,8 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE quiz_submission (submission_id INTEGER PRIMARY KEY, assignment_id INTEGER, question_id INTEGER, user_id INTEGER, selected_option_id INTEGER, answer_text TEXT, is_correct INTEGER, submission_date TEXT, FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id), FOREIGN KEY(question_id) REFERENCES question(question_id), FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(selected_option_id) REFERENCES mcq(option_id))");
         db.execSQL("CREATE TABLE student_module (student_module_ID INTEGER PRIMARY KEY, user_id INTEGER, module_id INTEGER, enrollment_date TEXT, FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(module_id) REFERENCES module(module_id))");
         db.execSQL("CREATE TABLE student_institution (student_institution_id INTEGER PRIMARY KEY, student_id INTEGER NOT NULL, institution_id INTEGER NOT NULL, enrollment_date TEXT, FOREIGN KEY(student_id) REFERENCES student(user_id), FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
-        db.execSQL("CREATE TABLE teacher_institution (teacher_enrolment_ID INTEGER PRIMARY KEY, user_id INTEGER, institution_enrolment_key TEXT, FOREIGN KEY(user_id) REFERENCES teacher(user_id), FOREIGN KEY(institution_enrolment_key) REFERENCES institution(institution_enrolment_key))");
-
+        db.execSQL("CREATE TABLE teacher_institution (teacher_institution_id INTEGER PRIMARY KEY, teacher_id INTEGER NOT NULL, institution_id INTEGER NOT NULL, enrollment_date TEXT, FOREIGN KEY(teacher_id) REFERENCES teacher(user_id), FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
         // Removed AUTOINCREMENT for quiz_id as it's manually managed now
         db.execSQL("CREATE TABLE quiz (\n" +
                 "    quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +

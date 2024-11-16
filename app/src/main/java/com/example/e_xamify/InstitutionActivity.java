@@ -16,8 +16,7 @@ public class InstitutionActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     private int user_id; // User ID received from SignInActivity
-    private Button showEnrollmentKeyButton;
-    private Button createModuleButton;
+    private Button showEnrollmentKeyButton, createModuleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +35,9 @@ public class InstitutionActivity extends AppCompatActivity {
         showEnrollmentKeyButton = findViewById(R.id.showEnrollmentKeyButton);
         createModuleButton = findViewById(R.id.createModuleButton);
 
-        showEnrollmentKeyButton.setOnClickListener(v ->{
-            showEnrollmentKey();
-        });
+
+
+        showEnrollmentKeyButton.setOnClickListener(v -> showEnrollmentKey());
         createModuleButton.setOnClickListener(v -> {
             Intent intent = new Intent(InstitutionActivity.this, ModuleActivity.class);
             intent.putExtra("user_id", user_id);  // Pass the user_id to ModuleActivity

@@ -39,6 +39,7 @@
         <activity android:name=".StudentDashboardActivity" />
         <activity android:name=".QuizListActivity" />
         <activity android:name=".EditQuizInterface" />
+        <activity android:name=".StudentEnrollModuleActivity" />
 
     </application>
 

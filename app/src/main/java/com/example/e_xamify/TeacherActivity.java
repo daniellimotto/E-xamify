@@ -43,6 +43,7 @@ public class TeacherActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TeacherActivity.this, QuizListActivity.class);
+                intent.putExtra("user_id", user_id);
                 startActivity(intent);
             }
         });

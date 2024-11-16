@@ -55,9 +55,9 @@ public class EditQuizInterface extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
 
         // Populate spinners
-        populateQuizTypeSpinner();
+
         setupAttemptsSpinner();
-        populateModuleSpinner();
+
 
         // "Edit MCQ" Button
         editMCQButton = findViewById(R.id.editMCQButton);
@@ -76,7 +76,7 @@ public class EditQuizInterface extends AppCompatActivity {
         }
     }
 
-    private void populateQuizTypeSpinner() {
+    private void populateQuizTypeSpinner(String quizTypeName) {
         Cursor cursor = db.rawQuery("SELECT type_name FROM quiz_type", null);
         ArrayList<String> quizTypes = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -89,16 +89,19 @@ public class EditQuizInterface extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, quizTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quizTypeSpinner.setAdapter(adapter);
+
+        // Set the spinner's selection after populating it
+        if (quizTypeName != null) {
+            int position = adapter.getPosition(quizTypeName);
+            if (position >= 0) {
+                quizTypeSpinner.setSelection(position);
+            } else {
+                Log.e("SpinnerError", "Quiz type not found: " + quizTypeName);
+            }
+        }
     }
 
-    private void setupAttemptsSpinner() {
-        ArrayAdapter<String> attemptsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"1", "2", "3", "Infinite"});
-        attemptsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        attemptsSpinner.setAdapter(attemptsAdapter);
-    }
-
-    private void populateModuleSpinner() {
-        // Retrieve module names from the database
+    private void populateModuleSpinner(String moduleName) {
         Cursor cursor = db.rawQuery("SELECT module_name FROM module", null);
         ArrayList<String> modules = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -108,19 +111,37 @@ public class EditQuizInterface extends AppCompatActivity {
         }
         cursor.close();
 
-        // Set up the Spinner with module data
-        ArrayAdapter<String> moduleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, modules);
-        moduleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        moduleSpinner.setAdapter(moduleAdapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, modules);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        moduleSpinner.setAdapter(adapter);
+
+        // Set the spinner's selection after populating it
+        if (moduleName != null) {
+            int position = adapter.getPosition(moduleName);
+            if (position >= 0) {
+                moduleSpinner.setSelection(position);
+            } else {
+                Log.e("SpinnerError", "Module not found: " + moduleName);
+            }
+        }
     }
+
+
+
+    private void setupAttemptsSpinner() {
+        ArrayAdapter<String> attemptsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"1", "2", "3", "Infinite"});
+        attemptsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        attemptsSpinner.setAdapter(attemptsAdapter);
+    }
+
 
     private void loadQuizDetails(int quizId) {
         Cursor cursor = db.query("Quiz", null, "quiz_id = ?", new String[]{String.valueOf(quizId)}, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("quiz_title"));
-            int type = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_type_id"));
-            String module = cursor.getString(cursor.getColumnIndexOrThrow("module_id"));
+            String quizTypeName = cursor.getString(cursor.getColumnIndexOrThrow("quiz_type_id")); // Retrieve quiz type name
+            String moduleName = cursor.getString(cursor.getColumnIndexOrThrow("module_id")); // Retrieve module name
             String duration = cursor.getString(cursor.getColumnIndexOrThrow("quiz_duration"));
             String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
             int attempts = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_attempts"));
@@ -129,10 +150,6 @@ public class EditQuizInterface extends AppCompatActivity {
             boolean randomizeQuestion = cursor.getInt(cursor.getColumnIndexOrThrow("question_randomize")) > 0;
 
             titleInput.setText(title);
-            quizTypeSpinner.setSelection(type);
-            ArrayAdapter<String> moduleAdapter = (ArrayAdapter<String>) moduleSpinner.getAdapter();
-            int modulePosition = moduleAdapter.getPosition(module);
-            moduleSpinner.setSelection(modulePosition);
             durationInput.setText(duration);
             instructionInput.setText(instructions);
             attemptsSpinner.setSelection(attempts);
@@ -141,8 +158,13 @@ public class EditQuizInterface extends AppCompatActivity {
             randomizeSwitch.setChecked(randomizeQuestion);
 
             cursor.close();
+
+            // Populate spinners with selected values
+            populateQuizTypeSpinner(quizTypeName);
+            populateModuleSpinner(moduleName);
         }
     }
+
 
     private void editMCQ() {
         String quizTitle = titleInput.getText().toString();
@@ -188,7 +210,7 @@ public class EditQuizInterface extends AppCompatActivity {
         }
 
 
-        Log.d("EditQuizInterface", "quizTypeId: " + quizTypeId + ", moduleId: " + moduleId);
+        Log.d("EditQuizInterface", "quizTypeId: " + quizTypeId + ", moduleId: " + moduleId + " user_id: " + user_id);
 
         // Update quiz details in the database
         ContentValues quizValues = new ContentValues();
@@ -209,7 +231,6 @@ public class EditQuizInterface extends AppCompatActivity {
                 Toast.makeText(this, "Failed to update quiz", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Toast.makeText(this, "Quiz Updated Successfully", Toast.LENGTH_SHORT).show();
             // Pass the quiz ID and title to MCQEditorActivity
             Intent intent = new Intent(this, MCQEditorActivity.class);
 

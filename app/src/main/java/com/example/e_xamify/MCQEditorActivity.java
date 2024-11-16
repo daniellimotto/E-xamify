@@ -35,7 +35,6 @@ public class MCQEditorActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private int selectedCorrectOptionId = -1;
     private Button prevButton, nextButton, deleteButton, completeButton;
-    private List<Question> questions;
     private int quiz_id;
     private int questionNum = 1; // Initialize question number to 1
     private int question_type_id = 1; 
@@ -89,12 +88,12 @@ public class MCQEditorActivity extends AppCompatActivity {
             }
         });
 
-        questions = new ArrayList<>(); // Initialize the questions list
-
         // If no questions exist, initialize with a default question
-        if (questions.isEmpty()) {
-            questions.add(new Question());
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM question WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
+        if (cursor.moveToFirst() && cursor.getInt(0) == 0) {
+            saveQuestion(); // Save a default question if none exist
         }
+        cursor.close();
 
         // Set up button listeners
         prevButton = findViewById(R.id.prevButton);
@@ -107,7 +106,7 @@ public class MCQEditorActivity extends AppCompatActivity {
         completeButton.setOnClickListener(v -> completeQuiz()); // Set up click listener for complete button
 
         // Display the first question
-        //displayQuestion(questionNum);
+        displayQuestion(questionNum);
         questionNumberTextView.setText("Question " + questionNum); // Update question number // Ensure question number is displayed initially
 
     }
@@ -142,7 +141,7 @@ public class MCQEditorActivity extends AppCompatActivity {
             questionValues.put("question_type_id", question_type_id);
             questionValues.put("question_number", questionNum);
 
-            Cursor cursor = db.rawQuery("SELECT question_id FROM question WHERE question_number = ?", new String[]{String.valueOf(questionNum)});
+            Cursor cursor = db.rawQuery("SELECT question_id FROM question WHERE quiz_id = ? AND question_number = ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
             if (cursor.moveToFirst()) {
                 // If the question exists, get its question_id
                 questionId = cursor.getInt(cursor.getColumnIndex("question_id"));
@@ -182,30 +181,9 @@ public class MCQEditorActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Question and options saved successfully with Question ID: " + questionId, Toast.LENGTH_SHORT).show();
 
-            // Update the current question in the list and set the questionId for reference
-            Question currentQuestion;
-            if (questionNum <= questions.size()) {
-                currentQuestion = questions.get(questionNum - 1);
-            } else {
-                currentQuestion = new Question();
-                questions.add(currentQuestion);
-            }
-
-            currentQuestion.setQuestionText(questionText);
-            currentQuestion.setQuestionNum(questionNum);
-            currentQuestion.setQuestionId(questionId);
             clearInputs();
-
-            if (questionNum < questions.size()) {
-                questionNum++;
-                displayQuestion(questionNum);
-            } else {
-                Question newQuestion = new Question();
-                newQuestion.setQuestionNum(questionNum + 1);
-                questions.add(newQuestion);
-                questionNum++;
-                questionNumberTextView.setText("Question " + questionNum);
-            }
+            questionNum++;
+            displayQuestion(questionNum);
         } catch (Exception e) {
             Log.e("SaveQuestionError", "Error saving question: ", e);
             Toast.makeText(this, "Error saving question: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -214,67 +192,68 @@ public class MCQEditorActivity extends AppCompatActivity {
         return 1;
     }
 
-
-
-private int getCorrectOption() {
-    if (selectedCorrectOptionId == R.id.optionARadio) {
-        return 1;
-    } else if (selectedCorrectOptionId == R.id.optionBRadio) {
-        return 2;
-    } else if (selectedCorrectOptionId == R.id.optionCRadio) {
-        return 3;
-    } else if (selectedCorrectOptionId == R.id.optionDRadio) {
-        return 4;
-    } else {
-        return -1; // No option selected
-    }
-}
-
-private void displayQuestion(int questionNum) {
-    if (questionNum > 0 && questionNum <= questions.size()) {
-        Question question = questions.get(questionNum-1);
-        questionInput.setText(question.getQuestionText());
-        questionNumberTextView.setText("Question " + question.getQuestionNum()); // Update question number
-
-        // Retrieve the relevant MCQ fields
-        Cursor cursor = db.rawQuery("SELECT * FROM mcq WHERE question_id = ?", new String[]{String.valueOf(question.getQuestionId())});
-        if (cursor.moveToFirst()) {
-            String optionA = cursor.getString(cursor.getColumnIndex("optionA"));
-            String optionB = cursor.getString(cursor.getColumnIndex("optionB"));
-            String optionC = cursor.getString(cursor.getColumnIndex("optionC"));
-            String optionD = cursor.getString(cursor.getColumnIndex("optionD"));
-            int correctOption = cursor.getInt(cursor.getColumnIndex("correctOption"));
-
-            optionAInput.setText(optionA);
-            optionBInput.setText(optionB);
-            optionCInput.setText(optionC);
-            optionDInput.setText(optionD);
-
-            Log.d("DisplayQuestion", "Option A: " + optionA);
-            Log.d("DisplayQuestion", "Option B: " + optionB);
-            Log.d("DisplayQuestion", "Option C: " + optionC);
-            Log.d("DisplayQuestion", "Option D: " + optionD);
-            Log.d("DisplayQuestion", "Correct Option: " + correctOption);
-
-            if (correctOption == 1) {
-                correctOptionGroup.check(R.id.optionARadio);
-            } else if (correctOption == 2) {
-                correctOptionGroup.check(R.id.optionBRadio);
-            } else if (correctOption == 3) {
-                correctOptionGroup.check(R.id.optionCRadio);
-            } else if (correctOption == 4) {
-                correctOptionGroup.check(R.id.optionDRadio);
-            } else {
-                correctOptionGroup.clearCheck();
-            }
+    private int getCorrectOption() {
+        if (selectedCorrectOptionId == R.id.optionARadio) {
+            return 1;
+        } else if (selectedCorrectOptionId == R.id.optionBRadio) {
+            return 2;
+        } else if (selectedCorrectOptionId == R.id.optionCRadio) {
+            return 3;
+        } else if (selectedCorrectOptionId == R.id.optionDRadio) {
+            return 4;
         } else {
-            Log.e("DisplayQuestionError", "No MCQ found for question_id: " + question.getQuestionId());
+            return -1; // No option selected
+        }
+    }
+
+    private void displayQuestion(int questionNum) {
+        Cursor cursor = db.rawQuery("SELECT * FROM question WHERE quiz_id = ? AND question_number = ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
+        if (cursor.moveToFirst()) {
+            int questionId = cursor.getInt(cursor.getColumnIndex("question_id"));
+            String questionText = cursor.getString(cursor.getColumnIndex("question_text"));
+            questionInput.setText(questionText);
+            questionNumberTextView.setText("Question " + questionNum);
+
+            Cursor mcqCursor = db.rawQuery("SELECT * FROM mcq WHERE question_id = ?", new String[]{String.valueOf(questionId)});
+            if (mcqCursor.moveToFirst()) {
+                String optionA = mcqCursor.getString(mcqCursor.getColumnIndex("optionA"));
+                String optionB = mcqCursor.getString(mcqCursor.getColumnIndex("optionB"));
+                String optionC = mcqCursor.getString(mcqCursor.getColumnIndex("optionC"));
+                String optionD = mcqCursor.getString(mcqCursor.getColumnIndex("optionD"));
+                int correctOption = mcqCursor.getInt(mcqCursor.getColumnIndex("correctOption"));
+
+                optionAInput.setText(optionA);
+                optionBInput.setText(optionB);
+                optionCInput.setText(optionC);
+                optionDInput.setText(optionD);
+
+                Log.d("DisplayQuestion", "Option A: " + optionA);
+                Log.d("DisplayQuestion", "Option B: " + optionB);
+                Log.d("DisplayQuestion", "Option C: " + optionC);
+                Log.d("DisplayQuestion", "Option D: " + optionD);
+                Log.d("DisplayQuestion", "Correct Option: " + correctOption);
+
+                if (correctOption == 1) {
+                    correctOptionGroup.check(R.id.optionARadio);
+                } else if (correctOption == 2) {
+                    correctOptionGroup.check(R.id.optionBRadio);
+                } else if (correctOption == 3) {
+                    correctOptionGroup.check(R.id.optionCRadio);
+                } else if (correctOption == 4) {
+                    correctOptionGroup.check(R.id.optionDRadio);
+                } else {
+                    correctOptionGroup.clearCheck();
+                }
+            } else {
+                Log.e("DisplayQuestionError", "No MCQ found for question_id: " + questionId);
+            }
+            mcqCursor.close();
+        } else {
+            clearInputs();
+            questionNumberTextView.setText("Question " + questionNum);
         }
         cursor.close();
-    } else {
-        Log.e("DisplayQuestionError", "Invalid question number: " + questionNum);
     }
-}
 
     private void navigateToPreviousQuestion() {
         if (questionNum > 1) {
@@ -284,43 +263,43 @@ private void displayQuestion(int questionNum) {
     }
 
     private void navigateToNextQuestion() {
-        if (questionNum < questions.size()) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM question WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
+        if (cursor.moveToFirst() && questionNum < cursor.getInt(0)) {
             questionNum++;
-            //clearInputs();
             displayQuestion(questionNum);
         }
+        cursor.close();
     }
 
     private void deleteCurrentQuestion() {
-        if (questions.size() > 0) {
-            Question questionToDelete = questions.get(questionNum - 1);
-            int deletedQuestionNum = questionToDelete.getQuestionNum();
-            try {
-                // Delete from mcq table first to remove dependent records
-                int mcqRowsDeleted = db.delete("mcq", "question_id=?", new String[]{String.valueOf(questionToDelete.getQuestionId())});
-                // Now delete from question table
-                int questionRowsDeleted = db.delete("question", "question_id=?", new String[]{String.valueOf(questionToDelete.getQuestionId())});
-                questions.remove(questionNum - 1);
+        Cursor cursor = db.rawQuery("SELECT question_id FROM question WHERE quiz_id = ? AND question_number = ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
+        if (cursor.moveToFirst()) {
+            int questionId = cursor.getInt(cursor.getColumnIndex("question_id"));
+            db.delete("mcq", "question_id=?", new String[]{String.valueOf(questionId)});
+            db.delete("question", "question_id=?", new String[]{String.valueOf(questionId)});
+            Toast.makeText(this, "Question deleted successfully", Toast.LENGTH_SHORT).show();
 
-                for (int i = deletedQuestionNum -1; i < questions.size(); i++) {
-                    Question q = questions.get(i);
-                    q.setQuestionNum(i + 1);
-                    ContentValues values = new ContentValues();
-                    values.put("question_number", i + 1);
-                    db.update("question", values, "question_id=?", new String[]{String.valueOf(q.getQuestionId())});
-                }
-                if (questions.size() > 0) {
-                    displayQuestion(questionNum);
-                } else {
-                    clearInputs();
-                    questionNumberTextView.setText("No questions available");
-                }
-                Toast.makeText(this, "Question deleted successfully", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Log.e("DeleteError", "Error deleting question: ", e);
-                Toast.makeText(this, "Error deleting question: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            // Renumber the remaining questions
+            Cursor updateCursor = db.rawQuery("SELECT question_id FROM question WHERE quiz_id = ? AND question_number > ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
+            while (updateCursor.moveToNext()) {
+                int updateQuestionId = updateCursor.getInt(updateCursor.getColumnIndex("question_id"));
+                ContentValues values = new ContentValues();
+                values.put("question_number", questionNum);
+                db.update("question", values, "question_id=?", new String[]{String.valueOf(updateQuestionId)});
+                questionNum++;
             }
+            updateCursor.close();
+
+            // Adjust questionNum to the correct position
+            questionNum--;
+            if (questionNum < 1) {
+                questionNum = 1;
+            }
+
+            // Display the current question or the previous one if the last question was deleted
+            displayQuestion(questionNum);
         }
+        cursor.close();
     }
 
     private void showDeleteConfirmationDialog() {
@@ -345,7 +324,7 @@ private void displayQuestion(int questionNum) {
     private void completeQuiz() {
         // Logic to complete the quiz and navigate back to the teacher's dashboard
         Intent intent = new Intent(MCQEditorActivity.this, TeacherActivity.class);
-        intent.putExtra("userId", user_id); // Pass the user ID to the TeacherActivity
+        intent.putExtra("user_id", user_id); // Pass the user ID to the TeacherActivity
         startActivity(intent);
         finish(); 
     }

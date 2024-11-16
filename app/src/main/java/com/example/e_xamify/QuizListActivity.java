@@ -18,6 +18,7 @@ public class QuizListActivity extends AppCompatActivity {
     private List<Quiz> quizzes;
     private SQLiteDatabase db;
     private DatabaseHelper dbHelper;
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class QuizListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_list);
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getReadableDatabase();
-
+        user_id = getIntent().getIntExtra("user_id", -1);
         quizzesRecyclerView = findViewById(R.id.quizzesRecyclerView);
         quizzesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -38,7 +39,8 @@ public class QuizListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Quiz quiz) {
                 Intent intent = new Intent(QuizListActivity.this, EditQuizInterface.class);
-                intent.putExtra("quiz_id", (int) quiz.getQuizId()); // Ensure quiz_id is passed as int
+                intent.putExtra("quiz_id", (int) quiz.getQuizId());
+                intent.putExtra("user_id", user_id);
                 startActivity(intent);
             }
         });

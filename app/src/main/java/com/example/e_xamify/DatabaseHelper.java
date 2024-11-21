@@ -40,8 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Add one Teacher
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (2, 'teacher@mit.edu', 'teacherpass', 'Prof. John Smith', 2, '2023-06-15')");
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date, teacher_img_url) " +
-                "VALUES (2, 'Prof. John Smith', 'Mathematics', '2023-06-15', NULL)");
+        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_img_url) " +
+                "VALUES (2, 'Prof. John Smith', 'Mathematics', NULL)");
 
         // Add one Student
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
@@ -56,8 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "VALUES (1, 3, 1, '2023-09-01')");
 
         // Add one Module linked to Institution
-        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description) " +
-                "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics')");
+        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
+                "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics', 'math')");
 
         // Add one Quiz created by the Teacher
         db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, question_randomize, module_id, num_questions) " +
@@ -99,7 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE teacher (user_id INTEGER PRIMARY KEY, teacher_name TEXT, teacher_field TEXT, teacher_img_url TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");
         db.execSQL("CREATE TABLE question (question_id INTEGER PRIMARY KEY AUTOINCREMENT, question_number INTEGER, quiz_id INTEGER, question_text TEXT, question_type_id INTEGER, question_img_url TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(question_type_id) REFERENCES question_type(question_type_id),  UNIQUE(quiz_id, question_number)) ");
         db.execSQL("CREATE TABLE mcq (option_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, optionA TEXT, optionB TEXT, optionC TEXT, optionD TEXT, correctOption INTEGER, FOREIGN KEY(question_id) REFERENCES question(question_id))");
-        db.execSQL("CREATE TABLE assignment (assignment_id INTEGER PRIMARY KEY, quiz_id INTEGER, user_id INTEGER, status TEXT, attempt_number_left INTEGER, mark INTEGER, assignment_start_date TEXT, assignment_end_date TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(user_id) REFERENCES student(user_id))");
+        db.execSQL("CREATE TABLE assignment (assignment_id INTEGER PRIMARY KEY, quiz_id INTEGER, user_id INTEGER, status TEXT, attempt_number_left INTEGER, mark INTEGER, assignment_start_date TEXT, assignment_end_date TEXT, quiz_title TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(user_id) REFERENCES student(user_id))");
         db.execSQL("CREATE TABLE feedback (feedback_id INTEGER PRIMARY KEY, user_id INTEGER, assignment_id INTEGER, feedback_text TEXT, is_visible INTEGER, FOREIGN KEY(user_id) REFERENCES teacher(user_id), FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id))");
         db.execSQL("CREATE TABLE quiz_submission (submission_id INTEGER PRIMARY KEY, assignment_id INTEGER, question_id INTEGER, user_id INTEGER, selected_option_id INTEGER, answer_text TEXT, is_correct INTEGER, submission_date TEXT, FOREIGN KEY(assignment_id) REFERENCES assignment(assignment_id), FOREIGN KEY(question_id) REFERENCES question(question_id), FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(selected_option_id) REFERENCES mcq(option_id))");
         db.execSQL("CREATE TABLE student_module (student_module_ID INTEGER PRIMARY KEY, user_id INTEGER, module_id INTEGER, enrollment_date TEXT, FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(module_id) REFERENCES module(module_id))");

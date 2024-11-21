@@ -47,10 +47,8 @@ public class Institution {
         return institution_date_joined;
     }
 
+    @Override
     public String toString() {
-        return "Institution{" +
-                "user_id=" + user_id +
-                ", institution_name='" + institution_name + '\'' +
-                '}';
+        return institution_name;
     }
 }

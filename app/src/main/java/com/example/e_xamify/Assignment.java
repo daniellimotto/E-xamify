@@ -11,7 +11,19 @@ public class Assignment {
     private int mark;
     private Date assignment_start_date;
     private Date assignment_end_date;
+    private String quizTitle;
 
+    public Assignment(int assignment_id, int quiz_id, int user_id, String status, int attempt_number_left, int mark, Date assignment_start_date, Date assignment_end_date, String quizTitle) {
+        this.assignment_id = assignment_id;
+        this.quiz_id = quiz_id;
+        this.user_id = user_id;
+        this.status = status;
+        this.attempt_number_left = attempt_number_left;
+        this.mark = mark;
+        this.assignment_start_date = assignment_start_date;
+        this.assignment_end_date = assignment_end_date;
+        this.quizTitle = quizTitle;
+    }
     public Assignment(int assignment_id, int quiz_id, int user_id, String status, int attempt_number_left, int mark, Date assignment_start_date, Date assignment_end_date) {
         this.assignment_id = assignment_id;
         this.quiz_id = quiz_id;
@@ -55,9 +67,12 @@ public class Assignment {
         return assignment_end_date;
     }
 
+    public String getQuizTitle() {
+        return quizTitle;
+    }
+
+    @Override
     public String toString() {
-        return "Assignment{" +
-                "assignment_id=" + assignment_id +
-                '}';
+        return quizTitle;
     }
 }

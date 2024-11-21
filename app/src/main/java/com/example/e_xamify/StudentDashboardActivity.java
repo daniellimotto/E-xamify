@@ -12,20 +12,26 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+// Import the standalone classes
+import com.example.e_xamify.Institution;
+import com.example.e_xamify.Module;
+import com.example.e_xamify.Assignment;
 
 public class StudentDashboardActivity extends AppCompatActivity {
     private static final String TAG = "StudentDashboardActivity";
     private Spinner institutionSpinner;
     private Spinner moduleSpinner;
-    private ListView quizListView;
+    private ListView assignmentListView; // Changed from quizListView
     private DatabaseHelper dbHelper;
     private int user_id;
     private Button viewPastResultsButton;
+    private List<Assignment> assignmentList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +50,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         institutionSpinner = findViewById(R.id.institutionSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner);
-        quizListView = findViewById(R.id.quizListView);
+        assignmentListView = findViewById(R.id.quizListView); // Reuse the same ListView ID
         viewPastResultsButton = findViewById(R.id.viewPastResultsButton);
+
 
         loadInstitutions();
 
@@ -53,7 +60,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Institution selectedInstitution = (Institution) parent.getItemAtPosition(position);
-                loadModules(selectedInstitution.id);
+                loadModules(selectedInstitution.getUserId());
             }
 
             @Override
@@ -66,7 +73,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Module selectedModule = (Module) parent.getItemAtPosition(position);
-                loadQuizzes(selectedModule.id);
+                loadAssignments(selectedModule.getModuleId());
             }
 
             @Override
@@ -74,8 +81,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 // Do nothing
             }
         });
-
-        // Set up the "View Past Results" button to navigate to PastResultsActivity
         viewPastResultsButton.setOnClickListener(v -> {
             Intent intent = new Intent(StudentDashboardActivity.this, PastResultsActivity.class);
             intent.putExtra("user_id", user_id);
@@ -97,9 +102,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
             List<Institution> institutions = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
+                int id = cursor.getInt(0);
                 String name = cursor.getString(1);
-                institutions.add(new Institution(id, name));
+                institutions.add(new Institution(id, name, null, null, null, null, null)); // Adjust constructor as needed
             }
 
             if (institutions.isEmpty()) {
@@ -124,7 +129,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void loadModules(long institutionId) {
+    private void loadModules(int institutionId) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
@@ -136,9 +141,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
             List<Module> modules = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
+                int id = cursor.getInt(0);
                 String name = cursor.getString(1);
-                modules.add(new Module(id, name));
+                modules.add(new Module(id, name, institutionId));
             }
 
             ArrayAdapter<Module> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, modules);
@@ -157,32 +162,42 @@ public class StudentDashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void loadQuizzes(long moduleId) {
+    private void loadAssignments(long moduleId) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
             db = dbHelper.getReadableDatabase();
             cursor = db.rawQuery(
-                    "SELECT quiz_id, quiz_title FROM quiz WHERE module_id = ?",
-                    new String[]{String.valueOf(moduleId)}
+                    "SELECT a.assignment_id, a.quiz_id, a.user_id, a.status, a.attempt_number_left, a.mark, a.assignment_start_date, a.assignment_end_date, q.quiz_title " +
+                            "FROM assignment a " +
+                            "JOIN quiz q ON a.quiz_id = q.quiz_id " +
+                            "WHERE a.user_id = ? AND q.module_id = ?",
+                    new String[]{String.valueOf(user_id), String.valueOf(moduleId)}
             );
-            List<Quiz> quizzes = new ArrayList<>();
+            assignmentList.clear();
 
             while (cursor.moveToNext()) {
-                int id = cursor.getInt(0);
-                String title = cursor.getString(1);
-                quizzes.add(new Quiz(id, title));
+                int assignmentId = cursor.getInt(0);
+                int quizId = cursor.getInt(1);
+                int userId = cursor.getInt(2);
+                String status = cursor.getString(3);
+                int attemptNumberLeft = cursor.getInt(4);
+                int mark = cursor.getInt(5);
+                Date startDate = new Date(cursor.getLong(6));
+                Date endDate = new Date(cursor.getLong(7));
+                String quizTitle = cursor.getString(8);
+                assignmentList.add(new Assignment(assignmentId, quizId, userId, status, attemptNumberLeft, mark, startDate, endDate, quizTitle));
             }
 
-            ArrayAdapter<Quiz> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, quizzes);
-            quizListView.setAdapter(adapter);
+            ArrayAdapter<Assignment> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, assignmentList);
+            assignmentListView.setAdapter(adapter);
 
-            quizListView.setOnItemClickListener((parent, view, position, id) -> {
-                Quiz selectedQuiz = (Quiz) parent.getItemAtPosition(position);
-                startQuiz(selectedQuiz.id);
+            assignmentListView.setOnItemClickListener((parent, view, position, id) -> {
+                Assignment selectedAssignment = assignmentList.get(position);
+                startAssignment(selectedAssignment.getAssignmentId());
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error loading quizzes: " + e.getMessage(), e);
+            Log.e(TAG, "Error loading assignments: " + e.getMessage(), e);
             handleDatabaseError(e);
         } finally {
             if (cursor != null) {
@@ -194,9 +209,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void startQuiz(int quizId) {
-        Intent intent = new Intent(this, QuizDetailsActivity.class);
-        intent.putExtra("quizId", quizId);
+    private void startAssignment(int assignmentId) {
+        Intent intent = new Intent(this, AssignmentDetailsActivity.class);
+        intent.putExtra("assignmentId", assignmentId);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }
@@ -205,50 +220,5 @@ public class StudentDashboardActivity extends AppCompatActivity {
         Log.e(TAG, "Database error: " + e.getMessage(), e);
         Toast.makeText(this, "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
         finish();
-    }
-
-    private static class Institution {
-        long id;
-        String name;
-
-        Institution(long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-    private static class Module {
-        long id;
-        String name;
-
-        Module(long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-    private static class Quiz {
-        int id;
-        String title;
-
-        Quiz(int id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-
-        @Override
-        public String toString() {
-            return title;
-        }
     }
 }

@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.e_xamify"
-    compileSdk = 34
+    compileSdkVersion(rootProject.extra["compileSdkVersion"] as Int)
 
     defaultConfig {
         applicationId = "com.example.e_xamify"

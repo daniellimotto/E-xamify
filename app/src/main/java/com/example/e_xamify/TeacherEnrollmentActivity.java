@@ -64,7 +64,7 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
             long institutionuser_id = cursor.getLong(0);
 
             // Check if the user is already enrolled in this institution
-            Cursor checkCursor = db.rawQuery("SELECT * FROM teacher_institution WHERE user_id = ? AND institution_user_id = ?",
+            Cursor checkCursor = db.rawQuery("SELECT * FROM teacher_institution WHERE teacher_id = ? AND institution_id = ?",
                     new String[]{String.valueOf(user_id), String.valueOf(institutionuser_id)});
 
             if (checkCursor.getCount() > 0) {
@@ -77,7 +77,7 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
 
             // Insert the enrollment record
             ContentValues values = new ContentValues();
-            values.put("student_id", user_id);
+            values.put("teacher_id", user_id);
             values.put("institution_id", institutionuser_id);
             values.put("enrollment_date", getCurrentDate());
 

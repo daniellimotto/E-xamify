@@ -8,10 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     private ListView quizListView;
     private DatabaseHelper dbHelper;
     private int user_id;
+    private Button viewPastResultsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         institutionSpinner = findViewById(R.id.institutionSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner);
         quizListView = findViewById(R.id.quizListView);
+        viewPastResultsButton = findViewById(R.id.viewPastResultsButton);
 
         loadInstitutions();
 
@@ -69,6 +74,13 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 // Do nothing
             }
         });
+
+        // Set up the "View Past Results" button to navigate to PastResultsActivity
+        viewPastResultsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentDashboardActivity.this, PastResultsActivity.class);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
+        });
     }
 
     private void loadInstitutions() {
@@ -93,8 +105,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             if (institutions.isEmpty()) {
                 Log.w(TAG, "No institutions found for user ID: " + user_id);
                 Toast.makeText(this, "You are not enrolled in any institutions. Please enroll first.", Toast.LENGTH_LONG).show();
-                // Instead of finishing the activity, you might want to show a message or redirect to an enrollment page
-                // finish();
                 return;
             }
 
@@ -113,9 +123,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 
     private void loadModules(long institutionId) {
         SQLiteDatabase db = null;
@@ -200,7 +207,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
         finish();
     }
 
-    // Inner classes for spinner items
     private static class Institution {
         long id;
         String name;

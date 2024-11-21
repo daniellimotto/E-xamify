@@ -12,7 +12,8 @@ public class StudentActivity extends AppCompatActivity {
 
     private TextView welcomeText;
     private Button dashboardButton;
-    private Button enrollButton;
+    private Button enrollInstitutionButton;
+    private Button enrollModuleButton;
     private int user_id;
 
     @Override
@@ -23,7 +24,8 @@ public class StudentActivity extends AppCompatActivity {
         // Initialize views
         welcomeText = findViewById(R.id.welcomeText);
         dashboardButton = findViewById(R.id.dashboardButton);
-        enrollButton = findViewById(R.id.enrollButton);
+        enrollInstitutionButton = findViewById(R.id.enrollInstitutionButton);
+        enrollModuleButton = findViewById(R.id.enrollModuleButton);
 
         // Get user ID from intent
         user_id = getIntent().getIntExtra("user_id", -1);
@@ -37,22 +39,22 @@ public class StudentActivity extends AppCompatActivity {
         welcomeText.setText("Welcome, Student!");
 
         // Set up button click listeners
-        dashboardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StudentActivity.this, StudentDashboardActivity.class);
-                intent.putExtra("user_id", user_id);
-                startActivity(intent);
-            }
+        dashboardButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentActivity.this, StudentDashboardActivity.class);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
         });
 
-        enrollButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StudentActivity.this, StudentEnrollmentActivity.class);
-                intent.putExtra("user_id", user_id);
-                startActivity(intent);
-            }
+        enrollInstitutionButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentActivity.this, StudentEnrollmentActivity.class);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
+        });
+
+        enrollModuleButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentActivity.this, StudentEnrollModuleActivity.class);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
         });
     }
 

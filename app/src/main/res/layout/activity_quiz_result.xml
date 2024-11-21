@@ -18,12 +18,36 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/feedbackText"
+            android:id="@+id/scoreText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Feedback:"
+            android:text="Score:"
             android:textSize="18sp"
-            android:paddingTop="16dp" />
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/timeUsedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time Used:"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/totalQuestionsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Questions:"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/correctAnswersText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Correct Answers:"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "examify.db";
@@ -19,36 +20,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (2, 'Coursework', 'Daily graded coursework')");
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (3, 'Exam', 'Graded exam')");
 
-        // Insert modules
         db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (1, 'MTH001', 'Math basics')");
         db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (2, 'SCI001', 'Basic science concepts')");
         db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (3, 'CAN001', 'Mobile Computing')");
         db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (0, 'Others', 'Unclassified Module')");
 
-        // Insert user roles
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (1, 'Institution', 'Roles identification for institutions')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (2, 'Teacher', 'Roles identification for teachers')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (3, 'Student', 'Roles identification for students')");
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) VALUES (1, 'teacher@example.com', 'password', 'John Doe', 1, '2023-01-01')");
+
         db.execSQL("INSERT INTO question_type (question_type_id, type_name, type_description) VALUES (1, 'MCQ', 'Multiple Choice Question')");
 
-        // Insert institution user
+        // Add one Institution
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (100, '1', '1', 'MIT', 1, '2024-01-01')");
-
-        // Insert institution details
+                "VALUES (1, 'admin@mit.edu', 'adminpass', 'MIT Admin', 1, '2023-01-01')");
         db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
-                "VALUES (100, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MIT2024ENROLLMENT123', '2024-01-01')");
+                "VALUES (1, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MITKEY2023', '2023-01-01')");
 
-        // Insert teacher user
+        // Add one Teacher
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (101, '2', '2', 'John Smith', 2, '2024-01-01')");
+                "VALUES (2, 'teacher@mit.edu', 'teacherpass', 'Prof. John Smith', 2, '2023-06-15')");
+        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date, teacher_img_url) " +
+                "VALUES (2, 'Prof. John Smith', 'Mathematics', '2023-06-15', NULL)");
 
-        // Insert teacher details
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_joined_date) " +
-                "VALUES (101, 'Prof. John Smith', 'Computer Science', '2024-01-01')");
+        // Add one Student
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (3, 'student@mit.edu', 'studentpass', 'Alice Brown', 3, '2023-09-01')");
+        db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
+                "VALUES (3, 'Alice Brown', NULL)");
 
+        // Link Teacher and Student to Institution
+        db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
+                "VALUES (1, 2, 1, '2023-06-15')");
+        db.execSQL("INSERT INTO student_institution (student_institution_id, student_id, institution_id, enrollment_date) " +
+                "VALUES (1, 3, 1, '2023-09-01')");
+
+        // Add one Module linked to Institution
+        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description) " +
+                "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics')");
+
+        // Add one Quiz created by the Teacher
+        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, question_randomize, module_id, num_questions) " +
+                "VALUES (1, 1, 'Math Quiz 101', 30, 'Answer all questions carefully.', 3, 2, 1, 0, 1, 4, 10)");
+
+        // Add Questions for the Quiz
+        db.execSQL("INSERT INTO question (question_id, question_number, quiz_id, question_text, question_type_id, question_img_url) " +
+                "VALUES (1, 1, 1, 'What is 2 + 2?', 1, NULL)");
+        db.execSQL("INSERT INTO mcq (option_id, question_id, optionA, optionB, optionC, optionD, correctOption) " +
+                "VALUES (1, 1, '3', '4', '5', '6', 2)");
+
+        // Add Quiz Attempt by Student
+        db.execSQL("INSERT INTO quiz_attempt (attempt_id, quiz_id, user_id, start_time, end_time, score, status) " +
+                "VALUES (1, 1, 3, '2023-09-15 10:00:00', '2023-09-15 10:30:00', 100, 'completed')");
+
+        // Add Submission for Quiz Attempt
+        db.execSQL("INSERT INTO quiz_submission (submission_id, assignment_id, question_id, user_id, selected_option_id, answer_text, is_correct, submission_date) " +
+                "VALUES (1, 1, 1, 3, 2, NULL, 1, '2023-09-15 10:15:00')");
+
+        // Add Feedback for Student Attempt
+        db.execSQL("INSERT INTO feedback (feedback_id, user_id, assignment_id, feedback_text, is_visible) " +
+                "VALUES (1, 2, 1, 'Great job! Perfect score.', 1)");
+
+        Log.d("DatabaseHelper", "Database seeded successfully with a single institution, teacher, student, quiz, and related data!");
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {

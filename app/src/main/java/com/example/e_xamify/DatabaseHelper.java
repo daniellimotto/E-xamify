@@ -49,6 +49,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
                 "VALUES (3, 'Alice Brown', NULL)");
 
+        //kenz seeder
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (4, '3', '3', '3', 3, '2024-11-22')");
+        db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
+                "VALUES (4, '3', NULL)");
+        db.execSQL("INSERT INTO student_institution (student_institution_id, student_id, institution_id, enrollment_date) " +
+                "VALUES (2, 4, 6, '2024-11-22')");
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (5, '5', '5', '5', 2, '2024-11-22')");
+        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_img_url) " +
+                "VALUES (5, '5', 'Mathematics', NULL)");
+        db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
+                "VALUES (2, 5, 6, '2024-11-22')");
+        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
+                "VALUES (6, '6', '6', '6', 1, '2024-11-22')");
+        db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
+                "VALUES (6, 'university wow', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'WOWUNI', '2024-11-22')");
+        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
+                "VALUES (5, 6, 'Wow Module', 'Wow Desc', 'wow')");
+
         // Link Teacher and Student to Institution
         db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
                 "VALUES (1, 2, 1, '2023-06-15')");

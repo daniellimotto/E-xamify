@@ -9,71 +9,66 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class QuizDetailsActivity extends AppCompatActivity {
+public class AssignmentDetailsActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
-    private int quizId;
+    private int assignmentId;
     private int user_id;
     private TextView quizTitleText;
     private TextView instructionsText;
-    private TextView durationText;
     private TextView attemptsText;
-    private Button startQuizButton;
+    private Button startAssignmentButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz_details);
+        setContentView(R.layout.activity_assignment_details);
 
-        // Initialize views
         quizTitleText = findViewById(R.id.quizTitleText);
         instructionsText = findViewById(R.id.instructionsText);
-        durationText = findViewById(R.id.durationText);
         attemptsText = findViewById(R.id.attemptsText);
-        startQuizButton = findViewById(R.id.startQuizButton);
+        startAssignmentButton = findViewById(R.id.startAssignmentButton);
 
-        // Get quiz ID and user ID from intent
-        quizId = getIntent().getIntExtra("quizId", -1);
+        assignmentId = getIntent().getIntExtra("assignmentId", -1);
         user_id = getIntent().getIntExtra("user_id", -1);
 
-        if (quizId == -1 || user_id == -1) {
-            Toast.makeText(this, "Error loading quiz details", Toast.LENGTH_SHORT).show();
+        if (assignmentId == -1 || user_id == -1) {
+            Toast.makeText(this, "Error loading assignment details", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         dbHelper = new DatabaseHelper(this);
-        loadQuizDetails();
+        loadAssignmentDetails();
 
-        startQuizButton.setOnClickListener(v -> startQuiz());
+        startAssignmentButton.setOnClickListener(v -> startAssignment());
     }
 
-    private void loadQuizDetails() {
+    private void loadAssignmentDetails() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT quiz_title, instructions, quiz_duration, quiz_attempts FROM quiz WHERE quiz_id = ?",
-                new String[]{String.valueOf(quizId)}
+                "SELECT q.quiz_title, q.instructions, a.attempt_number_left FROM quiz q " +
+                        "JOIN assignment a ON q.quiz_id = a.quiz_id WHERE a.assignment_id = ?",
+                new String[]{String.valueOf(assignmentId)}
         );
 
         if (cursor.moveToFirst()) {
             String title = cursor.getString(0);
             String instructions = cursor.getString(1);
-            int duration = cursor.getInt(2);
-            int attempts = cursor.getInt(3);
+            int attempts = cursor.getInt(2);
 
             quizTitleText.setText(title);
             instructionsText.setText(instructions);
-            durationText.setText(String.format("Duration: %d minutes", duration));
-            attemptsText.setText(attempts == -1 ? "Attempts: Unlimited" :
-                    String.format("Attempts: %d", attempts));
+            attemptsText.setText("Attempts left: " + attempts);
         }
         cursor.close();
     }
 
-    private void startQuiz() {
-        Intent intent = new Intent(this, QuizTakingActivity.class);
-        intent.putExtra("quizId", quizId);
+    private void startAssignment() {
+
+        Intent intent = new Intent(this, AssignmentTakingActivity.class);
+        intent.putExtra("assignmentId", assignmentId);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
-        finish();
+
     }
 }

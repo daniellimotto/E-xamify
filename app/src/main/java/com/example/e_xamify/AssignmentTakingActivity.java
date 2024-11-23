@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -24,6 +25,9 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private Button nextButton;
     private Button previousButton;
     private Button submitButton;
+    private TextView timerText;
+    private CountDownTimer countDownTimer;
+    private long timeLeftInMillis;
     private List<Mcq> questions;
     private int currentQuestionIndex = 0;
     private DatabaseHelper dbHelper;
@@ -48,6 +52,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         initializeViews();
         loadQuestions();
         showQuestion(currentQuestionIndex);
+        startTimer();
     }
 
     private void initializeViews() {
@@ -56,6 +61,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         previousButton = findViewById(R.id.previousButton);
         submitButton = findViewById(R.id.submitButton);
+        timerText = findViewById(R.id.timerText); // Add a TextView in your layout for the timer
 
         nextButton.setOnClickListener(v -> {
             saveSelectedOption();
@@ -154,13 +160,18 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         Mcq currentQuestion = questions.get(currentQuestionIndex);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("assignment_id", assignmentId);
-        values.put("question_id", currentQuestion.getQuestionId());
         values.put("selected_option_id", selectedOptionId);
-        values.put("user_id", user_id);
-        if (selectedOptionId == currentQuestion.getCorrectOption()) values.put("is_correct", 1);
+        values.put("is_correct", selectedOptionId == currentQuestion.getCorrectOption() ? 1 : 0);
 
-        db.insertWithOnConflict("quiz_submission", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?", 
+            new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
+        
+        if (rowsAffected == 0) {
+            values.put("assignment_id", assignmentId);
+            values.put("question_id", currentQuestion.getQuestionId());
+            values.put("user_id", user_id);
+            db.insert("quiz_submission", null, values);
+        }
     }
 
     private void showNextQuestion() {
@@ -177,6 +188,39 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         }
     }
 
+    private void startTimer() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT quiz_duration FROM quiz WHERE quiz_id = ?", new String[]{String.valueOf(quizId)});
+        int quizDuration = 0;
+        if (cursor.moveToFirst()) {
+            quizDuration = cursor.getInt(0);
+        }
+        cursor.close();
+        timeLeftInMillis = quizDuration * 60 * 1000L; // Convert minutes to milliseconds
+
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+                submitAssignment();
+            }
+        }.start();
+    }
+
+    private void updateTimer() {
+        int minutes = (int) (timeLeftInMillis / 1000) / 60;
+        int seconds = (int) (timeLeftInMillis / 1000) % 60;
+
+        String timeFormatted = String.format("%02d:%02d", minutes, seconds);
+        timerText.setText(timeFormatted);
+    }
+
+
     private void submitAssignment() {
         // Logic to submit the assignment
         Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show();
@@ -185,5 +229,16 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         intent.putExtra("user_id", user_id);
         startActivity(intent);
         finish();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }

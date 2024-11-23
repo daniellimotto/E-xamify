@@ -5,10 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
@@ -20,6 +23,7 @@ import java.util.Random;
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText emailInput, passwordInput, confirmPasswordInput, usernameInput;
+    private TextView passwordWarning;
     private EditText institutionNameInput, institutionPhoneInput, institutionAddressInput;
     private EditText teacherNameInput, teacherFieldInput;
     private EditText studentNameInput;
@@ -32,6 +36,23 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+
+        Spinner roleSpinner = findViewById(R.id.roleSpinner);
+
+        // Populate options once
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Student", "Teacher", "Institution"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        roleSpinner.setAdapter(adapter);
+
+        // Set click listener for sign up
+        findViewById(R.id.signUpButton).setOnClickListener(v -> {
+            // Handle sign-up logic here
+        });
 
         dbHelper = new DatabaseHelper(this);
         roleIdMap = new HashMap<>();
@@ -48,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
         teacherNameInput = findViewById(R.id.teacherNameInput);
         teacherFieldInput = findViewById(R.id.teacherFieldInput);
         studentNameInput = findViewById(R.id.studentNameInput);
+        passwordWarning = findViewById(R.id.passwordWarning);
 
         loadUserRoles();
 
@@ -107,12 +129,27 @@ public class SignUpActivity extends AppCompatActivity {
         String password = passwordInput.getText().toString().trim();
         String confirmPassword = confirmPasswordInput.getText().toString().trim();
         String username = usernameInput.getText().toString().trim();
+        String studentName = studentNameInput.getText().toString().trim();
+        String teacherName = teacherNameInput.getText().toString().trim();
+        String teacherField = teacherFieldInput.getText().toString().trim();
+        String institutionName = institutionNameInput.getText().toString().trim();
+        String institutionPhone = institutionPhoneInput.getText().toString().trim();
+        String institutionAddress = institutionAddressInput.getText().toString().trim();
 
-        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
+//        Set requirements for accepted passwords
+        String passwordRegex = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*\\d).+$";
+
+//       Validate password and show/hide the warning
+        if (!password.matches(passwordRegex)) {
+            passwordWarning.setVisibility(View.VISIBLE);
             return;
         }
 
+//      if the default inputs are empty
+        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
+            Toast.makeText(this, "default Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
             return;
@@ -121,6 +158,36 @@ public class SignUpActivity extends AppCompatActivity {
         String userRole = getSelectedUserRole();
         if (userRole == null) {
             Toast.makeText(this, "Please select a user role.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Student".equals(userRole) && studentName.isEmpty()) {
+            Toast.makeText(this, "ST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Student".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@student\\.cn$")) {
+            Toast.makeText(this, "Please enter valid student email.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Teacher".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@teacher\\.cn$")) {
+            Toast.makeText(this, "Please enter valid teacher email.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Institution".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@institute\\.cn$")) {
+            Toast.makeText(this, "Please enter valid institution email.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Teacher".equals(userRole) && teacherName.isEmpty() || teacherField.isEmpty()) {
+            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Institution".equals(userRole) && institutionName.isEmpty() || institutionPhone.isEmpty() || institutionAddress.isEmpty()) {
+            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 

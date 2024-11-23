@@ -25,12 +25,14 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private Button nextButton;
     private Button previousButton;
     private Button submitButton;
-    private TextView timerText;
-    private CountDownTimer countDownTimer;
-    private long timeLeftInMillis;
     private List<Mcq> questions;
     private int currentQuestionIndex = 0;
     private DatabaseHelper dbHelper;
+    private long timeLeftInMillis;
+    private CountDownTimer countDownTimer;
+    private TextView timerText;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         initializeViews();
         loadQuestions();
         showQuestion(currentQuestionIndex);
-        startTimer();
     }
 
     private void initializeViews() {
@@ -61,7 +62,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         previousButton = findViewById(R.id.previousButton);
         submitButton = findViewById(R.id.submitButton);
-        timerText = findViewById(R.id.timerText); // Add a TextView in your layout for the timer
 
         nextButton.setOnClickListener(v -> {
             saveSelectedOption();
@@ -147,7 +147,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT selected_option_id FROM quiz_submission WHERE assignment_id = ? AND question_id = ?", new String[]{String.valueOf(assignmentId), String.valueOf(questionId)});
         if (cursor.moveToFirst()) {
-            int selectedOptionId = cursor.getInt(0) + 1;
+            int selectedOptionId = cursor.getInt(0) ;
             ((RadioButton) optionsGroup.getChildAt(selectedOptionId)).setChecked(true);
         }
         cursor.close();
@@ -161,11 +161,11 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("selected_option_id", selectedOptionId);
-        values.put("is_correct", selectedOptionId == currentQuestion.getCorrectOption() ? 1 : 0);
+        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption() - 1) ? 1 : 0);
 
-        int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?", 
-            new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
-        
+        int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?",
+                new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
+
         if (rowsAffected == 0) {
             values.put("assignment_id", assignmentId);
             values.put("question_id", currentQuestion.getQuestionId());
@@ -196,7 +196,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             quizDuration = cursor.getInt(0);
         }
         cursor.close();
-        timeLeftInMillis = quizDuration * 60 * 1000L; // Convert minutes to milliseconds
+        timeLeftInMillis = quizDuration * 60 * 1000; // Convert minutes to milliseconds
 
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
@@ -220,7 +220,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         timerText.setText(timeFormatted);
     }
 
-
     private void submitAssignment() {
         // Logic to submit the assignment
         Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show();
@@ -229,16 +228,5 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         intent.putExtra("user_id", user_id);
         startActivity(intent);
         finish();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
     }
 }

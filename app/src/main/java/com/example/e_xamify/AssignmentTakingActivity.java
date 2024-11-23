@@ -91,7 +91,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private void loadQuestions() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT q.question_id, q.question_text, m.optionA, m.optionB, m.optionC, m.optionD, m.correctOption " +
+                "SELECT q.question_id, q.question_text, m.optionA, m.optionB, m.optionC, m.optionD, m.correctOption, q.question_number " +
                         "FROM question q " +
                         "JOIN mcq m ON q.question_id = m.question_id " +
                         "WHERE q.quiz_id = ?",
@@ -106,7 +106,8 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             String optionC = cursor.getString(4);
             String optionD = cursor.getString(5);
             int correctOption = cursor.getInt(6);
-            questions.add(new Mcq(id, quizId, 0, text, 0, null, optionA, optionB, optionC, optionD, correctOption));
+            int question_number = cursor.getInt(7);
+            questions.add(new Mcq(id, quizId,question_number, text, 0, null, optionA, optionB, optionC, optionD, correctOption));
         }
         cursor.close();
     }

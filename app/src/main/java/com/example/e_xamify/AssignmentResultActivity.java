@@ -10,6 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.content.Intent;
+import android.widget.Button;
+
+
 public class AssignmentResultActivity extends AppCompatActivity {
     private int assignmentId;
     private int user_id;
@@ -32,6 +36,14 @@ public class AssignmentResultActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         resultText = findViewById(R.id.resultText);
         calculateAndDisplayScore();
+
+        Button returnToDashboardButton = findViewById(R.id.returnToDashboardButton);
+        returnToDashboardButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AssignmentResultActivity.this, StudentDashboardActivity.class);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void calculateAndDisplayScore() {

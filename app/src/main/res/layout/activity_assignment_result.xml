@@ -13,4 +13,11 @@
         android:text="Your Score: 85%"
         android:textSize="24sp"
         android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/returnToDashboardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Return to Dashboard"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

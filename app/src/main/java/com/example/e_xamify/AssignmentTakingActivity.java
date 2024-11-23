@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -54,6 +55,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         initializeViews();
         loadQuestions();
         showQuestion(currentQuestionIndex);
+        startTimer();
     }
 
     private void initializeViews() {
@@ -62,6 +64,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         previousButton = findViewById(R.id.previousButton);
         submitButton = findViewById(R.id.submitButton);
+        timerText = findViewById(R.id.timerText); // Ensure this line is present
 
         nextButton.setOnClickListener(v -> {
             saveSelectedOption();
@@ -88,7 +91,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private void loadQuestions() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT q.question_id, q.question_text, m.optionA, m.optionB, m.optionC, m.optionD, m.correctOption " +
+                "SELECT q.question_id, q.question_text, m.optionA, m.optionB, m.optionC, m.optionD, m.correctOption, q.question_number " +
                         "FROM question q " +
                         "JOIN mcq m ON q.question_id = m.question_id " +
                         "WHERE q.quiz_id = ?",
@@ -103,7 +106,8 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             String optionC = cursor.getString(4);
             String optionD = cursor.getString(5);
             int correctOption = cursor.getInt(6);
-            questions.add(new Mcq(id, quizId, 0, text, 0, null, optionA, optionB, optionC, optionD, correctOption));
+            int question_number = cursor.getInt(7);
+            questions.add(new Mcq(id, quizId,question_number, text, 0, null, optionA, optionB, optionC, optionD, correctOption));
         }
         cursor.close();
     }
@@ -154,14 +158,14 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     }
 
     private void saveSelectedOption() {
-        int selectedOptionId = optionsGroup.indexOfChild(findViewById(optionsGroup.getCheckedRadioButtonId()));
+        int selectedOptionId = optionsGroup.indexOfChild(findViewById(optionsGroup.getCheckedRadioButtonId())) + 1;
         if (selectedOptionId == -1) return;
 
         Mcq currentQuestion = questions.get(currentQuestionIndex);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("selected_option_id", selectedOptionId);
-        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption() - 1) ? 1 : 0);
+        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption()) ? 1 : 0);
 
         int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?",
                 new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
@@ -201,6 +205,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                Log.d("TIMER", "onTick: " + millisUntilFinished);
                 timeLeftInMillis = millisUntilFinished;
                 updateTimer();
             }
@@ -213,10 +218,11 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     }
 
     private void updateTimer() {
-        int minutes = (int) (timeLeftInMillis / 1000) / 60;
+        int hours = (int) (timeLeftInMillis / 1000) / 3600;
+        int minutes = (int) ((timeLeftInMillis / 1000) % 3600) / 60;
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
 
-        String timeFormatted = String.format("%02d:%02d", minutes, seconds);
+        String timeFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         timerText.setText(timeFormatted);
     }
 

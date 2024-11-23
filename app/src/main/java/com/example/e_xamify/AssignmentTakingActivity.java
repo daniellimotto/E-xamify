@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -27,6 +28,11 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private List<Mcq> questions;
     private int currentQuestionIndex = 0;
     private DatabaseHelper dbHelper;
+    private long timeLeftInMillis;
+    private CountDownTimer countDownTimer;
+    private TextView timerText;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +147,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT selected_option_id FROM quiz_submission WHERE assignment_id = ? AND question_id = ?", new String[]{String.valueOf(assignmentId), String.valueOf(questionId)});
         if (cursor.moveToFirst()) {
-            int selectedOptionId = cursor.getInt(0) + 1;
+            int selectedOptionId = cursor.getInt(0) ;
             ((RadioButton) optionsGroup.getChildAt(selectedOptionId)).setChecked(true);
         }
         cursor.close();
@@ -154,13 +160,18 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         Mcq currentQuestion = questions.get(currentQuestionIndex);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("assignment_id", assignmentId);
-        values.put("question_id", currentQuestion.getQuestionId());
         values.put("selected_option_id", selectedOptionId);
-        values.put("user_id", user_id);
-        if (selectedOptionId == currentQuestion.getCorrectOption()) values.put("is_correct", 1);
+        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption() - 1) ? 1 : 0);
 
-        db.insertWithOnConflict("quiz_submission", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?",
+                new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
+
+        if (rowsAffected == 0) {
+            values.put("assignment_id", assignmentId);
+            values.put("question_id", currentQuestion.getQuestionId());
+            values.put("user_id", user_id);
+            db.insert("quiz_submission", null, values);
+        }
     }
 
     private void showNextQuestion() {
@@ -175,6 +186,38 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             currentQuestionIndex--;
             showQuestion(currentQuestionIndex);
         }
+    }
+
+    private void startTimer() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT quiz_duration FROM quiz WHERE quiz_id = ?", new String[]{String.valueOf(quizId)});
+        int quizDuration = 0;
+        if (cursor.moveToFirst()) {
+            quizDuration = cursor.getInt(0);
+        }
+        cursor.close();
+        timeLeftInMillis = quizDuration * 60 * 1000; // Convert minutes to milliseconds
+
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+                submitAssignment();
+            }
+        }.start();
+    }
+
+    private void updateTimer() {
+        int minutes = (int) (timeLeftInMillis / 1000) / 60;
+        int seconds = (int) (timeLeftInMillis / 1000) % 60;
+
+        String timeFormatted = String.format("%02d:%02d", minutes, seconds);
+        timerText.setText(timeFormatted);
     }
 
     private void submitAssignment() {

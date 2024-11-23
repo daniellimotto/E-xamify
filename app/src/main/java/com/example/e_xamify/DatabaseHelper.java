@@ -68,6 +68,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "VALUES (6, 'university wow', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'WOWUNI', '2024-11-22')");
         db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
                 "VALUES (5, 6, 'Wow Module', 'Wow Desc', 'wow')");
+        db.execSQL("INSERT INTO student_module (student_module_ID, user_id, module_id, enrollment_date)" +
+                "VALUES (1, 4, 5, NULL)");
+        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, question_randomize, module_id, num_questions)" +
+                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 0, 0, 5, 3 )");
+        db.execSQL("INSERT INTO assignment(assignment_id, quiz_id, user_id, status, attempt_number_left, mark, assignment_start_date, assignment_end_date, quiz_title)" +
+                "VALUES (1, 2, 4, 'pending', 1, NULL, 2024, 2026, NULL)");
+        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
+                "VALUES (2, 2, 1, 2, 3, 4, 2)");
+        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
+                "VALUES (3, 3, 1, 2, 3, 4, 1)");
+        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
+                "VALUES (4, 4, 1, 2, 3, 4, 4)");
+        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
+                "VALUES (2, 1, 2, '1+1', 1, NULL)");
+        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
+                "VALUES (3, 2, 2, '1+0', 1, NULL)");
+        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
+                "VALUES (4, 3, 2, '2+2', 1, NULL)");
 
         // Link Teacher and Student to Institution
         db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
@@ -112,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE user_role (user_role_id INTEGER PRIMARY KEY, role_name TEXT, role_description TEXT)");
         db.execSQL("CREATE TABLE user (user_id INTEGER PRIMARY KEY, user_email TEXT, user_password TEXT, user_name TEXT, user_role_id INTEGER, joined_date TEXT, FOREIGN KEY(user_role_id) REFERENCES user_role(user_role_id))");
         db.execSQL("CREATE TABLE institution (user_id INTEGER PRIMARY KEY, institution_name TEXT, institution_phone TEXT, institution_address TEXT, institution_enrolment_key TEXT UNIQUE, institution_date_joined TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");
-        db.execSQL("CREATE TABLE module (module_id INTEGER PRIMARY KEY, institution_id INTEGER, module_name TEXT, module_description TEXT, FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
+        db.execSQL("CREATE TABLE module (module_id INTEGER PRIMARY KEY, institution_id INTEGER, module_name TEXT, module_description TEXT, module_key TEXT UNIQUE, FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
         db.execSQL("CREATE TABLE quiz_type (quiz_type_id INTEGER PRIMARY KEY, type_name TEXT, type_description TEXT)");
         db.execSQL("CREATE TABLE question_type (question_type_id INTEGER PRIMARY KEY, type_name TEXT, type_description TEXT)");
         db.execSQL("CREATE TABLE student (user_id INTEGER PRIMARY KEY, student_name TEXT, student_img_url TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");

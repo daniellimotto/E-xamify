@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
+
     <TextView
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
@@ -27,22 +28,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle" />
 
+    <!-- Password Warning Text -->
+
+
+    <TextView
+        android:id="@+id/passwordWarning"
+        android:layout_width="326dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="225dp"
+        android:text="Password must include at least one capital letter, one symbol, and one number."
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userRoleLayout" />
+
     <EditText
         android:id="@+id/passwordInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginTop="48dp"
         android:hint="Enter Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/emailInput" />
 
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/passwordInput"-->
+    <!--        android:layout_width="377dp"-->
+    <!--        android:layout_height="46dp"-->
+    <!--        android:hint="Enter Password"-->
+    <!--        android:inputType="textPassword"-->
+
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.221" />-->
+
     <EditText
         android:id="@+id/confirmPasswordInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginTop="4dp"
         android:hint="Confirm Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,6 +88,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginTop="24dp"
         android:hint="Enter Username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +104,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/usernameInput" />
 
+    <Spinner
+        android:id="@+id/roleSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
     <RadioGroup
         android:id="@+id/userRoleLayout"
         android:layout_width="match_parent"
@@ -80,11 +123,12 @@
 
     <!-- Institution specific fields -->
 
+
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="36dp"
         android:text="Sign Up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,9 +149,9 @@
         android:id="@+id/institutionPhoneInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:layout_margin="16dp"
         android:hint="Enter Institution Phone"
+        android:inputType="number"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

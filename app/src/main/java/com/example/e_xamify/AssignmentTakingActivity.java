@@ -158,14 +158,14 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     }
 
     private void saveSelectedOption() {
-        int selectedOptionId = optionsGroup.indexOfChild(findViewById(optionsGroup.getCheckedRadioButtonId())) + 1;
+        int selectedOptionId = optionsGroup.indexOfChild(findViewById(optionsGroup.getCheckedRadioButtonId()));
         if (selectedOptionId == -1) return;
 
         Mcq currentQuestion = questions.get(currentQuestionIndex);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("selected_option_id", selectedOptionId);
-        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption()) ? 1 : 0);
+        values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption()) - 1 ? 1 : 0);
 
         int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?",
                 new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});

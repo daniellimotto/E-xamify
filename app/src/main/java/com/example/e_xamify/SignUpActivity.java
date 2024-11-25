@@ -182,6 +182,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
 //        these if statements only work with one condition, putting each condition in one statement makes that statement true no matter what for some reason.
+//        the email if statements work fine
         if ("Teacher".equals(userRole) && teacherName.isEmpty()) {
             Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
@@ -191,10 +192,6 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-//        if ("Teacher".equals(userRole) && teacherName.isEmpty() || teacherField.isEmpty()) {
-//            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         if ("Institution".equals(userRole) && institutionName.isEmpty()) {
             Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
@@ -211,11 +208,8 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-//        if ("Institution".equals(userRole) && institutionName.isEmpty() || institutionPhone.isEmpty() || institutionAddress.isEmpty()) {
-//            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
+    
         if ("Institution".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@institute\\.cn$")) {
             Toast.makeText(this, "Please enter valid institution email.", Toast.LENGTH_SHORT).show();
             return;

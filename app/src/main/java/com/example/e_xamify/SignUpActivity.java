@@ -181,6 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+//        these if statements only work with one condition, putting each condition in one statement makes that statement true no matter what for some reason.
         if ("Teacher".equals(userRole) && teacherName.isEmpty()) {
             Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;

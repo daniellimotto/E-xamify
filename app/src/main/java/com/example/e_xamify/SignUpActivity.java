@@ -60,16 +60,20 @@ public class SignUpActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
+        passwordWarning = findViewById(R.id.passwordWarning);
         usernameInput = findViewById(R.id.usernameInput);
+
         userRoleLayout = findViewById(R.id.userRoleLayout);
         signUpButton = findViewById(R.id.signUpButton);
+
         institutionNameInput = findViewById(R.id.institutionNameInput);
         institutionPhoneInput = findViewById(R.id.institutionPhoneInput);
         institutionAddressInput = findViewById(R.id.institutionAddressInput);
+
         teacherNameInput = findViewById(R.id.teacherNameInput);
         teacherFieldInput = findViewById(R.id.teacherFieldInput);
+
         studentNameInput = findViewById(R.id.studentNameInput);
-        passwordWarning = findViewById(R.id.passwordWarning);
 
         loadUserRoles();
 
@@ -122,6 +126,8 @@ public class SignUpActivity extends AppCompatActivity {
             teacherNameInput.setVisibility(View.GONE);
             teacherFieldInput.setVisibility(View.GONE);
         }
+
+
     }
 
     private void registerUser() {
@@ -138,7 +144,6 @@ public class SignUpActivity extends AppCompatActivity {
 
 //        Set requirements for accepted passwords
         String passwordRegex = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*\\d).+$";
-
 //       Validate password and show/hide the warning
         if (!password.matches(passwordRegex)) {
             passwordWarning.setVisibility(View.VISIBLE);
@@ -176,20 +181,45 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+        if ("Teacher".equals(userRole) && teacherName.isEmpty()) {
+            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if ("Teacher".equals(userRole) && teacherField.isEmpty()) {
+            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+//        if ("Teacher".equals(userRole) && teacherName.isEmpty() || teacherField.isEmpty()) {
+//            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+
+        if ("Institution".equals(userRole) && institutionName.isEmpty()) {
+            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Institution".equals(userRole) && institutionPhone.isEmpty()) {
+            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if ("Institution".equals(userRole) && institutionAddress.isEmpty()) {
+            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+//        if ("Institution".equals(userRole) && institutionName.isEmpty() || institutionPhone.isEmpty() || institutionAddress.isEmpty()) {
+//            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+
         if ("Institution".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@institute\\.cn$")) {
             Toast.makeText(this, "Please enter valid institution email.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if ("Teacher".equals(userRole) && teacherName.isEmpty() || teacherField.isEmpty()) {
-            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if ("Institution".equals(userRole) && institutionName.isEmpty() || institutionPhone.isEmpty() || institutionAddress.isEmpty()) {
-            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (("Student".equals(userRole) && (dbHelper.isStudentEmailExists(email) || dbHelper.isInstitutionEmailExists(email) || dbHelper.isTeacherEmailExists(email))) ||
                 ("Institution".equals(userRole) && (dbHelper.isInstitutionEmailExists(email) || dbHelper.isStudentEmailExists(email) || dbHelper.isTeacherEmailExists(email))) ||

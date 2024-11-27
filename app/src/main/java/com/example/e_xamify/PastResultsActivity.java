@@ -40,13 +40,16 @@ public class PastResultsActivity extends AppCompatActivity {
         loadPastResults();
 
         pastResultsListView.setOnItemClickListener((parent, view, position, id) -> {
-            int selectedQuizId = quizIds.get(position);
-            Intent intent = new Intent(PastResultsActivity.this, QuizResultActivity.class);
-            intent.putExtra("quizId", selectedQuizId); // Pass quizId
-            intent.putExtra("studentId", user_id); // Pass studentId
-            startActivity(intent);
+            if (position < quizIds.size()) {
+                int selectedQuizId = quizIds.get(position);
+                Intent intent = new Intent(PastResultsActivity.this, QuizResultActivity.class);
+                intent.putExtra("assignmentId", selectedQuizId); // Menggunakan nama parameter konsisten
+                intent.putExtra("studentId", user_id);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Invalid selection.", Toast.LENGTH_SHORT).show();
+            }
         });
-
     }
 
     private void loadPastResults() {

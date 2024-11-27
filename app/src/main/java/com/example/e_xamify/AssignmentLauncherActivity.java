@@ -1,5 +1,6 @@
 package com.example.e_xamify;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AssignmentLauncherActivity extends AppCompatActivity {
@@ -28,22 +30,27 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_launcher);
 
-        // Retrieve teacher's user ID from intent
-        user_id = getIntent().getIntExtra("user_id", -1);
-
+        // Initialize UI elements
         quizSpinner = findViewById(R.id.spinner_quiz);
         startDateEditText = findViewById(R.id.editText_start_date);
         endDateEditText = findViewById(R.id.editText_end_date);
         launchAssignmentButton = findViewById(R.id.btn_launch_assignment);
 
-        // Initialize the database
+        // Retrieve teacher's user ID
+        user_id = getIntent().getIntExtra("user_id", -1);
+
+        // Initialize database
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        // Populate the quiz spinner with only quiz titles
+        // Populate spinner
         populateQuizSpinner();
 
-        // Set the launch assignment button listener
+        // Set DatePicker dialogs
+        startDateEditText.setOnClickListener(v -> showDatePickerDialog(startDateEditText));
+        endDateEditText.setOnClickListener(v -> showDatePickerDialog(endDateEditText));
+
+        // Set launch button listener
         launchAssignmentButton.setOnClickListener(v -> launchAssignment());
     }
 
@@ -153,6 +160,22 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         }
         cursor.close();
         return students;
+    }
+    private void showDatePickerDialog(EditText editText) {
+        // Get current date
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Create and show DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            // Format and set selected date to the EditText
+            String date = selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay;
+            editText.setText(date);
+        }, year, month, day);
+
+        datePickerDialog.show();
     }
 
 

@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:hint="Enter Start Date"
             android:inputType="date"
+            android:focusable="false"
             android:layout_marginBottom="16dp" />
 
         <!-- End Date -->
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:hint="Enter End Date"
             android:inputType="date"
+            android:focusable="false"
             android:layout_marginBottom="16dp" />
 
         <!-- Launch Button -->

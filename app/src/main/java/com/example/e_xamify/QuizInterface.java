@@ -93,13 +93,21 @@ public class QuizInterface extends AppCompatActivity {
     }
 
     private void populateModuleSpinner() {
-        // Retrieve module names from the database
-        Cursor cursor = db.rawQuery("SELECT module_name FROM module", null);
+        // Query to get module names based on the teacher's institution
+        String query = "SELECT m.module_name " +
+                "FROM module m " +
+                "INNER JOIN teacher_institution ti ON m.institution_id = ti.institution_id " +
+                "WHERE ti.teacher_id = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user_id)});
         ArrayList<String> modules = new ArrayList<>();
+
         if (cursor.moveToFirst()) {
             do {
-                modules.add(cursor.getString(0));
+                modules.add(cursor.getString(cursor.getColumnIndexOrThrow("module_name")));
             } while (cursor.moveToNext());
+        } else {
+            Toast.makeText(this, "No modules found for the teacher's institution.", Toast.LENGTH_SHORT).show();
         }
         cursor.close();
 
@@ -126,8 +134,12 @@ public class QuizInterface extends AppCompatActivity {
         int quizTabRestrictor = tabRestrictSwitch.isChecked() ? 1 : 0;
         int questionRandomize = randomizeSwitch.isChecked() ? 1 : 0;
         String type_name = quizTypeSpinner.getSelectedItem().toString();
-        String moduleName = moduleSpinner.getSelectedItem().toString();
+        String moduleName = (String)moduleSpinner.getSelectedItem();
 
+        if (moduleName == null || moduleName.isEmpty()) {
+            Toast.makeText(this, "Please select a module", Toast.LENGTH_SHORT).show();
+            return; // Stop execution if no module is selected
+        }
         // Get the selected quiz type ID from the database
         int quizTypeId = -1;
         try (Cursor cursorQuizType = db.rawQuery("SELECT quiz_type_id FROM quiz_type WHERE type_name = ?", new String[]{type_name})) {

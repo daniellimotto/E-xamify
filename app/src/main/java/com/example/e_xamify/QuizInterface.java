@@ -29,7 +29,6 @@ public class QuizInterface extends AppCompatActivity {
     private Spinner moduleSpinner; // New module spinner
     private Switch navigableSwitch;
     private Switch tabRestrictSwitch;
-    private Switch randomizeSwitch;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private int user_id ;
@@ -47,7 +46,6 @@ public class QuizInterface extends AppCompatActivity {
         moduleSpinner = findViewById(R.id.moduleSpinner); // Initialize module spinner
         navigableSwitch = findViewById(R.id.navigableSwitch);
         tabRestrictSwitch = findViewById(R.id.tabRestrictSwitch);
-        randomizeSwitch = findViewById(R.id.randomizeSwitch);
 
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -132,7 +130,6 @@ public class QuizInterface extends AppCompatActivity {
         int quizAttempts = attemptsStr.equals("Infinite") ? -1 : Integer.parseInt(attemptsStr);
         int quizNavigable = navigableSwitch.isChecked() ? 1 : 0;
         int quizTabRestrictor = tabRestrictSwitch.isChecked() ? 1 : 0;
-        int questionRandomize = randomizeSwitch.isChecked() ? 1 : 0;
         String type_name = quizTypeSpinner.getSelectedItem().toString();
         String moduleName = (String)moduleSpinner.getSelectedItem();
 
@@ -174,7 +171,6 @@ public class QuizInterface extends AppCompatActivity {
         quizValues.put("quiz_attempts", quizAttempts);
         quizValues.put("quiz_navigable", quizNavigable);
         quizValues.put("quiz_tab_restrictor", quizTabRestrictor);
-        quizValues.put("question_randomize", questionRandomize);
         quizValues.put("quiz_type_id", quizTypeId);
         quizValues.put("module_id", moduleId);
         quizValues.put("user_id", user_id);

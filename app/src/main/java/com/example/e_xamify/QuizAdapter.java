@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,9 +13,14 @@ import java.util.List;
 public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder> {
     private List<Quiz> quizzes;
     private OnItemClickListener listener;
+    private OnDeleteClickListener onDeleteClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(Quiz quiz);
+    }
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(Quiz quiz);
     }
 
     public QuizAdapter(List<Quiz> quizzes) {
@@ -23,6 +29,10 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        this.onDeleteClickListener = listener;
     }
 
     @NonNull
@@ -36,12 +46,15 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
     public void onBindViewHolder(@NonNull QuizViewHolder holder, int position) {
         Quiz quiz = quizzes.get(position);
         holder.titleTextView.setText(quiz.getQuizTitle());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemClick(quizzes.get(position));
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(quizzes.get(position));
+            }
+        });
+
+        holder.deleteQuizButton.setOnClickListener(v -> {
+            if (onDeleteClickListener != null) {
+                onDeleteClickListener.onDeleteClick(quiz);
             }
         });
     }
@@ -53,12 +66,12 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
     static class QuizViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
-        TextView descriptionTextView;
+        Button deleteQuizButton;
 
         QuizViewHolder(View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.quizTitle);
-            descriptionTextView = itemView.findViewById(R.id.quizDescription);
+            deleteQuizButton = itemView.findViewById(R.id.deleteQuizButton);
         }
     }
 }

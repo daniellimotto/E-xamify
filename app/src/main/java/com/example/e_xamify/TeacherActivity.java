@@ -68,13 +68,6 @@ public class TeacherActivity extends AppCompatActivity {
             }
         });
 
-        Button deleteAllQuizzesButton = findViewById(R.id.deleteAllQuizzesButton);
-        deleteAllQuizzesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteAllQuizzes();
-            }
-        });
 
         // "Enroll" Button to navigate to enrollment activity
         enrollButton = findViewById(R.id.enrollButton);
@@ -95,12 +88,7 @@ public class TeacherActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void deleteAllQuizzes() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int deletedRows = db.delete("Quiz", null, null);
-        Log.d("TeacherActivity", "Deleted " + deletedRows + " quizzes");
-        Toast.makeText(this, "All quizzes deleted", Toast.LENGTH_SHORT).show();
-    }
+
 
     @Override
     protected void onDestroy() {

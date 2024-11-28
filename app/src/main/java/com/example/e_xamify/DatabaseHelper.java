@@ -70,8 +70,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "VALUES (5, 6, 'Wow Module', 'Wow Desc', 'wow')");
         db.execSQL("INSERT INTO student_module (student_module_ID, user_id, module_id, enrollment_date)" +
                 "VALUES (1, 4, 5, NULL)");
-        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, question_randomize, module_id, num_questions)" +
-                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 0, 0, 5, 3 )");
+        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions)" +
+                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 0, 5, 3 )");
         db.execSQL("INSERT INTO assignment(assignment_id, quiz_id, user_id, status, attempt_number_left, mark, assignment_start_date, assignment_end_date, quiz_title)" +
                 "VALUES (2, 2, 4, 'pending', 1, NULL, 2024, 2026, NULL)");
         db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
@@ -98,8 +98,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics', 'math')");
 
         // Add one Quiz created by the Teacher
-        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, question_randomize, module_id, num_questions) " +
-                "VALUES (1, 1, 'Math Quiz 101', 30, 'Answer all questions carefully.', 3, 2, 1, 0, 1, 4, 10)");
+        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions) " +
+                "VALUES (1, 1, 'Math Quiz 101', 30, 'Answer all questions carefully.', 3, 2, 1, 0,4, 10)");
 
         // Add Questions for the Quiz
         db.execSQL("INSERT INTO question (question_id, question_number, quiz_id, question_text, question_type_id, question_img_url) " +
@@ -143,45 +143,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE student_module (student_module_ID INTEGER PRIMARY KEY, user_id INTEGER, module_id INTEGER, enrollment_date TEXT, FOREIGN KEY(user_id) REFERENCES student(user_id), FOREIGN KEY(module_id) REFERENCES module(module_id))");
         db.execSQL("CREATE TABLE student_institution (student_institution_id INTEGER PRIMARY KEY, student_id INTEGER NOT NULL, institution_id INTEGER NOT NULL, enrollment_date TEXT, FOREIGN KEY(student_id) REFERENCES student(user_id), FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
         db.execSQL("CREATE TABLE teacher_institution (teacher_institution_id INTEGER PRIMARY KEY, teacher_id INTEGER NOT NULL, institution_id INTEGER NOT NULL, enrollment_date TEXT, FOREIGN KEY(teacher_id) REFERENCES teacher(user_id), FOREIGN KEY(institution_id) REFERENCES institution(user_id))");
-        // Removed AUTOINCREMENT for quiz_id as it's manually managed now
-        db.execSQL("CREATE TABLE quiz (\n" +
-                "    quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "    quiz_type_id INTEGER,\n" +
-                "    quiz_title TEXT,\n" +
-                "    quiz_duration INTEGER,\n" +
-                "    instructions TEXT,\n" +
-                "    quiz_attempts INTEGER,\n" +
-                "    user_id INTEGER,\n" +
-                "    quiz_navigable INTEGER,\n" +
-                "    quiz_tab_restrictor INTEGER,\n" +
-                "    question_randomize INTEGER,\n" +
-                "    module_id INTEGER,\n" +
-                "    num_questions INTEGER,\n" +
-                "    FOREIGN KEY(quiz_type_id) REFERENCES quiz_type(quiz_type_id),\n" +
-                "    FOREIGN KEY(user_id) REFERENCES teacher(user_id),\n" +
-                "    FOREIGN KEY(module_id) REFERENCES module(module_id)\n" +
-                ");\n");
-
-        db.execSQL("CREATE TABLE quiz_attempt (" +
-                "attempt_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "quiz_id INTEGER, " +
-                "user_id INTEGER, " +
-                "start_time TEXT, " +
-                "end_time TEXT, " +
-                "score INTEGER, " +
-                "status TEXT, " + // 'in_progress', 'completed', 'abandoned'
-                "FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), " +
-                "FOREIGN KEY(user_id) REFERENCES user(user_id))");
-
-        db.execSQL("CREATE TABLE student_answer (" +
-                "answer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "attempt_id INTEGER, " +
-                "question_id INTEGER, " +
-                "selected_option TEXT, " +
-                "is_correct INTEGER, " +
-                "FOREIGN KEY(attempt_id) REFERENCES quiz_attempt(attempt_id), " +
-                "FOREIGN KEY(question_id) REFERENCES question(question_id))");
-
+        db.execSQL("CREATE TABLE quiz (quiz_id INTEGER PRIMARY KEY AUTOINCREMENT, quiz_type_id INTEGER, quiz_title TEXT, quiz_duration INTEGER, instructions TEXT, quiz_attempts INTEGER, user_id INTEGER, quiz_navigable INTEGER, quiz_tab_restrictor INTEGER, module_id INTEGER, num_questions INTEGER, FOREIGN KEY(quiz_type_id) REFERENCES quiz_type(quiz_type_id), FOREIGN KEY(user_id) REFERENCES teacher(user_id), FOREIGN KEY(module_id) REFERENCES module(module_id))");
+        db.execSQL("CREATE TABLE quiz_attempt (attempt_id INTEGER PRIMARY KEY AUTOINCREMENT, quiz_id INTEGER, user_id INTEGER, start_time TEXT, end_time TEXT, score INTEGER, status TEXT, FOREIGN KEY(quiz_id) REFERENCES quiz(quiz_id), FOREIGN KEY(user_id) REFERENCES user(user_id))");
         seedDatabase(db);
     }
 

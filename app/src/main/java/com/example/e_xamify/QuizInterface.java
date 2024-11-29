@@ -24,7 +24,6 @@ public class QuizInterface extends AppCompatActivity {
     private EditText titleInput;
     private EditText durationInput;
     private EditText instructionInput;
-    private Spinner attemptsSpinner;
     private Spinner quizTypeSpinner;
     private Spinner moduleSpinner; // New module spinner
     private Switch navigableSwitch;
@@ -41,7 +40,6 @@ public class QuizInterface extends AppCompatActivity {
         titleInput = findViewById(R.id.titleInput);
         durationInput = findViewById(R.id.durationInput);
         instructionInput = findViewById(R.id.instructionInput);
-        attemptsSpinner = findViewById(R.id.attemptsSpinner);
         quizTypeSpinner = findViewById(R.id.quizTypeSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner); // Initialize module spinner
         navigableSwitch = findViewById(R.id.navigableSwitch);
@@ -52,7 +50,6 @@ public class QuizInterface extends AppCompatActivity {
 
         // Populate spinners
         populateQuizTypeSpinner();
-        setupAttemptsSpinner();
         populateModuleSpinner();  // Populate module spinner
 
         // "Create MCQ" Button
@@ -84,12 +81,6 @@ public class QuizInterface extends AppCompatActivity {
         quizTypeSpinner.setAdapter(adapter);
     }
 
-    private void setupAttemptsSpinner() {
-        ArrayAdapter<String> attemptsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"1", "2", "3", "Infinite"});
-        attemptsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        attemptsSpinner.setAdapter(attemptsAdapter);
-    }
-
     private void populateModuleSpinner() {
         // Query to get module names based on the teacher's institution
         String query = "SELECT m.module_name " +
@@ -119,7 +110,6 @@ public class QuizInterface extends AppCompatActivity {
         String quizTitle = titleInput.getText().toString();
         String durationStr = durationInput.getText().toString();
         String instructions = instructionInput.getText().toString();
-        String attemptsStr = attemptsSpinner.getSelectedItem().toString();
 
         if (quizTitle.isEmpty() || durationStr.isEmpty()) {
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
@@ -127,7 +117,7 @@ public class QuizInterface extends AppCompatActivity {
         }
 
         int quizDuration = Integer.parseInt(durationStr);
-        int quizAttempts = attemptsStr.equals("Infinite") ? -1 : Integer.parseInt(attemptsStr);
+        int quizAttempts = 1;
         int quizNavigable = navigableSwitch.isChecked() ? 1 : 0;
         int quizTabRestrictor = tabRestrictSwitch.isChecked() ? 1 : 0;
         String type_name = quizTypeSpinner.getSelectedItem().toString();

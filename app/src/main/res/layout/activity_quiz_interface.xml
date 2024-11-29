@@ -113,26 +113,7 @@
         android:hint="Enter instructions" />
 
 
-    <!-- Attempts Input -->
-    <TextView
-        android:id="@+id/attemptsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Attempts"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/instructionInput"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp" />
 
-    <Spinner
-        android:id="@+id/attemptsSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/attemptsLabel"
-        android:layout_marginHorizontal="16dp"
-        />
 
     <!-- Navigable Option: Yes / No Switch -->
     <TextView
@@ -141,7 +122,7 @@
         android:layout_height="wrap_content"
         android:text="Navigable"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/attemptsSpinner"
+        app:layout_constraintTop_toBottomOf="@id/instructionInput"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp" />
 
@@ -172,24 +153,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp" />
 
-    <!-- Randomize Question Option: Yes / No Switch -->
-    <TextView
-        android:id="@+id/randomizeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Randomize Question"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tabRestrictSwitch"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp" />
 
-    <Switch
-        android:id="@+id/randomizeSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/randomizeLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp" />
 
     <!-- Save Button -->
     <Button
@@ -197,7 +161,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Proceed to Create MCQ"
-        app:layout_constraintTop_toBottomOf="@id/randomizeSwitch"
+        app:layout_constraintTop_toBottomOf="@id/tabRestrictSwitch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp" />
@@ -245,12 +209,6 @@
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
-        <TextView
-            android:id="@+id/attemptsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/navigableTextView"
@@ -266,12 +224,7 @@
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
-        <TextView
-            android:id="@+id/randomizeQuestionTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

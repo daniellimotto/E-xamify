@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,22 +36,6 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-
-        Spinner roleSpinner = findViewById(R.id.roleSpinner);
-
-        // Populate options once
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"Student", "Teacher", "Institution"}
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        roleSpinner.setAdapter(adapter);
-
-        // Set click listener for sign up
-        findViewById(R.id.signUpButton).setOnClickListener(v -> {
-            // Handle sign-up logic here
-        });
 
         dbHelper = new DatabaseHelper(this);
         roleIdMap = new HashMap<>();

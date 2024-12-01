@@ -65,13 +65,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (6, '6', '6', '6', 1, '2024-11-22')");
         db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
-                "VALUES (6, 'university wow', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'WOWUNI', '2024-11-22')");
+                "VALUES (6, 'university', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'WOWUNI', '2024-11-22')");
         db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
-                "VALUES (5, 6, 'Wow Module', 'Wow Desc', 'wow')");
+                "VALUES (5, 6, 'Math101', 'Wow Desc', 'wow')");
         db.execSQL("INSERT INTO student_module (student_module_ID, user_id, module_id, enrollment_date)" +
                 "VALUES (1, 4, 5, NULL)");
         db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions)" +
-                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 0, 5, 3 )");
+                "VALUES (2, 1, 'wowow', 60, 'The duration of this assignment is 60 minutes. The questions are not navigable and you are not allowed to switch between other tabs. Please fill in your answer before going to the next question.', 100, 5, 0, 0, 5, 3 )");
         db.execSQL("INSERT INTO assignment(assignment_id, quiz_id, user_id, status, attempt_number_left, mark, assignment_start_date, assignment_end_date, quiz_title)" +
                 "VALUES (2, 2, 4, 'pending', 1, NULL, 2024, 2026, NULL)");
         db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +

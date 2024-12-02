@@ -26,6 +26,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private int user_id;
     private int quizId;
     private TextView questionText;
+    private TextView questionNumberText;
     private RadioGroup optionsGroup;
     private Button nextButton;
     private Button previousButton;
@@ -93,6 +94,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         previousButton = findViewById(R.id.previousButton);
         submitButton = findViewById(R.id.submitButton);
         timerText = findViewById(R.id.timerText); // Ensure this line is present
+        questionNumberText = findViewById(R.id.questionNumberText);
 
         if (!isNavigable) {
             previousButton.setVisibility(View.GONE); // Hide Previous button if backward navigation is disabled
@@ -160,6 +162,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
 
         Mcq question = questions.get(index);
         questionText.setText(question.getQuestionText());
+        questionNumberText.setText("Question " + String.valueOf(question.getQuestionNum()));
 
         optionsGroup.removeAllViews();
         RadioButton optionA = new RadioButton(this);

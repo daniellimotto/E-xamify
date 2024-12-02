@@ -48,8 +48,6 @@ public class MCQEditorActivity extends AppCompatActivity {
         quiz_id = getIntent().getIntExtra("quiz_id", -1);
         user_id = getIntent().getIntExtra("user_id", -1); // Retrieve the user ID from the intent
 
-
-
         String quizTitle = getIntent().getStringExtra("quiz_title");
 
         // Initialize UI components
@@ -310,7 +308,6 @@ public class MCQEditorActivity extends AppCompatActivity {
                 .setNegativeButton("No", null)
                 .show();
     }
-
 
     private void clearInputs() {
         questionInput.setText("");

@@ -43,7 +43,8 @@
         <activity android:name=".QuizListActivity" />
         <activity android:name=".EditQuizInterface" />
         <activity android:name=".StudentEnrollModuleActivity" />
-        <activity android:name=".AssignmentTakingActivity"/>
+        <activity android:name=".AssignmentTakingActivity"
+            android:enableOnBackInvokedCallback="true"/>
         <activity android:name=".AssignmentDetailsActivity"/>
         <activity android:name=".AssignmentResultActivity" />
         <activity android:name=".QuizResultActivity" />

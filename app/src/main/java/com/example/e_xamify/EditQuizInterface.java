@@ -29,7 +29,6 @@ public class EditQuizInterface extends AppCompatActivity {
     private Spinner moduleSpinner;
     private Switch navigableSwitch;
     private Switch tabRestrictSwitch;
-    private Switch randomizeSwitch;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private int user_id;
@@ -49,7 +48,6 @@ public class EditQuizInterface extends AppCompatActivity {
         moduleSpinner = findViewById(R.id.moduleSpinner);
         navigableSwitch = findViewById(R.id.navigableSwitch);
         tabRestrictSwitch = findViewById(R.id.tabRestrictSwitch);
-        randomizeSwitch = findViewById(R.id.randomizeSwitch);
 
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -147,7 +145,6 @@ public class EditQuizInterface extends AppCompatActivity {
             int attempts = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_attempts"));
             boolean navigable = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_navigable")) > 0;
             boolean restrictTab = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_tab_restrictor")) > 0;
-            boolean randomizeQuestion = cursor.getInt(cursor.getColumnIndexOrThrow("question_randomize")) > 0;
 
             titleInput.setText(title);
             durationInput.setText(duration);
@@ -155,7 +152,6 @@ public class EditQuizInterface extends AppCompatActivity {
             attemptsSpinner.setSelection(attempts);
             navigableSwitch.setChecked(navigable);
             tabRestrictSwitch.setChecked(restrictTab);
-            randomizeSwitch.setChecked(randomizeQuestion);
 
             cursor.close();
 
@@ -181,7 +177,6 @@ public class EditQuizInterface extends AppCompatActivity {
         int quizAttempts = attemptsStr.equals("Infinite") ? -1 : Integer.parseInt(attemptsStr);
         int quizNavigable = navigableSwitch.isChecked() ? 1 : 0;
         int quizTabRestrictor = tabRestrictSwitch.isChecked() ? 1 : 0;
-        int questionRandomize = randomizeSwitch.isChecked() ? 1 : 0;
         String type_name = quizTypeSpinner.getSelectedItem().toString();
         String moduleName = moduleSpinner.getSelectedItem().toString();
 
@@ -220,7 +215,6 @@ public class EditQuizInterface extends AppCompatActivity {
         quizValues.put("quiz_attempts", quizAttempts);
         quizValues.put("quiz_navigable", quizNavigable);
         quizValues.put("quiz_tab_restrictor", quizTabRestrictor);
-        quizValues.put("question_randomize", questionRandomize);
         quizValues.put("quiz_type_id", quizTypeId);
         quizValues.put("module_id", moduleId);
         quizValues.put("user_id", user_id);

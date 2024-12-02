@@ -71,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO student_module (student_module_ID, user_id, module_id, enrollment_date)" +
                 "VALUES (1, 4, 5, NULL)");
         db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions)" +
-                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 0, 5, 3 )");
+                "VALUES (2, 1, 'wowow', 60, 'wooow', 1, 5, 0, 1, 5, 3 )");
         db.execSQL("INSERT INTO assignment(assignment_id, quiz_id, user_id, status, attempt_number_left, mark, assignment_start_date, assignment_end_date, quiz_title)" +
                 "VALUES (2, 2, 4, 'pending', 1, NULL, 2024, 2026, NULL)");
         db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +

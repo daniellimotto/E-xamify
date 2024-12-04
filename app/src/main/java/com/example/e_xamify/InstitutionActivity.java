@@ -16,7 +16,9 @@ public class InstitutionActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     private int user_id; // User ID received from SignInActivity
-    private Button showEnrollmentKeyButton, createModuleButton;
+    private Button showEnrollmentKeyButton, createModuleButton, viewModulesButton;
+    private LinearLayout enrollmentKeyLayout; // Store the inflated layout
+    private boolean isEnrollmentKeyVisible = false; // Flag to track visibility
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,41 +34,58 @@ public class InstitutionActivity extends AppCompatActivity {
             return;
         }
 
+        // Initialize UI elements
         showEnrollmentKeyButton = findViewById(R.id.showEnrollmentKeyButton);
         createModuleButton = findViewById(R.id.createModuleButton);
+        viewModulesButton = findViewById(R.id.viewModulesButton);
 
-
-
-        showEnrollmentKeyButton.setOnClickListener(v -> showEnrollmentKey());
+        // Set button listeners
+        showEnrollmentKeyButton.setOnClickListener(v -> toggleEnrollmentKeyVisibility());
         createModuleButton.setOnClickListener(v -> {
             Intent intent = new Intent(InstitutionActivity.this, ModuleActivity.class);
             intent.putExtra("user_id", user_id);  // Pass the user_id to ModuleActivity
             startActivity(intent);
         });
+        viewModulesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(InstitutionActivity.this, ViewModulesActivity.class);
+            intent.putExtra("user_id", user_id); // Pass the user_id to the new activity
+            startActivity(intent);
+        });
     }
 
-    private void showEnrollmentKey() {
-        // Inflate the enrollment key layout dynamically
-        LayoutInflater inflater = LayoutInflater.from(this);
-        LinearLayout enrollmentKeyLayout = (LinearLayout) inflater.inflate(R.layout.enrollment_key_layout, null);
+    private void toggleEnrollmentKeyVisibility() {
+        if (enrollmentKeyLayout == null) {
+            // Inflate the layout if not already inflated
+            LayoutInflater inflater = LayoutInflater.from(this);
+            enrollmentKeyLayout = (LinearLayout) inflater.inflate(R.layout.enrollment_key_layout, null);
 
-        // Fetch the enrollment key from the database
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT institution_enrolment_key FROM institution WHERE user_id = ?", new String[]{String.valueOf(user_id)});
+            // Fetch the enrollment key from the database
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT institution_enrolment_key FROM institution WHERE user_id = ?", new String[]{String.valueOf(user_id)});
 
-        if (cursor.moveToFirst()) {
-            String enrollmentKey = cursor.getString(0);
-            TextView enrollmentKeyTextView = enrollmentKeyLayout.findViewById(R.id.enrollmentKeyTextView);
-            enrollmentKeyTextView.setText(enrollmentKey);
-        } else {
-            Toast.makeText(this, "No enrollment key found for this institution.", Toast.LENGTH_SHORT).show();
+            if (cursor.moveToFirst()) {
+                String enrollmentKey = cursor.getString(0);
+                TextView enrollmentKeyTextView = enrollmentKeyLayout.findViewById(R.id.enrollmentKeyTextView);
+                enrollmentKeyTextView.setText(enrollmentKey);
+                enrollmentKeyTextView.setTextIsSelectable(true); // Make the TextView copyable
+            } else {
+                Toast.makeText(this, "No enrollment key found for this institution.", Toast.LENGTH_SHORT).show();
+                cursor.close();
+                return;
+            }
             cursor.close();
-            return;
-        }
-        cursor.close();
 
-        // Display the inflated view with the enrollment key
-        LinearLayout mainLayout = findViewById(R.id.main_layout); // Assume main_layout is a LinearLayout in your activity's layout
-        mainLayout.addView(enrollmentKeyLayout);
+            // Add the inflated layout to the main layout
+            LinearLayout mainLayout = findViewById(R.id.main_layout); // Assume main_layout is a LinearLayout in your activity's layout
+            mainLayout.addView(enrollmentKeyLayout);
+        }
+
+        // Toggle visibility
+        if (isEnrollmentKeyVisible) {
+            enrollmentKeyLayout.setVisibility(View.GONE);
+        } else {
+            enrollmentKeyLayout.setVisibility(View.VISIBLE);
+        }
+        isEnrollmentKeyVisible = !isEnrollmentKeyVisible; // Flip the flag
     }
 }

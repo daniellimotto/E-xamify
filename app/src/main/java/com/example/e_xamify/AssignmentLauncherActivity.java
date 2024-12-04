@@ -13,9 +13,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AssignmentLauncherActivity extends AppCompatActivity {
 
@@ -82,34 +86,43 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         String startDate = startDateEditText.getText().toString();
         String endDate = endDateEditText.getText().toString();
 
-        if (selectedQuizTitle != null) {
-            // Retrieve quizId and moduleId for the selected quiz title
-            Quiz selectedQuiz = getQuizByTitle(selectedQuizTitle);
-            if (selectedQuiz == null) {
-                Toast.makeText(this, "Quiz not found.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            int moduleId = selectedQuiz.getModuleId();
-            long quizId = selectedQuiz.getQuizId();
-            int attemptNumber = selectedQuiz.getQuizAttempts();
-
-            // Fetch students in the selected module
-            List<Student> students = getStudentsInModule(moduleId);
-
-            // Insert assignment for each student, checking for existing assignments
-            int assignedCount = 0;
-            for (Student student : students) {
-                if (!isAlreadyAssigned(student.getUserId(), quizId)) {
-                    insertAssignment(student.getUserId(), quizId, startDate, endDate, attemptNumber);
-                    assignedCount++;
-                }
-            }
-            Toast.makeText(this, "Assignments launched for " + assignedCount + " students!", Toast.LENGTH_SHORT).show();
-        } else {
+        if (selectedQuizTitle == null) {
             Toast.makeText(this, "Please select a quiz", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Validate dates
+        if (!isEndDateValid(startDate, endDate)) {
+            Toast.makeText(this, "End date must be greater than the start date.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Retrieve quizId and moduleId for the selected quiz title
+        Quiz selectedQuiz = getQuizByTitle(selectedQuizTitle);
+        if (selectedQuiz == null) {
+            Toast.makeText(this, "Quiz not found.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int moduleId = selectedQuiz.getModuleId();
+        long quizId = selectedQuiz.getQuizId();
+        int attemptNumber = selectedQuiz.getQuizAttempts();
+
+        // Fetch students in the selected module
+        List<Student> students = getStudentsInModule(moduleId);
+
+        // Insert assignment for each student, checking for existing assignments
+        int assignedCount = 0;
+        for (Student student : students) {
+            if (!isAlreadyAssigned(student.getUserId(), quizId)) {
+                insertAssignment(student.getUserId(), quizId, startDate, endDate, attemptNumber);
+                assignedCount++;
+            }
+        }
+        Toast.makeText(this, "Assignments launched for " + assignedCount + " students!", Toast.LENGTH_SHORT).show();
+        finish();
     }
+
 
     private Quiz getQuizByTitle(String quizTitle) {
         String query = "SELECT quiz_id, module_id, quiz_attempts FROM quiz WHERE quiz_title = ? AND user_id = ?";
@@ -177,6 +190,22 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
 
         datePickerDialog.show();
     }
+    private boolean isEndDateValid(String startDate, String endDate) {
+        try {
+            // Parse dates
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date start = sdf.parse(startDate);
+            Date end = sdf.parse(endDate);
+
+            // Validate end date is after start date
+            return end != null && start != null && end.after(start);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Invalid date format. Use YYYY-MM-DD.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
 
 
     @Override

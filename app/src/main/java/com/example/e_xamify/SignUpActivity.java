@@ -135,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 //      if the default inputs are empty
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-            Toast.makeText(this, "default Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!password.equals(confirmPassword)) {
@@ -150,51 +150,51 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         if ("Student".equals(userRole) && studentName.isEmpty()) {
-            Toast.makeText(this, "ST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if ("Student".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@student\\.cn$")) {
-            Toast.makeText(this, "Please enter valid student email.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A valid student email must end in '@student.cn'.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if ("Teacher".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@teacher\\.cn$")) {
-            Toast.makeText(this, "Please enter valid teacher email.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A valid teacher email must end in '@teacher.cn'.", Toast.LENGTH_SHORT).show();
             return;
         }
 
 //        these if statements only work with one condition, putting each condition in one statement makes that statement true no matter what for some reason.
 //        the email if statements work fine
         if ("Teacher".equals(userRole) && teacherName.isEmpty()) {
-            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("Teacher".equals(userRole) && teacherField.isEmpty()) {
-            Toast.makeText(this, "TE Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
 
         if ("Institution".equals(userRole) && institutionName.isEmpty()) {
-            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if ("Institution".equals(userRole) && institutionPhone.isEmpty()) {
-            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if ("Institution".equals(userRole) && institutionAddress.isEmpty()) {
-            Toast.makeText(this, "INST Please fill all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
 
     
         if ("Institution".equals(userRole) && !email.matches("^[A-Za-z0-9._%+-]+@institute\\.cn$")) {
-            Toast.makeText(this, "Please enter valid institution email.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A valid institution email must end in '@institute.cn'.", Toast.LENGTH_SHORT).show();
             return;
         }
 

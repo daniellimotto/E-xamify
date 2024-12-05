@@ -135,8 +135,11 @@ public class StudentDashboardActivity extends AppCompatActivity {
         try {
             db = dbHelper.getReadableDatabase();
             cursor = db.rawQuery(
-                    "SELECT module_id, module_name FROM module WHERE institution_id = ?",
-                    new String[]{String.valueOf(institutionId)}
+                    "SELECT module.module_id, module.module_name " +
+                            "FROM student_module " +
+                            "INNER JOIN module ON student_module.module_id = module.module_id " +
+                            "WHERE module.institution_id = ? AND student_module.user_id = ?",
+                    new String[]{String.valueOf(institutionId), String.valueOf(user_id)}
             );
             List<Module> modules = new ArrayList<>();
 

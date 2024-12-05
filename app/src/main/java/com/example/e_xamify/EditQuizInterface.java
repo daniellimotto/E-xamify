@@ -100,7 +100,7 @@ public class EditQuizInterface extends AppCompatActivity {
     }
 
     private void populateModuleSpinner(String moduleName) {
-        Cursor cursor = db.rawQuery("SELECT module_name FROM module", null);
+        Cursor cursor = db.rawQuery("SELECT m.module_name FROM module m INNER JOIN teacher_institution ti ON m.institution_id = ti.institution_id WHERE ti.teacher_id = ?", null);
         ArrayList<String> modules = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
@@ -138,13 +138,31 @@ public class EditQuizInterface extends AppCompatActivity {
 
         if (cursor != null && cursor.moveToFirst()) {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("quiz_title"));
-            String quizTypeName = cursor.getString(cursor.getColumnIndexOrThrow("quiz_type_id")); // Retrieve quiz type name
-            String moduleName = cursor.getString(cursor.getColumnIndexOrThrow("module_id")); // Retrieve module name
+            int quizTypeId = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_type_id")); // Retrieve quiz type ID
+            int moduleId = cursor.getInt(cursor.getColumnIndexOrThrow("module_id")); // Retrieve module ID
             String duration = cursor.getString(cursor.getColumnIndexOrThrow("quiz_duration"));
             String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
             int attempts = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_attempts"));
             boolean navigable = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_navigable")) > 0;
             boolean restrictTab = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_tab_restrictor")) > 0;
+
+            cursor.close();
+
+            // Get quiz type name based on ID
+            String quizTypeName = null;
+            Cursor quizTypeCursor = db.rawQuery("SELECT type_name FROM quiz_type WHERE quiz_type_id = ?", new String[]{String.valueOf(quizTypeId)});
+            if (quizTypeCursor.moveToFirst()) {
+                quizTypeName = quizTypeCursor.getString(0);
+            }
+            quizTypeCursor.close();
+
+            // Get module name based on ID
+            String moduleName = null;
+            Cursor moduleCursor = db.rawQuery("SELECT module_name FROM module WHERE module_id = ?", new String[]{String.valueOf(moduleId)});
+            if (moduleCursor.moveToFirst()) {
+                moduleName = moduleCursor.getString(0);
+            }
+            moduleCursor.close();
 
             titleInput.setText(title);
             durationInput.setText(duration);
@@ -152,8 +170,6 @@ public class EditQuizInterface extends AppCompatActivity {
             attemptsSpinner.setSelection(attempts);
             navigableSwitch.setChecked(navigable);
             tabRestrictSwitch.setChecked(restrictTab);
-
-            cursor.close();
 
             // Populate spinners with selected values
             populateQuizTypeSpinner(quizTypeName);

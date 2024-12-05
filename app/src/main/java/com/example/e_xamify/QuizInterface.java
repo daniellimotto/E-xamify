@@ -123,35 +123,19 @@ public class QuizInterface extends AppCompatActivity {
         String type_name = quizTypeSpinner.getSelectedItem().toString();
         String moduleName = (String)moduleSpinner.getSelectedItem();
 
-        if (moduleName == null || moduleName.isEmpty()) {
-            Toast.makeText(this, "Please select a module", Toast.LENGTH_SHORT).show();
-            return; // Stop execution if no module is selected
-        }
-        // Get the selected quiz type ID from the database
         int quizTypeId = -1;
         try (Cursor cursorQuizType = db.rawQuery("SELECT quiz_type_id FROM quiz_type WHERE type_name = ?", new String[]{type_name})) {
             if (cursorQuizType.moveToFirst()) {
                 quizTypeId = cursorQuizType.getInt(0);
             }
         }
-        if (quizTypeId == -1) {
-            Toast.makeText(this, "Invalid quiz type selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        // Get the selected module ID from the database
         int moduleId = -1;
         try (Cursor cursorModule = db.rawQuery("SELECT module_id FROM module WHERE module_name = ?", new String[]{moduleName})) {
             if (cursorModule.moveToFirst()) {
                 moduleId = cursorModule.getInt(0);
             }
         }
-        if (moduleId == -1) {
-            Toast.makeText(this, "Invalid module selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
 
         // Insert quiz details into the database
         ContentValues quizValues = new ContentValues();

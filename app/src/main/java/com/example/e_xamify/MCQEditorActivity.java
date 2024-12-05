@@ -47,29 +47,33 @@ public class MCQEditorActivity extends AppCompatActivity {
 
         quiz_id = getIntent().getIntExtra("quiz_id", -1);
         user_id = getIntent().getIntExtra("user_id", -1); // Retrieve the user ID from the intent
-
         String quizTitle = getIntent().getStringExtra("quiz_title");
 
-        // Initialize UI components
-        quizTitleTextView = findViewById(R.id.quizTitleTextView); // Ensure this is initialized
+
+        quizTitleTextView = findViewById(R.id.quizTitleTextView);
         questionNumberTextView = findViewById(R.id.questionNumber);
-
-        // Set quiz title
-        if (quizTitle != null) {
-            quizTitleTextView.setText(quizTitle);
-        }
-
-        // Initialize the database
-        dbHelper = new DatabaseHelper(this);
-        db = dbHelper.getWritableDatabase();
-
-        // Initialize UI components
         questionInput = findViewById(R.id.questionInput);
         optionAInput = findViewById(R.id.optionAInput);
         optionBInput = findViewById(R.id.optionBInput);
         optionCInput = findViewById(R.id.optionCInput);
         optionDInput = findViewById(R.id.optionDInput);
         correctOptionGroup = findViewById(R.id.correctOptionGroup);
+        prevButton = findViewById(R.id.prevButton);
+        nextButton = findViewById(R.id.nextButton);
+        deleteButton = findViewById(R.id.deleteButton);
+        completeButton = findViewById(R.id.completeButton); // Initialize the complete button
+        prevButton.setOnClickListener(v -> navigateToPreviousQuestion());
+        nextButton.setOnClickListener(v -> navigateToNextQuestion());
+        deleteButton.setOnClickListener(v -> showDeleteConfirmationDialog());
+        completeButton.setOnClickListener(v -> completeQuiz());
+
+        if (quizTitle != null) {
+            quizTitleTextView.setText(quizTitle);
+        }
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+
+
         correctOptionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -93,15 +97,7 @@ public class MCQEditorActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        // Set up button listeners
-        prevButton = findViewById(R.id.prevButton);
-        nextButton = findViewById(R.id.nextButton);
-        deleteButton = findViewById(R.id.deleteButton);
-        completeButton = findViewById(R.id.completeButton); // Initialize the complete button
-        prevButton.setOnClickListener(v -> navigateToPreviousQuestion());
-        nextButton.setOnClickListener(v -> navigateToNextQuestion());
-        deleteButton.setOnClickListener(v -> showDeleteConfirmationDialog());
-        completeButton.setOnClickListener(v -> completeQuiz()); // Set up click listener for complete button
+
 
         // Display the first question
         displayQuestion(questionNum);

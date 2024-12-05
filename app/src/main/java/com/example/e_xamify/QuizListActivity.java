@@ -67,7 +67,10 @@ public class QuizListActivity extends AppCompatActivity {
 
     private List<Quiz> loadQuizzesFromDatabase() {
         List<Quiz> quizList = new ArrayList<>();
-        Cursor cursor = db.query("Quiz", null, null, null, null, null, null);
+        String query = "SELECT q.quiz_id, q.quiz_title FROM Quiz q " +
+                "JOIN teacher_institution t ON q.user_id = t.teacher_id " +
+                "WHERE t.institution_id = (SELECT institution_id FROM teacher_institution WHERE teacher_id = ?)";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user_id)});
 
         if (cursor != null) {
             try {

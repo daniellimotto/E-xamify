@@ -3,6 +3,7 @@ package com.example.e_xamify;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -420,6 +421,52 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             }
             isTimerRunning = false; // Update flag
             Toast.makeText(this, "You returned in time. Be cautious!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("assignmentId", assignmentId);
+        outState.putInt("user_id", user_id);
+        outState.putInt("quizId", quizId);
+        outState.putInt("currentQuestionIndex", currentQuestionIndex);
+        outState.putLong("timeLeftInMillis", timeLeftInMillis);
+        outState.putBoolean("isTabRestrictorEnabled", isTabRestrictorEnabled);
+        outState.putInt("tabSwitchCount", tabSwitchCount);
+        outState.putBoolean("isPenaltyApplied", isPenaltyApplied);
+        outState.putBoolean("isSubmitting", isSubmitting);
+        outState.putBoolean("isTimerRunning", isTimerRunning);
+        outState.putBoolean("isNavigable", isNavigable);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        assignmentId = savedInstanceState.getInt("assignmentId");
+        user_id = savedInstanceState.getInt("user_id");
+        quizId = savedInstanceState.getInt("quizId");
+        currentQuestionIndex = savedInstanceState.getInt("currentQuestionIndex");
+        timeLeftInMillis = savedInstanceState.getLong("timeLeftInMillis");
+        isTabRestrictorEnabled = savedInstanceState.getBoolean("isTabRestrictorEnabled");
+        tabSwitchCount = savedInstanceState.getInt("tabSwitchCount");
+        isPenaltyApplied = savedInstanceState.getBoolean("isPenaltyApplied");
+        isSubmitting = savedInstanceState.getBoolean("isSubmitting");
+        isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
+        isNavigable = savedInstanceState.getBoolean("isNavigable");
+
+        // Restore the timer
+        if (isTimerRunning) {
+            startTimer();
+        }
+        showQuestion(currentQuestionIndex);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Handle the orientation change
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Do nothing, just prevent the activity from being recreated
         }
     }
 

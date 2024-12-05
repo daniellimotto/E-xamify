@@ -5,15 +5,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import java.util.ArrayList;
@@ -43,10 +48,27 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private CountDownTimer penaltyTimer; // Single instance for penalty timer
     private boolean isSubmitting = false; // Track if the user is submitting
     private boolean isTimerRunning = false; // Track if the penalty timer is running
-
+    private OnBackInvokedCallback onBackInvokedCallback;
 
 
     private boolean isNavigable; // To control backward navigation
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void showBackConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Submit Assignment")
+                .setMessage("Do you want to submit the assignment?")
+                .setPositiveButton("Submit", (dialog, which) -> {
+                    saveSelectedOption(); // Save the current selection
+                    submitAssignment();   // Submit the assignment
+                })
+                .setNegativeButton("Continue", (dialog, which) -> {
+                    // Do nothing, just dismiss the dialog
+                    dialog.dismiss();
+                })
+                .setCancelable(true)
+                .show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +78,9 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         createNotificationChannel();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            onBackInvokedCallback = () -> showBackConfirmationDialog();
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, onBackInvokedCallback);
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
@@ -104,7 +129,10 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             saveSelectedOption();
             showNextQuestion();
         });
-        previousButton.setOnClickListener(v -> showPreviousQuestion());
+        previousButton.setOnClickListener(v -> {
+            saveSelectedOption();
+            showPreviousQuestion();
+        });
         submitButton.setOnClickListener(v -> {
             saveSelectedOption();
             submitAssignment();
@@ -272,6 +300,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                saveSelectedOption();
                 submitAssignment();
             }
         }.start();
@@ -293,6 +322,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             penaltyTimer = null;
         }
         isTimerRunning = false; // Update flag
+        saveSelectedOption();
 
         Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AssignmentResultActivity.class);

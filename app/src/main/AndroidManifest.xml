@@ -45,6 +45,7 @@
         <activity android:name=".StudentEnrollModuleActivity" />
         <activity android:name=".AssignmentTakingActivity"
             android:enableOnBackInvokedCallback="true"/>
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".AssignmentDetailsActivity"/>
         <activity android:name=".AssignmentResultActivity" />
         <activity android:name=".QuizResultActivity" />

@@ -39,10 +39,14 @@ public class QuizListActivity extends AppCompatActivity {
         quizAdapter.setOnItemClickListener(new QuizAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Quiz quiz) {
-                Intent intent = new Intent(QuizListActivity.this, EditQuizInterface.class);
-                intent.putExtra("quiz_id", (int) quiz.getQuizId());
-                intent.putExtra("user_id", user_id);
-                startActivity(intent);
+                if (isQuizLaunchedAsAssignment(quiz.getQuizId())) {
+                    Toast.makeText(QuizListActivity.this, "Quiz has been launched as an assignment and cannot be edited", Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent intent = new Intent(QuizListActivity.this, EditQuizInterface.class);
+                    intent.putExtra("quiz_id", (int) quiz.getQuizId());
+                    intent.putExtra("user_id", user_id);
+                    startActivity(intent);
+                }
             }
         });
 

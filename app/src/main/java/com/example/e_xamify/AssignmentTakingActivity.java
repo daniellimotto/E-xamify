@@ -324,6 +324,28 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         isTimerRunning = false; // Update flag
         saveSelectedOption();
 
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Iterate over all questions
+        for (Mcq question : questions) {
+            Cursor cursor = db.rawQuery(
+                    "SELECT selected_option_id FROM quiz_submission WHERE assignment_id = ? AND question_id = ? AND user_id = ?",
+                    new String[]{String.valueOf(assignmentId), String.valueOf(question.getQuestionId()), String.valueOf(user_id)}
+            );
+
+            // If no entry exists, insert a new entry with NULL for selected_option_id
+            if (!cursor.moveToFirst()) {
+                ContentValues values = new ContentValues();
+                values.put("assignment_id", assignmentId);
+                values.put("question_id", question.getQuestionId());
+                values.put("user_id", user_id);
+                values.put("selected_option_id", (Integer) null); // Set selected_option_id to NULL
+                values.put("is_correct", 0); // Assume unanswered questions are incorrect
+                db.insert("quiz_submission", null, values);
+            }
+            cursor.close();
+        }
+
         Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AssignmentResultActivity.class);
         intent.putExtra("assignmentId", assignmentId);

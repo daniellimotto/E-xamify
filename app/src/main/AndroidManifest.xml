@@ -49,6 +49,7 @@
         <activity android:name=".AssignmentDetailsActivity"/>
         <activity android:name=".AssignmentResultActivity" />
         <activity android:name=".QuizResultActivity" />
+        <activity android:name=".ViewModulesActivity" />
     </application>
 
 </manifest>

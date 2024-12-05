@@ -55,6 +55,11 @@ public class ModuleActivity extends AppCompatActivity {
             return;
         }
 
+        if (!isModuleNameUnique(moduleName)) {
+            Toast.makeText(this, "Module Exist. Please choose a different module.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String uniqueModuleKey = generateUniqueModuleKey();
         if (uniqueModuleKey == null) {
             Toast.makeText(this, "Failed to generate unique module key. Please try again.", Toast.LENGTH_SHORT).show();
@@ -75,6 +80,15 @@ public class ModuleActivity extends AppCompatActivity {
             Toast.makeText(this, "Module created successfully!", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity and return to the previous one
         }
+    }
+
+    private boolean isModuleNameUnique(String moduleName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT 1 FROM module WHERE module_name = ? AND institution_id = ?",
+                new String[]{moduleName, String.valueOf(user_id)});
+        boolean isUnique = !cursor.moveToFirst();
+        cursor.close();
+        return isUnique;
     }
 
     private String generateUniqueModuleKey() {

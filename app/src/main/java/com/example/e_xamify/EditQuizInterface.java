@@ -37,13 +37,12 @@ public class EditQuizInterface extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_quiz_interface);
+        setContentView(R.layout.activity_quiz_interface); // Use the same layout
         user_id = getIntent().getIntExtra("user_id", -1);
         quizId = getIntent().getIntExtra("quiz_id", -1); // Retrieve quiz_id as int
         titleInput = findViewById(R.id.titleInput);
         durationInput = findViewById(R.id.durationInput);
         instructionInput = findViewById(R.id.instructionInput);
-        attemptsSpinner = findViewById(R.id.attemptsSpinner);
         quizTypeSpinner = findViewById(R.id.quizTypeSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner);
         navigableSwitch = findViewById(R.id.navigableSwitch);
@@ -52,26 +51,21 @@ public class EditQuizInterface extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        // Populate spinners
-
-        setupAttemptsSpinner();
-
-
-        // "Edit MCQ" Button
-        editMCQButton = findViewById(R.id.editMCQButton);
-        editMCQButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editMCQ();
-            }
-        });
-
         Intent intent = getIntent();
         quizId = intent.getIntExtra("quiz_id", -1); // Retrieve quiz_id as int
 
         if (quizId != -1) {
             loadQuizDetails(quizId);
         }
+
+        Button proceedButton = findViewById(R.id.proceedButton);
+        proceedButton.setText("Proceed to Edit MCQ"); // Set button text for editing
+        proceedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editMCQ();
+            }
+        });
     }
 
     private void populateQuizTypeSpinner(String quizTypeName) {
@@ -126,11 +120,6 @@ public class EditQuizInterface extends AppCompatActivity {
 
 
 
-    private void setupAttemptsSpinner() {
-        ArrayAdapter<String> attemptsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"1", "2", "3", "Infinite"});
-        attemptsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        attemptsSpinner.setAdapter(attemptsAdapter);
-    }
 
 
     private void loadQuizDetails(int quizId) {

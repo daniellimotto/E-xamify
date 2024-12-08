@@ -52,9 +52,10 @@ public class QuizInterface extends AppCompatActivity {
         populateQuizTypeSpinner();
         populateModuleSpinner();  // Populate module spinner
 
-        // "Create MCQ" Button
-        createMCQButton = findViewById(R.id.createMCQButton);
-        createMCQButton.setOnClickListener(new View.OnClickListener() {
+
+        Button proceedButton = findViewById(R.id.proceedButton);
+        proceedButton.setText("Proceed to Create MCQ"); // Set button text for creating
+        proceedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createMCQ();

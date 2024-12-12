@@ -64,7 +64,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
                     submitAssignment();   // Submit the assignment
                 })
                 .setNegativeButton("Continue", (dialog, which) -> {
-                    // Do nothing, just dismiss the dialog
                     dialog.dismiss();
                 })
                 .setCancelable(true)
@@ -75,9 +74,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_taking);
-
         createNotificationChannel();
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             onBackInvokedCallback = () -> showBackConfirmationDialog();
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -86,26 +83,17 @@ public class AssignmentTakingActivity extends AppCompatActivity {
                 requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
         }
-
         assignmentId = getIntent().getIntExtra("assignmentId", -1);
         user_id = getIntent().getIntExtra("user_id", -1);
-
         if (assignmentId == -1 || user_id == -1) {
             Toast.makeText(this, "Error loading assignment", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-
-        // Initialize DatabaseHelper
         dbHelper = new DatabaseHelper(this);
-
         quizId = getQuizIdForAssignment(assignmentId);
-
-        // Initialize isTabRestrictorEnabled AFTER dbHelper initialization
         isTabRestrictorEnabled = getQuizTabRestrictor(quizId);
-
-        isNavigable = getQuizNavigable(quizId); // Fetch whether backward navigation is allowed
-
+        isNavigable = getQuizNavigable(quizId);
         initializeViews();
         loadQuestions();
         showQuestion(currentQuestionIndex);
@@ -119,13 +107,11 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         previousButton = findViewById(R.id.previousButton);
         submitButton = findViewById(R.id.submitButton);
-        timerText = findViewById(R.id.timerText); // Ensure this line is present
+        timerText = findViewById(R.id.timerText);
         questionNumberText = findViewById(R.id.questionNumberText);
-
         if (!isNavigable) {
-            previousButton.setVisibility(View.GONE); // Hide Previous button if backward navigation is disabled
+            previousButton.setVisibility(View.GONE);
         }
-
         nextButton.setOnClickListener(v -> {
             saveSelectedOption();
             showNextQuestion();
@@ -239,13 +225,9 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("selected_option_id", selectedOptionId);
-
         values.put("is_correct", selectedOptionId == (currentQuestion.getCorrectOption()) - 1 ? 1 : 0);
-
-
         int rowsAffected = db.update("quiz_submission", values, "assignment_id = ? AND question_id = ? AND user_id = ?",
                 new String[]{String.valueOf(assignmentId), String.valueOf(currentQuestion.getQuestionId()), String.valueOf(user_id)});
-
         if (rowsAffected == 0) {
             values.put("assignment_id", assignmentId);
             values.put("question_id", currentQuestion.getQuestionId());
@@ -256,18 +238,14 @@ public class AssignmentTakingActivity extends AppCompatActivity {
 
     private void showNextQuestion() {
         if (!isNavigable) {
-            // Check if an option is selected
             int selectedOptionId = optionsGroup.indexOfChild(findViewById(optionsGroup.getCheckedRadioButtonId())) + 1;
             if (selectedOptionId == 0) {
-                // No option selected, show a toast message
                 Toast.makeText(this, "Please fill in an answer as you are not allowed to go back.", Toast.LENGTH_SHORT).show();
-                return; // Prevent navigation
+                return;
             }
         }
-
-        // Proceed to the next question if conditions are met
         if (currentQuestionIndex < questions.size() - 1) {
-            saveSelectedOption(); // Save the current answer before moving
+            saveSelectedOption();
             currentQuestionIndex++;
             showQuestion(currentQuestionIndex);
         }
@@ -275,7 +253,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
 
 
     private void showPreviousQuestion() {
-        if (isNavigable && currentQuestionIndex > 0) { // Check if navigation is allowed
+        if (isNavigable && currentQuestionIndex > 0) {
             currentQuestionIndex--;
             showQuestion(currentQuestionIndex);
         }
@@ -289,8 +267,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             quizDuration = cursor.getInt(0);
         }
         cursor.close();
-        timeLeftInMillis = quizDuration * 60 * 1000; // Convert minutes to milliseconds
-
+        timeLeftInMillis = quizDuration * 60 * 1000;
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -298,7 +275,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
                 timeLeftInMillis = millisUntilFinished;
                 updateTimer();
             }
-
             @Override
             public void onFinish() {
                 saveSelectedOption();
@@ -317,31 +293,29 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     }
 
     private void submitAssignment() {
-        isSubmitting = true; // Set flag to prevent penalties
+        isSubmitting = true;
         if (penaltyTimer != null) {
-            penaltyTimer.cancel(); // Cancel any running timers
+            penaltyTimer.cancel();
             penaltyTimer = null;
         }
-        isTimerRunning = false; // Update flag
+        isTimerRunning = false;
         saveSelectedOption();
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Iterate over all questions
         for (Mcq question : questions) {
             Cursor cursor = db.rawQuery(
                     "SELECT selected_option_id FROM quiz_submission WHERE assignment_id = ? AND question_id = ? AND user_id = ?",
                     new String[]{String.valueOf(assignmentId), String.valueOf(question.getQuestionId()), String.valueOf(user_id)}
             );
 
-            // If no entry exists, insert a new entry with NULL for selected_option_id
             if (!cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
                 values.put("assignment_id", assignmentId);
                 values.put("question_id", question.getQuestionId());
                 values.put("user_id", user_id);
-                values.put("selected_option_id", (Integer) null); // Set selected_option_id to NULL
-                values.put("is_correct", 0); // Assume unanswered questions are incorrect
+                values.put("selected_option_id", (Integer) null);
+                values.put("is_correct", 0);
                 db.insert("quiz_submission", null, values);
             }
             cursor.close();
@@ -352,7 +326,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         intent.putExtra("assignmentId", assignmentId);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
-        finish(); // End current activity
+        finish();
     }
 
     private void createNotificationChannel() {
@@ -361,26 +335,21 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             String channelName = "Penalty Notifications";
             String channelDescription = "Notifications for penalties when switching away from the quiz";
             int importance = android.app.NotificationManager.IMPORTANCE_HIGH;
-
             android.app.NotificationChannel channel = new android.app.NotificationChannel(channelId, channelName, importance);
             channel.setDescription(channelDescription);
-
             android.app.NotificationManager manager = getSystemService(android.app.NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
     private void showPenaltyNotification(long secondsRemaining) {
-        String channelId = "penalty_channel"; // Use the same ID from createNotificationChannel()
-
+        String channelId = "penalty_channel";
         android.app.NotificationManager manager = (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setContentTitle("Penalty Warning")
                 .setContentText("Return to the quiz within " + secondsRemaining + " seconds, or your assignment will be submitted with penalty!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
-
         manager.notify(1, builder.build());
     }
 
@@ -389,10 +358,8 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 101) { // 101 is the request code we used in Step 2
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
                 Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
             } else {
-                // Permission denied
                 Toast.makeText(this, "Notification permission denied. Notifications won't work.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -408,25 +375,23 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         return restrictor;
     }
     private void applyPenalty() {
-        if (isPenaltyApplied) return; // Prevent multiple penalties
-        isPenaltyApplied = true; // Mark penalty as applied
+        if (isPenaltyApplied) return;
+        isPenaltyApplied = true;
         Toast.makeText(this, "You exceeded the allowed tab switches. Assignment submitted.", Toast.LENGTH_SHORT).show();
-        submitAssignment(); // Automatically submit assignment
+        submitAssignment();
     }
 
 
     private void startPenaltyTimer(long seconds) {
         if (penaltyTimer != null) {
-            penaltyTimer.cancel(); // Cancel any existing timer
+            penaltyTimer.cancel();
         }
-
         isTimerRunning = true;
         penaltyTimer = new CountDownTimer(seconds * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Log.d("PENALTY_TIMER", "Seconds remaining: " + millisUntilFinished / 1000);
             }
-
             @Override
             public void onFinish() {
                 isTimerRunning = false;
@@ -437,23 +402,19 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         }.start();
     }
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
         if (isSubmitting) {
-            return; // Ignore penalties if user is submitting
+            return;
         }
 
         if (isTabRestrictorEnabled && !isPenaltyApplied) {
-            tabSwitchCount++; // Increment tab switch count
+            tabSwitchCount++;
             if (tabSwitchCount == 1 || tabSwitchCount == 2) {
-                // Show warning notification for the first two switches
-                showPenaltyNotification(10); // 10-second penalty warning
-                startPenaltyTimer(10); // Start 10-second penalty timer
+                showPenaltyNotification(10);
+                startPenaltyTimer(10);
             } else if (tabSwitchCount >= 3) {
-                // Apply penalty and submit assignment immediately on the third switch
                 applyPenalty();
             }
         }
@@ -464,14 +425,13 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (isPenaltyApplied) {
-            finish(); // Close activity if penalty is applied
+            finish();
         } else if (isTimerRunning && (tabSwitchCount == 1 || tabSwitchCount == 2)) {
-            // User returned within time, cancel the penalty timer
             if (penaltyTimer != null) {
                 penaltyTimer.cancel();
-                penaltyTimer = null; // Clear timer instance
+                penaltyTimer = null;
             }
-            isTimerRunning = false; // Update flag
+            isTimerRunning = false;
             Toast.makeText(this, "You returned in time. Be cautious!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -505,8 +465,6 @@ public class AssignmentTakingActivity extends AppCompatActivity {
         isSubmitting = savedInstanceState.getBoolean("isSubmitting");
         isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
         isNavigable = savedInstanceState.getBoolean("isNavigable");
-
-        // Restore the timer
         if (isTimerRunning) {
             startTimer();
         }
@@ -516,9 +474,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Handle the orientation change
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // Do nothing, just prevent the activity from being recreated
         }
     }
 

@@ -31,25 +31,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("INSERT INTO question_type (question_type_id, type_name, type_description) VALUES (1, 'MCQ', 'Multiple Choice Question')");
 
-        // Add one Institution
+
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (1, 'admin@mit.edu', 'adminpass', 'MIT Admin', 1, '2023-01-01')");
         db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
                 "VALUES (1, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MITKEY2023', '2023-01-01')");
 
-        // Add one Teacher
+
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (2, 'teacher@mit.edu', 'teacherpass', 'Prof. John Smith', 2, '2023-06-15')");
         db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_img_url) " +
                 "VALUES (2, 'Prof. John Smith', 'Mathematics', NULL)");
 
-        // Add one Student
+
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (3, 'student@mit.edu', 'studentpass', 'Alice Brown', 3, '2023-09-01')");
         db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
                 "VALUES (3, 'Alice Brown', NULL)");
 
-        //kenz seeder
+
         db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
                 "VALUES (4, '3', '3', '3', 3, '2024-11-22')");
         db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
@@ -87,35 +87,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
                 "VALUES (4, 3, 2, '2+2', 1, NULL)");
 
-        // Link Teacher and Student to Institution
+
         db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
                 "VALUES (1, 2, 1, '2023-06-15')");
         db.execSQL("INSERT INTO student_institution (student_institution_id, student_id, institution_id, enrollment_date) " +
                 "VALUES (1, 3, 1, '2023-09-01')");
 
-        // Add one Module linked to Institution
+
         db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
                 "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics', 'math')");
 
-        // Add one Quiz created by the Teacher
+
         db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions) " +
                 "VALUES (1, 1, 'Math Quiz 101', 30, 'Answer all questions carefully.', 3, 2, 1, 0,4, 10)");
 
-        // Add Questions for the Quiz
         db.execSQL("INSERT INTO question (question_id, question_number, quiz_id, question_text, question_type_id, question_img_url) " +
                 "VALUES (1, 1, 1, 'What is 2 + 2?', 1, NULL)");
         db.execSQL("INSERT INTO mcq (option_id, question_id, optionA, optionB, optionC, optionD, correctOption) " +
                 "VALUES (1, 1, '3', '4', '5', '6', 2)");
 
-        // Add Quiz Attempt by Student
+
         db.execSQL("INSERT INTO quiz_attempt (attempt_id, quiz_id, user_id, start_time, end_time, score, status) " +
                 "VALUES (1, 1, 3, '2023-09-15 10:00:00', '2023-09-15 10:30:00', 100, 'completed')");
 
-        // Add Submission for Quiz Attempt
+
         db.execSQL("INSERT INTO quiz_submission (submission_id, assignment_id, question_id, user_id, selected_option_id, answer_text, is_correct, submission_date) " +
                 "VALUES (1, 1, 1, 3, 2, NULL, 1, '2023-09-15 10:15:00')");
 
-        // Add Feedback for Student Attempt
+
         db.execSQL("INSERT INTO feedback (feedback_id, user_id, assignment_id, feedback_text, is_visible) " +
                 "VALUES (1, 2, 1, 'Great job! Perfect score.', 1)");
 
@@ -126,7 +125,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("PRAGMA foreign_keys = ON;");
-        // Create tables
         db.execSQL("CREATE TABLE user_role (user_role_id INTEGER PRIMARY KEY, role_name TEXT, role_description TEXT)");
         db.execSQL("CREATE TABLE user (user_id INTEGER PRIMARY KEY, user_email TEXT, user_password TEXT, user_name TEXT, user_role_id INTEGER, joined_date TEXT, FOREIGN KEY(user_role_id) REFERENCES user_role(user_role_id))");
         db.execSQL("CREATE TABLE institution (user_id INTEGER PRIMARY KEY, institution_name TEXT, institution_phone TEXT, institution_address TEXT, institution_enrolment_key TEXT UNIQUE, institution_date_joined TEXT, FOREIGN KEY(user_id) REFERENCES user(user_id))");
@@ -150,7 +148,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Handle database upgrade as needed
         db.execSQL("DROP TABLE IF EXISTS user_role");
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS institution");

@@ -33,35 +33,22 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_launcher);
-
-        // Initialize UI elements
         quizSpinner = findViewById(R.id.spinner_quiz);
         startDateEditText = findViewById(R.id.editText_start_date);
         endDateEditText = findViewById(R.id.editText_end_date);
         launchAssignmentButton = findViewById(R.id.btn_launch_assignment);
-
-        // Retrieve teacher's user ID
         user_id = getIntent().getIntExtra("user_id", -1);
-
-        // Initialize database
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        // Populate spinner
         populateQuizSpinner();
-
-        // Set DatePicker dialogs
         startDateEditText.setOnClickListener(v -> showDatePickerDialog(startDateEditText));
         endDateEditText.setOnClickListener(v -> showDatePickerDialog(endDateEditText));
-
-        // Set launch button listener
         launchAssignmentButton.setOnClickListener(v -> launchAssignment());
     }
 
     private void populateQuizSpinner() {
         List<String> quizTitles = new ArrayList<>();
-
-        // Query to get only quiz titles for this teacher
         String query = "SELECT quiz_title FROM quiz WHERE user_id = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user_id)});
 
@@ -74,8 +61,6 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
             Toast.makeText(this, "No quizzes found for this teacher.", Toast.LENGTH_SHORT).show();
         }
         cursor.close();
-
-        // Set up the spinner with quiz titles only
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, quizTitles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quizSpinner.setAdapter(adapter);
@@ -128,7 +113,6 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         String query = "SELECT quiz_id, module_id, quiz_attempts FROM quiz WHERE quiz_title = ? AND user_id = ?";
         Cursor cursor = db.rawQuery(query, new String[]{quizTitle, String.valueOf(user_id)});
         Quiz quiz = null;
-
         if (cursor.moveToFirst()) {
             int quizId = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_id"));
             int moduleId = cursor.getInt(cursor.getColumnIndexOrThrow("module_id"));
@@ -155,16 +139,12 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         values.put("attempt_number_left", attemptNumber);
         values.put("assignment_start_date", startDate);
         values.put("assignment_end_date", endDate);
-
         db.insert("assignment", null, values);
     }
     private List<Student> getStudentsInModule(int moduleId) {
         List<Student> students = new ArrayList<>();
-
-        // Query to get student user IDs for the given module
         String query = "SELECT user_id FROM student_module WHERE module_id = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(moduleId)});
-
         if (cursor.moveToFirst()) {
             do {
                 int studentuser_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
@@ -175,29 +155,22 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         return students;
     }
     private void showDatePickerDialog(EditText editText) {
-        // Get current date
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        // Create and show DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
             // Format and set selected date to the EditText
             String date = selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay;
             editText.setText(date);
         }, year, month, day);
-
         datePickerDialog.show();
     }
     private boolean isEndDateValid(String startDate, String endDate) {
         try {
-            // Parse dates
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Date start = sdf.parse(startDate);
             Date end = sdf.parse(endDate);
-
-            // Validate end date is after start date
             return end != null && start != null && end.after(start);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -205,8 +178,6 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
             return false;
         }
     }
-
-
 
     @Override
     protected void onDestroy() {

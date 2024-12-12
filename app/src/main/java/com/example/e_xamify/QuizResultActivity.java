@@ -40,7 +40,7 @@ public class QuizResultActivity extends AppCompatActivity {
         toggleCorrectAnswersButton.setOnClickListener(v -> {
             showCorrectAnswers = !showCorrectAnswers;
             toggleCorrectAnswersButton.setText(showCorrectAnswers ? "Hide Correct Answers" : "Show Correct Answers");
-            loadQuizResults(); // Reload results to update view
+            loadQuizResults();
         });
     }
 
@@ -58,12 +58,13 @@ public class QuizResultActivity extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(
                 "SELECT q.question_text, m.optionA, m.optionB, m.optionC, m.optionD, m.correctOption, " +
-                        "s.selected_option_id, s.is_correct " +
+                        "COALESCE(s.selected_option_id, -1) AS selected_option_id, " +
+                        "COALESCE(s.is_correct, 0) AS is_correct " +
                         "FROM question q " +
                         "JOIN mcq m ON q.question_id = m.question_id " +
-                        "JOIN quiz_submission s ON q.question_id = s.question_id " +
-                        "WHERE s.assignment_id = ?",
-                new String[]{String.valueOf(assignmentId)}
+                        "LEFT JOIN quiz_submission s ON q.question_id = s.question_id AND s.assignment_id = ? " +
+                        "WHERE q.quiz_id = (SELECT quiz_id FROM assignment WHERE assignment_id = ?)",
+                new String[]{String.valueOf(assignmentId), String.valueOf(assignmentId)}
         );
 
         if (cursor.moveToFirst()) {
@@ -93,32 +94,30 @@ public class QuizResultActivity extends AppCompatActivity {
         questionContainer.setPadding(16, 16, 16, 16);
         questionContainer.setBackgroundResource(android.R.color.background_light);
 
-        // Display the question
         TextView questionView = new TextView(this);
         questionView.setText(questionText);
         questionView.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         questionView.setPadding(0, 0, 0, 8);
         questionContainer.addView(questionView);
 
-        // Adjust correctOption to align with the logic in saveSelectedOption
         int adjustedCorrectOption = correctOption - 1; // Assuming correctOption starts from 1
-
-        // Display the options
         String[] options = {optionA, optionB, optionC, optionD};
+
         for (int i = 0; i < options.length; i++) {
             TextView optionView = new TextView(this);
             optionView.setText((i + 1) + ". " + options[i]);
             optionView.setTextAppearance(this, android.R.style.TextAppearance_Small);
 
-            // Highlight the selected answer
-            if (i == selectedOption) {
+            if (selectedOption == -1) {
+                if (showCorrectAnswers && i == adjustedCorrectOption) {
+                    optionView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                    optionView.append(" (Correct Answer)");
+                }
+            } else if (i == selectedOption) {
                 optionView.setTextColor(isCorrect ? getResources().getColor(android.R.color.holo_green_dark)
                         : getResources().getColor(android.R.color.holo_red_dark));
                 optionView.append(isCorrect ? " (Correct)" : " (Incorrect)");
-            }
-
-            // Highlight the correct answer if it hasn't already been marked
-            if (showCorrectAnswers && i == adjustedCorrectOption && i != selectedOption) {
+            } else if (showCorrectAnswers && i == adjustedCorrectOption) {
                 optionView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 optionView.append(" (Correct Answer)");
             }
@@ -127,7 +126,7 @@ public class QuizResultActivity extends AppCompatActivity {
             questionContainer.addView(optionView);
         }
 
-        // Add a divider for better separation
+        // Add a divider
         View divider = new View(this);
         divider.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

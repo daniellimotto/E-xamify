@@ -31,7 +31,7 @@ public class QuizListActivity extends AppCompatActivity {
         quizzesRecyclerView = findViewById(R.id.quizzesRecyclerView);
         quizzesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Load quizzes from the database
+        // Get Quiz from DB
         quizzes = loadQuizzesFromDatabase();
         quizAdapter = new QuizAdapter(quizzes);
         quizzesRecyclerView.setAdapter(quizAdapter);

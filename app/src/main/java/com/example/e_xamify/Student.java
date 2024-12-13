@@ -1,13 +1,13 @@
 package com.example.e_xamify;
 
 public class Student {
-    private int user_id;  // Added to match the primary key in the schema
+    private int user_id;
     private String student_email;
     private String student_password;
     private String student_name;
     private String student_joined_date;
     private int student_role_id;
-    private int institution_id;  // Represents enrollment in an institution
+    private int institution_id;
     public Student(int user_id){
         this.user_id = user_id;
     }
@@ -79,7 +79,6 @@ public class Student {
         this.institution_id = institution_id;
     }
 
-    // toString method
     @Override
     public String toString() {
         return "Student{" +

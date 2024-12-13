@@ -17,10 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// Import the standalone classes
-import com.example.e_xamify.Institution;
-import com.example.e_xamify.Module;
-import com.example.e_xamify.Assignment;
 
 public class StudentDashboardActivity extends AppCompatActivity {
     private static final String TAG = "StudentDashboardActivity";
@@ -50,7 +46,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         institutionSpinner = findViewById(R.id.institutionSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner);
-        assignmentListView = findViewById(R.id.quizListView); // Reuse the same ListView ID
+        assignmentListView = findViewById(R.id.quizListView);
         viewPastResultsButton = findViewById(R.id.viewPastResultsButton);
 
 
@@ -104,7 +100,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(0);
                 String name = cursor.getString(1);
-                institutions.add(new Institution(id, name, null, null, null, null, null)); // Adjust constructor as needed
+                institutions.add(new Institution(id, name, null, null, null, null, null));
             }
 
             if (institutions.isEmpty()) {

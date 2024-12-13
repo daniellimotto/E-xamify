@@ -28,7 +28,6 @@
         android:layout_marginHorizontal="16dp"
         android:hint="Enter quiz title" />
 
-    <!-- Quiz Type Spinner -->
     <TextView
         android:id="@+id/quizTypeLabel"
         android:layout_width="wrap_content"
@@ -48,7 +47,6 @@
         app:layout_constraintTop_toBottomOf="@id/quizTypeLabel"
         android:layout_marginHorizontal="16dp" />
 
-    <!-- Module Spinner -->
     <TextView
         android:id="@+id/moduleLabel"
         android:layout_width="wrap_content"
@@ -68,8 +66,6 @@
         app:layout_constraintTop_toBottomOf="@id/moduleLabel"
         android:layout_marginHorizontal="16dp" />
 
-
-    <!-- Duration Input -->
     <TextView
         android:id="@+id/durationLabel"
         android:layout_width="wrap_content"
@@ -91,7 +87,6 @@
         android:layout_marginHorizontal="16dp"
         android:hint="Enter duration in minutes" />
 
-    <!-- Instructions Input -->
     <TextView
         android:id="@+id/instructionLabel"
         android:layout_width="wrap_content"
@@ -112,10 +107,6 @@
         android:layout_marginHorizontal="16dp"
         android:hint="Enter instructions" />
 
-
-
-
-    <!-- Navigable Option: Yes / No Switch -->
     <TextView
         android:id="@+id/navigableLabel"
         android:layout_width="wrap_content"
@@ -134,7 +125,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp" />
 
-    <!-- Restrict Tab Option: Yes / No Switch -->
     <TextView
         android:id="@+id/tabRestrictLabel"
         android:layout_width="wrap_content"
@@ -153,9 +143,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp" />
 
-
-
-    <!-- Save Button -->
     <Button
         android:id="@+id/proceedButton"
         android:layout_width="wrap_content"

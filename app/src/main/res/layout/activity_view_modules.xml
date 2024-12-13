@@ -27,7 +27,6 @@
             android:stretchColumns="*"
             android:shrinkColumns="*">
 
-            <!-- Header Row -->
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -57,7 +56,6 @@
                     android:gravity="center" />
             </TableRow>
 
-            <!-- Header Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"

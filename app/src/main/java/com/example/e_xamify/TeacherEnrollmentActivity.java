@@ -19,16 +19,15 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
     private EditText enrollmentKeyInput;
     private Button enrollButton;
     private DatabaseHelper dbHelper;
-    private int user_id; // User ID passed from TeacherActivity
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enrollment); // Use the same XML layout
+        setContentView(R.layout.activity_enrollment); 
 
         dbHelper = new DatabaseHelper(this);
 
-        // Retrieve user ID from the Intent
         user_id = getIntent().getIntExtra("user_id", -1);
         if (user_id == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
@@ -57,13 +56,10 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Query to find the institution ID based on the enrollment key
         Cursor cursor = db.rawQuery("SELECT user_id FROM institution WHERE institution_enrolment_key = ?", new String[]{enrollmentKey});
 
         if (cursor.moveToFirst()) {
             long institutionuser_id = cursor.getLong(0);
-
-            // Check if the user is already enrolled in this institution
             Cursor checkCursor = db.rawQuery("SELECT * FROM teacher_institution WHERE teacher_id = ? AND institution_id = ?",
                     new String[]{String.valueOf(user_id), String.valueOf(institutionuser_id)});
 
@@ -75,7 +71,6 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
             }
             checkCursor.close();
 
-            // Insert the enrollment record
             ContentValues values = new ContentValues();
             values.put("teacher_id", user_id);
             values.put("institution_id", institutionuser_id);
@@ -86,7 +81,7 @@ public class TeacherEnrollmentActivity extends AppCompatActivity {
                 Toast.makeText(this, "Enrollment failed. Please check the enrollment key.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Successfully enrolled!", Toast.LENGTH_SHORT).show();
-                finish(); // Close this activity and return to TeacherActivity
+                finish();
             }
         } else {
             Toast.makeText(this, "Invalid enrollment key. Institution not found.", Toast.LENGTH_SHORT).show();

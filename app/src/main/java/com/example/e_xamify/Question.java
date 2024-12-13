@@ -10,7 +10,6 @@ public class Question {
     private int question_num;
 
     public Question() {
-        // Default constructor
     }
 
     public Question(int question_id, int quiz_id, int question_num, String question_text, int question_type_id, String question_img_url) {
@@ -22,7 +21,6 @@ public class Question {
         this.question_img_url = question_img_url;
     }
 
-    // Getters
     public int getQuestionId() {
         return question_id;
     }
@@ -47,7 +45,6 @@ public class Question {
         return question_num;
     }
 
-    // Setters
     public void setQuestionText(String questionText) {
         this.question_text = questionText;
     }
@@ -68,7 +65,6 @@ public class Question {
         this.question_type_id = question_type_id;
     }
 
-    // toString() method for easy display of the question details
     @Override
     public String toString() {
         return "Question ID: " + question_id + "\n" +

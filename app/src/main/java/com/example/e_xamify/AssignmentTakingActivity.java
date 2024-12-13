@@ -44,15 +44,15 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private TextView timerText;
     private boolean isTabRestrictorEnabled;
-    private int tabSwitchCount = 0; // Track how many times the user switches tabs, Max given: 2, above 2 auto submission
-    private boolean isPenaltyApplied = false; // Boolean penalty applied or not
-    private CountDownTimer penaltyTimer; // Separate timer for quiting tab penalty timer: 10 seconds
+    private int tabSwitchCount = 0; 
+    private boolean isPenaltyApplied = false; 
+    private CountDownTimer penaltyTimer; 
     private boolean isSubmitting = false;
     private boolean isTimerRunning = false;
     private OnBackInvokedCallback onBackInvokedCallback;
 
 
-    private boolean isNavigable; // Boolean to access whether the quiz can be move to previous or next question
+    private boolean isNavigable; 
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void showBackConfirmationDialog() {
@@ -356,7 +356,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 101) { // 101 is the request code used in Step 2
+        if (requestCode == 101) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
             } else {
@@ -396,7 +396,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             public void onFinish() {
                 isTimerRunning = false;
                 if (!isSubmitting && (tabSwitchCount == 1 || tabSwitchCount == 2)) {
-                    applyPenalty(); // Apply penalty if the user don't return on 10 second time
+                    applyPenalty();  
                 }
             }
         }.start();

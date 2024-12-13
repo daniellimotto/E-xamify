@@ -34,9 +34,9 @@ public class MCQEditorActivity extends AppCompatActivity {
     private int selectedCorrectOptionId = -1;
     private Button prevButton, nextButton, deleteButton, completeButton;
     private int quiz_id;
-    private int questionNum = 1; // Initialize question number to 1
+    private int questionNum = 1;
     private int question_type_id = 1; 
-    private int user_id; // Add a variable to store the user ID
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MCQEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mcq_editor);
 
         quiz_id = getIntent().getIntExtra("quiz_id", -1);
-        user_id = getIntent().getIntExtra("user_id", -1); // Retrieve the user ID from the intent
+        user_id = getIntent().getIntExtra("user_id", -1); 
         String quizTitle = getIntent().getStringExtra("quiz_title");
 
 
@@ -59,7 +59,7 @@ public class MCQEditorActivity extends AppCompatActivity {
         prevButton = findViewById(R.id.prevButton);
         nextButton = findViewById(R.id.nextButton);
         deleteButton = findViewById(R.id.deleteButton);
-        completeButton = findViewById(R.id.completeButton); // Initialize the complete button
+        completeButton = findViewById(R.id.completeButton); 
         prevButton.setOnClickListener(v -> navigateToPreviousQuestion());
         nextButton.setOnClickListener(v -> navigateToNextQuestion());
         deleteButton.setOnClickListener(v -> showDeleteConfirmationDialog());
@@ -75,11 +75,10 @@ public class MCQEditorActivity extends AppCompatActivity {
         correctOptionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                selectedCorrectOptionId = checkedId; // Update the selected option ID
+                selectedCorrectOptionId = checkedId; 
             }
         });
 
-        // Set up save button click listener
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,30 +87,25 @@ public class MCQEditorActivity extends AppCompatActivity {
             }
         });
 
-        // If no questions exist, initialize with a default question
+
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM question WHERE quiz_id = ?", new String[]{String.valueOf(quiz_id)});
         if (cursor.moveToFirst() && cursor.getInt(0) == 0) {
-            saveQuestion(); // Save a default question if none exist
+            saveQuestion(); 
         }
         cursor.close();
 
-
-
-        // Display the first question
         displayQuestion(questionNum);
-        questionNumberTextView.setText("Question " + questionNum); // Update question number // Ensure question number is displayed initially
+        questionNumberTextView.setText("Question " + questionNum);
 
     }
 
     private int saveQuestion() {
-        // Get values from input fields
+
         String questionText = questionInput.getText().toString();
         String optionA = optionAInput.getText().toString();
         String optionB = optionBInput.getText().toString();
         String optionC = optionCInput.getText().toString();
         String optionD = optionDInput.getText().toString();
-
-        // Validate inputs
         if (questionText.isEmpty() || optionA.isEmpty() || optionB.isEmpty() || optionC.isEmpty() || optionD.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return -1;
@@ -124,9 +118,8 @@ public class MCQEditorActivity extends AppCompatActivity {
             return -1;
         }
 
-        int questionId = -1;  // Initialize questionId
+        int questionId = -1; 
         try {
-            // Insert or update question in the question table
             ContentValues questionValues = new ContentValues();
             questionValues.put("quiz_id", quiz_id);
             questionValues.put("question_text", questionText);
@@ -135,11 +128,10 @@ public class MCQEditorActivity extends AppCompatActivity {
 
             Cursor cursor = db.rawQuery("SELECT question_id FROM question WHERE quiz_id = ? AND question_number = ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
             if (cursor.moveToFirst()) {
-                // If the question exists, get its question_id
+            
                 questionId = cursor.getInt(cursor.getColumnIndex("question_id"));
                 db.update("question", questionValues, "question_id = ?", new String[]{String.valueOf(questionId)});
             } else {
-                // Insert new question and retrieve its ID
                 long insertedQuestionId = db.insert("question", null, questionValues);
                 if (insertedQuestionId == -1) {
                     throw new Exception("Failed to insert question into the question table");
@@ -151,8 +143,6 @@ public class MCQEditorActivity extends AppCompatActivity {
             if (questionId == -1) {
                 throw new Exception("Question ID is invalid after insertion.");
             }
-
-            // Proceed with inserting or updating options in mcq table
             ContentValues mcqValues = new ContentValues();
             mcqValues.put("question_id", questionId);
             mcqValues.put("optionA", optionA);
@@ -193,7 +183,7 @@ public class MCQEditorActivity extends AppCompatActivity {
         } else if (selectedCorrectOptionId == R.id.optionDRadio) {
             return 4;
         } else {
-            return -1; // No option selected
+            return -1;
         }
     }
 
@@ -217,12 +207,6 @@ public class MCQEditorActivity extends AppCompatActivity {
                 optionBInput.setText(optionB);
                 optionCInput.setText(optionC);
                 optionDInput.setText(optionD);
-
-                Log.d("DisplayQuestion", "Option A: " + optionA);
-                Log.d("DisplayQuestion", "Option B: " + optionB);
-                Log.d("DisplayQuestion", "Option C: " + optionC);
-                Log.d("DisplayQuestion", "Option D: " + optionD);
-                Log.d("DisplayQuestion", "Correct Option: " + correctOption);
 
                 if (correctOption == 1) {
                     correctOptionGroup.check(R.id.optionARadio);
@@ -268,7 +252,6 @@ public class MCQEditorActivity extends AppCompatActivity {
             db.delete("question", "question_id=?", new String[]{String.valueOf(questionId)});
             Toast.makeText(this, "Question deleted successfully", Toast.LENGTH_SHORT).show();
 
-            // Renumber the remaining questions
             Cursor updateCursor = db.rawQuery("SELECT question_id FROM question WHERE quiz_id = ? AND question_number > ?", new String[]{String.valueOf(quiz_id), String.valueOf(questionNum)});
             while (updateCursor.moveToNext()) {
                 int updateQuestionId = updateCursor.getInt(updateCursor.getColumnIndex("question_id"));
@@ -279,13 +262,10 @@ public class MCQEditorActivity extends AppCompatActivity {
             }
             updateCursor.close();
 
-            // Adjust questionNum to the correct position
             questionNum--;
             if (questionNum < 1) {
                 questionNum = 1;
             }
-
-            // Display the current question or the previous one if the last question was deleted
             displayQuestion(questionNum);
         }
         cursor.close();
@@ -310,16 +290,16 @@ public class MCQEditorActivity extends AppCompatActivity {
     }
 
     private void completeQuiz() {
-        // Logic to complete the quiz and navigate back to the teacher's dashboard
+
         Intent intent = new Intent(MCQEditorActivity.this, TeacherActivity.class);
-        intent.putExtra("user_id", user_id); // Pass the user ID to the TeacherActivity
+        intent.putExtra("user_id", user_id); 
         startActivity(intent);
         finish(); 
     }
 
     @Override
     protected void onDestroy() {
-        // Close the database when the activity is destroyed
+
         db.close();
         super.onDestroy();
     }

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".QuizInterface">
 
-    <!-- Title Input -->
     <TextView
         android:id="@+id/titleLabel"
         android:layout_width="wrap_content"

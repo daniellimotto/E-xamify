@@ -91,7 +91,6 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         long quizId = selectedQuiz.getQuizId();
         int attemptNumber = selectedQuiz.getQuizAttempts();
 
-        // Get all students in the specific module
         List<Student> students = getStudentsInModule(moduleId);
 
         // Insert assignment for each student where they haven't had the specific quiz yet

@@ -25,7 +25,6 @@ public class StudentActivity extends AppCompatActivity {
         enrollInstitutionButton = findViewById(R.id.enrollInstitutionButton);
         enrollModuleButton = findViewById(R.id.enrollModuleButton);
 
-        // Get ID from passed intent
         user_id = getIntent().getIntExtra("user_id", -1);
         if (user_id == -1) {
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();

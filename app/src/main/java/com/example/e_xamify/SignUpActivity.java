@@ -124,15 +124,13 @@ public class SignUpActivity extends AppCompatActivity {
         String institutionPhone = institutionPhoneInput.getText().toString().trim();
         String institutionAddress = institutionAddressInput.getText().toString().trim();
 
-//        Set requirements for accepted passwords
         String passwordRegex = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*\\d).+$";
-//       Validate password and show/hide the warning
+
         if (!password.matches(passwordRegex)) {
             passwordWarning.setVisibility(View.VISIBLE);
             return;
         }
 
-//      if the default inputs are empty
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
             Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;

@@ -46,7 +46,6 @@ public class QuizInterface extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        // Spinner to show available quiz type from quiz_type table and module from institution_module table
         populateQuizTypeSpinner();
         populateModuleSpinner();
 
@@ -59,9 +58,6 @@ public class QuizInterface extends AppCompatActivity {
                 createMCQ();
             }
         });
-
-        Intent intent = getIntent();
-        int quizId = intent.getIntExtra("quiz_id", -1);
 
     }
 
@@ -135,7 +131,6 @@ public class QuizInterface extends AppCompatActivity {
             }
         }
 
-        // Insert quiz to the database
         ContentValues quizValues = new ContentValues();
         quizValues.put("quiz_title", quizTitle);
         quizValues.put("quiz_duration", quizDuration);

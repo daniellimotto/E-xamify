@@ -72,7 +72,6 @@ public class ViewModulesActivity extends AppCompatActivity {
                 tableRow.addView(createVerticalDivider());
                 tableRow.addView(keyTextView);
 
-                // Table dividers
                 tableLayout.addView(tableRow);
                 tableLayout.addView(createHorizontalDivider());
             } while (cursor.moveToNext());
@@ -86,7 +85,7 @@ public class ViewModulesActivity extends AppCompatActivity {
         View divider = new View(this);
         divider.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,
-                2)); // height
+                2));
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         return divider;
     }
@@ -94,7 +93,7 @@ public class ViewModulesActivity extends AppCompatActivity {
     private View createVerticalDivider() {
         View divider = new View(this);
         divider.setLayoutParams(new TableRow.LayoutParams(
-                1, // width
+                1,
                 TableRow.LayoutParams.MATCH_PARENT));
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         return divider;

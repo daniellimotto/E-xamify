@@ -19,7 +19,7 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
     private EditText enrollmentKeyInput;
     private Button enrollButton;
     private DatabaseHelper dbHelper;
-    private int user_id; // User ID passed from intent
+    private int user_id; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +60,6 @@ public class StudentEnrollmentActivity extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             long institutionuser_id = cursor.getLong(0);
-
-            // Check if the user is already enrolled in the institution
             Cursor checkCursor = db.rawQuery("SELECT * FROM student_institution WHERE student_id = ? AND institution_id = ?",
                     new String[]{String.valueOf(user_id), String.valueOf(institutionuser_id)});
 

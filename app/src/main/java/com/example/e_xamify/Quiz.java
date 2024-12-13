@@ -40,7 +40,6 @@ public class Quiz {
         this.quiz_attempts = quizAttempts;
     }
 
-    // Getters
     public int getQuizId() {
         return quiz_id;
     }
@@ -89,7 +88,6 @@ public class Quiz {
         return num_questions;
     }
 
-    // toString() method for easy display
     @Override
     public String toString() {
         return "Quiz{" +

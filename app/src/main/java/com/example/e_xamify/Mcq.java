@@ -19,7 +19,7 @@ public class Mcq extends Question {
     }
 
     public Mcq() {
-        super(); // Call the superclass
+        super(); 
     }
 
     public int getQuestionId() {

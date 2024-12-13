@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// Import the standalone classes
-import com.example.e_xamify.Institution;
-import com.example.e_xamify.Module;
-import com.example.e_xamify.Assignment;
+
 
 public class StudentDashboardActivity extends AppCompatActivity {
     private static final String TAG = "StudentDashboardActivity";
@@ -42,7 +39,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
         user_id = getIntent().getIntExtra("user_id", -1);
 
         if (user_id == -1) {
-            Log.e(TAG, "Invalid user ID received");
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -117,7 +113,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             institutionSpinner.setAdapter(adapter);
         } catch (Exception e) {
-            Log.e(TAG, "Error loading institutions: " + e.getMessage(), e);
             Toast.makeText(this, "Error loading institutions. Please try again.", Toast.LENGTH_SHORT).show();
         } finally {
             if (cursor != null) {
@@ -153,7 +148,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             moduleSpinner.setAdapter(adapter);
         } catch (Exception e) {
-            Log.e(TAG, "Error loading modules: " + e.getMessage(), e);
             handleDatabaseError(e);
         } finally {
             if (cursor != null) {
@@ -200,7 +194,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 startAssignment(selectedAssignment.getAssignmentId());
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error loading assignments: " + e.getMessage(), e);
             handleDatabaseError(e);
         } finally {
             if (cursor != null) {
@@ -220,7 +213,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private void handleDatabaseError(Exception e) {
-        Log.e(TAG, "Database error: " + e.getMessage(), e);
         Toast.makeText(this, "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
         finish();
     }

@@ -77,18 +77,21 @@ public class EditQuizInterface extends AppCompatActivity {
             int position = adapter.getPosition(quizTypeName);
             if (position >= 0) {
                 quizTypeSpinner.setSelection(position);
-            } else {
-                Log.e("SpinnerError", "Quiz type not found: " + quizTypeName);
             }
         }
     }
 
     private void populateModuleSpinner(String moduleName) {
-        Cursor cursor = db.rawQuery("SELECT m.module_name FROM module m INNER JOIN teacher_institution ti ON m.institution_id = ti.institution_id WHERE ti.teacher_id = ?", null);
+        String query = "SELECT m.module_name " +
+                "FROM module m " +
+                "INNER JOIN teacher_institution ti ON m.institution_id = ti.institution_id " +
+                "WHERE ti.teacher_id = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user_id)});
         ArrayList<String> modules = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                modules.add(cursor.getString(0));
+                modules.add(cursor.getString(cursor.getColumnIndexOrThrow("module_name")));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -100,12 +103,9 @@ public class EditQuizInterface extends AppCompatActivity {
             int position = adapter.getPosition(moduleName);
             if (position >= 0) {
                 moduleSpinner.setSelection(position);
-            } else {
-                Log.e("SpinnerError", "Module not found: " + moduleName);
-            }
+            } 
         }
     }
-
 
 
     private void loadQuizDetails(int quizId) {
@@ -198,7 +198,6 @@ public class EditQuizInterface extends AppCompatActivity {
             intent.putExtra("user_id", user_id);
             startActivity(intent);
         } catch (Exception e) {
-            Log.e("EditQuizInterface", "Error updating quiz", e);
             Toast.makeText(this, "Error updating quiz: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }

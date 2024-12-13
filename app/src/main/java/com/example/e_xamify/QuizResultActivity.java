@@ -3,7 +3,6 @@ package com.example.e_xamify;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,7 +27,6 @@ public class QuizResultActivity extends AppCompatActivity {
         assignmentId = getIntent().getIntExtra("assignmentId", -1);
 
         if (assignmentId == -1) {
-            Log.e("QuizResultActivity", "Assignment ID not received or invalid");
             Toast.makeText(this, "Error loading quiz result.", Toast.LENGTH_SHORT).show();
             finish();
             return;

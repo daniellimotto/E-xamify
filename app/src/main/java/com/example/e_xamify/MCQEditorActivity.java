@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import android.content.Intent;
 
@@ -179,7 +177,6 @@ public class MCQEditorActivity extends AppCompatActivity {
             questionNum++;
             displayQuestion(questionNum);
         } catch (Exception e) {
-            Log.e("SaveQuestionError", "Error saving question: ", e);
             Toast.makeText(this, "Error saving question: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return -1;
         }
@@ -238,9 +235,7 @@ public class MCQEditorActivity extends AppCompatActivity {
                 } else {
                     correctOptionGroup.clearCheck();
                 }
-            } else {
-                Log.e("DisplayQuestionError", "No MCQ found for question_id: " + questionId);
-            }
+            } 
             mcqCursor.close();
         } else {
             clearInputs();

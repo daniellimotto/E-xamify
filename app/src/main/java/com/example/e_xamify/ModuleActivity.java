@@ -78,6 +78,7 @@ public class ModuleActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Module created successfully!", Toast.LENGTH_SHORT).show();
             finish();
+        }
     }
 
     private boolean isModuleNameUnique(String moduleName) {

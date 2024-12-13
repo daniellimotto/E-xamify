@@ -1,13 +1,13 @@
 package com.example.e_xamify;
 
 public class Institution {
-    private int user_id;  // Changed from institution_id to user_id
+    private int user_id;
     private String institution_name;
     private String institution_address;
     private String institution_email;
     private String institution_phone;
-    private String institution_enrolment_key;  // Added enrolment key
-    private String institution_date_joined;    // Added date joined
+    private String institution_enrolment_key;
+    private String institution_date_joined;
 
     public Institution(int user_id, String institution_name, String institution_address, String institution_email, String institution_phone, String institution_enrolment_key, String institution_date_joined) {
         this.user_id = user_id;

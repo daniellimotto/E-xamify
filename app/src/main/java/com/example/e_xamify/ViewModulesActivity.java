@@ -39,7 +39,6 @@ public class ViewModulesActivity extends AppCompatActivity {
     private void displayModules() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Query to fetch modules for the current institution
         Cursor cursor = db.rawQuery(
                 "SELECT module_name, module_description, module_key FROM module WHERE institution_id = ?",
                 new String[]{String.valueOf(user_id)});
@@ -50,39 +49,31 @@ public class ViewModulesActivity extends AppCompatActivity {
                 String moduleDescription = cursor.getString(cursor.getColumnIndexOrThrow("module_description"));
                 String moduleKey = cursor.getString(cursor.getColumnIndexOrThrow("module_key"));
 
-                // Add a new row for each module
                 TableRow tableRow = new TableRow(this);
 
-                // Module Name
                 TextView nameTextView = new TextView(this);
                 nameTextView.setText(moduleName);
                 nameTextView.setPadding(8, 8, 8, 8);
                 nameTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                // Module Description
                 TextView descriptionTextView = new TextView(this);
                 descriptionTextView.setText(moduleDescription);
                 descriptionTextView.setPadding(8, 8, 8, 8);
                 descriptionTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                // Module Key (Copyable)
                 TextView keyTextView = new TextView(this);
                 keyTextView.setText(moduleKey);
                 keyTextView.setPadding(8, 8, 8, 8);
                 keyTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                keyTextView.setTextIsSelectable(true); // Make it copyable
-
-                // Add views to the row
+                keyTextView.setTextIsSelectable(true);
                 tableRow.addView(nameTextView);
                 tableRow.addView(createVerticalDivider());
                 tableRow.addView(descriptionTextView);
                 tableRow.addView(createVerticalDivider());
                 tableRow.addView(keyTextView);
 
-                // Add the row to the table layout
+                // Table dividers
                 tableLayout.addView(tableRow);
-
-                // Add a horizontal divider
                 tableLayout.addView(createHorizontalDivider());
             } while (cursor.moveToNext());
         } else {
@@ -95,7 +86,7 @@ public class ViewModulesActivity extends AppCompatActivity {
         View divider = new View(this);
         divider.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,
-                2)); // Divider height
+                2)); // height
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         return divider;
     }
@@ -103,7 +94,7 @@ public class ViewModulesActivity extends AppCompatActivity {
     private View createVerticalDivider() {
         View divider = new View(this);
         divider.setLayoutParams(new TableRow.LayoutParams(
-                1, // Divider width
+                1, // width
                 TableRow.LayoutParams.MATCH_PARENT));
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         return divider;

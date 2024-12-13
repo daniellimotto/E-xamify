@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,12 +19,11 @@ import java.util.ArrayList;
 
 public class QuizInterface extends AppCompatActivity {
 
-    private Button createMCQButton;
     private EditText titleInput;
     private EditText durationInput;
     private EditText instructionInput;
     private Spinner quizTypeSpinner;
-    private Spinner moduleSpinner; // New module spinner
+    private Spinner moduleSpinner;
     private Switch navigableSwitch;
     private Switch tabRestrictSwitch;
     private DatabaseHelper dbHelper;
@@ -41,20 +39,20 @@ public class QuizInterface extends AppCompatActivity {
         durationInput = findViewById(R.id.durationInput);
         instructionInput = findViewById(R.id.instructionInput);
         quizTypeSpinner = findViewById(R.id.quizTypeSpinner);
-        moduleSpinner = findViewById(R.id.moduleSpinner); // Initialize module spinner
+        moduleSpinner = findViewById(R.id.moduleSpinner);
         navigableSwitch = findViewById(R.id.navigableSwitch);
         tabRestrictSwitch = findViewById(R.id.tabRestrictSwitch);
 
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        // Populate spinners
+        // Spinner to show available quiz type from quiz_type table and module from institution_module table
         populateQuizTypeSpinner();
-        populateModuleSpinner();  // Populate module spinner
+        populateModuleSpinner();
 
 
         Button proceedButton = findViewById(R.id.proceedButton);
-        proceedButton.setText("Proceed to Create MCQ"); // Set button text for creating
+        proceedButton.setText("Proceed to Create MCQ");
         proceedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +61,7 @@ public class QuizInterface extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        int quizId = intent.getIntExtra("quiz_id", -1); // Retrieve quiz_id as int
+        int quizId = intent.getIntExtra("quiz_id", -1);
 
     }
 
@@ -83,7 +81,6 @@ public class QuizInterface extends AppCompatActivity {
     }
 
     private void populateModuleSpinner() {
-        // Query to get module names based on the teacher's institution
         String query = "SELECT m.module_name " +
                 "FROM module m " +
                 "INNER JOIN teacher_institution ti ON m.institution_id = ti.institution_id " +
@@ -101,7 +98,7 @@ public class QuizInterface extends AppCompatActivity {
         }
         cursor.close();
 
-        // Set up the Spinner with module data
+
         ArrayAdapter<String> moduleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, modules);
         moduleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         moduleSpinner.setAdapter(moduleAdapter);
@@ -138,7 +135,7 @@ public class QuizInterface extends AppCompatActivity {
             }
         }
 
-        // Insert quiz details into the database
+        // Insert quiz to the database
         ContentValues quizValues = new ContentValues();
         quizValues.put("quiz_title", quizTitle);
         quizValues.put("quiz_duration", quizDuration);
@@ -158,7 +155,6 @@ public class QuizInterface extends AppCompatActivity {
             return;
         }
         Toast.makeText(this, "Quiz Created Successfully with ID: " + quiz_id, Toast.LENGTH_SHORT).show();
-        // Pass the quiz ID and title to MCQEditorActivity
         Intent intent = new Intent(QuizInterface.this, MCQEditorActivity.class);
 
         intent.putExtra("quiz_title", quizTitle);

@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 
 
-
 public class StudentDashboardActivity extends AppCompatActivity {
     private static final String TAG = "StudentDashboardActivity";
     private Spinner institutionSpinner;
@@ -39,6 +38,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         user_id = getIntent().getIntExtra("user_id", -1);
 
         if (user_id == -1) {
+            Log.e(TAG, "Invalid user ID received");
             Toast.makeText(this, "User ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -46,7 +46,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         institutionSpinner = findViewById(R.id.institutionSpinner);
         moduleSpinner = findViewById(R.id.moduleSpinner);
-        assignmentListView = findViewById(R.id.quizListView); // Reuse the same ListView ID
+        assignmentListView = findViewById(R.id.quizListView);
         viewPastResultsButton = findViewById(R.id.viewPastResultsButton);
 
 
@@ -100,7 +100,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(0);
                 String name = cursor.getString(1);
-                institutions.add(new Institution(id, name, null, null, null, null, null)); // Adjust constructor as needed
+                institutions.add(new Institution(id, name, null, null, null, null, null));
             }
 
             if (institutions.isEmpty()) {
@@ -113,6 +113,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             institutionSpinner.setAdapter(adapter);
         } catch (Exception e) {
+            Log.e(TAG, "Error loading institutions: " + e.getMessage(), e);
             Toast.makeText(this, "Error loading institutions. Please try again.", Toast.LENGTH_SHORT).show();
         } finally {
             if (cursor != null) {
@@ -148,6 +149,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             moduleSpinner.setAdapter(adapter);
         } catch (Exception e) {
+            Log.e(TAG, "Error loading modules: " + e.getMessage(), e);
             handleDatabaseError(e);
         } finally {
             if (cursor != null) {
@@ -194,6 +196,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 startAssignment(selectedAssignment.getAssignmentId());
             });
         } catch (Exception e) {
+            Log.e(TAG, "Error loading assignments: " + e.getMessage(), e);
             handleDatabaseError(e);
         } finally {
             if (cursor != null) {
@@ -213,6 +216,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private void handleDatabaseError(Exception e) {
+        Log.e(TAG, "Database error: " + e.getMessage(), e);
         Toast.makeText(this, "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
         finish();
     }

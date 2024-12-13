@@ -15,7 +15,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void seedDatabase(SQLiteDatabase db) {
-        // Insert quiz types
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (1, 'Practice', 'Non-graded practice quiz')");
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (2, 'Coursework', 'Daily graded coursework')");
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (3, 'Exam', 'Graded exam')");

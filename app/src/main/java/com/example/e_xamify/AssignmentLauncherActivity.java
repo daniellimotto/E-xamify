@@ -76,13 +76,11 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
             return;
         }
 
-        // Validate dates
         if (!isEndDateValid(startDate, endDate)) {
             Toast.makeText(this, "End date must be greater than the start date.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Retrieve quizId and moduleId for the selected quiz title
         Quiz selectedQuiz = getQuizByTitle(selectedQuizTitle);
         if (selectedQuiz == null) {
             Toast.makeText(this, "Quiz not found.", Toast.LENGTH_SHORT).show();
@@ -93,10 +91,10 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         long quizId = selectedQuiz.getQuizId();
         int attemptNumber = selectedQuiz.getQuizAttempts();
 
-        // Fetch students in the selected module
+        // Get all students in the specific module
         List<Student> students = getStudentsInModule(moduleId);
 
-        // Insert assignment for each student, checking for existing assignments
+        // Insert assignment for each student where they haven't had the specific quiz yet
         int assignedCount = 0;
         for (Student student : students) {
             if (!isAlreadyAssigned(student.getUserId(), quizId)) {
@@ -148,7 +146,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 int studentuser_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"));
-                students.add(new Student(studentuser_id)); // Assuming Student class constructor takes user_id
+                students.add(new Student(studentuser_id));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -160,7 +158,7 @@ public class AssignmentLauncherActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            // Format and set selected date to the EditText
+
             String date = selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay;
             editText.setText(date);
         }, year, month, day);

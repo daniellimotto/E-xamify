@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,173 +7,178 @@
     android:layout_height="match_parent"
     tools:context=".MCQEditorActivity">
 
-    <TextView
-        android:id="@+id/quizTitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
-        
-    <TextView
-        android:id="@+id/questionNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/quizTitleTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/questionInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter Question"
-        app:layout_constraintTop_toBottomOf="@id/questionNumber"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="24dp"/>
-
-    <EditText
-        android:id="@+id/optionAInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Option A"
-        app:layout_constraintTop_toBottomOf="@id/questionInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <EditText
-        android:id="@+id/optionBInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Option B"
-        app:layout_constraintTop_toBottomOf="@id/optionAInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="8dp"/>
-
-    <EditText
-        android:id="@+id/optionCInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Option C"
-        app:layout_constraintTop_toBottomOf="@id/optionBInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="8dp"/>
-
-    <EditText
-        android:id="@+id/optionDInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Option D"
-        app:layout_constraintTop_toBottomOf="@id/optionCInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select the Correct Option"
-        app:layout_constraintTop_toBottomOf="@id/optionDInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
-
-    <RadioGroup
-        android:id="@+id/correctOptionGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/optionDInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:layout_marginTop="18dp">
-
-        <RadioButton
-            android:id="@+id/optionARadio"
+        <TextView
+            android:id="@+id/quizTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option A"/>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"/>
 
-        <RadioButton
-            android:id="@+id/optionBRadio"
+        <TextView
+            android:id="@+id/questionNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option B"/>
+            app:layout_constraintTop_toBottomOf="@+id/quizTitleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"/>
 
-        <RadioButton
-            android:id="@+id/optionCRadio"
+        <EditText
+            android:id="@+id/questionInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter Question"
+            app:layout_constraintTop_toBottomOf="@id/questionNumber"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp"
+            android:layout_marginTop="24dp"/>
+
+        <EditText
+            android:id="@+id/optionAInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Option A"
+            app:layout_constraintTop_toBottomOf="@id/questionInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/optionBInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Option B"
+            app:layout_constraintTop_toBottomOf="@id/optionAInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/optionCInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Option C"
+            app:layout_constraintTop_toBottomOf="@id/optionBInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/optionDInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Option D"
+            app:layout_constraintTop_toBottomOf="@id/optionCInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option C"/>
+            android:text="Select the Correct Option"
+            app:layout_constraintTop_toBottomOf="@id/optionDInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
 
-        <RadioButton
-            android:id="@+id/optionDRadio"
+        <RadioGroup
+            android:id="@+id/correctOptionGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option D"/>
-    </RadioGroup>
+            app:layout_constraintTop_toBottomOf="@id/optionDInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            android:layout_marginTop="18dp">
 
-    <Button
-        android:id="@+id/prevButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Previous"
-        app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"/>
+            <RadioButton
+                android:id="@+id/optionARadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option A"/>
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Question"
-        app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+            <RadioButton
+                android:id="@+id/optionBRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option B"/>
 
-    <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"/>   
+            <RadioButton
+                android:id="@+id/optionCRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option C"/>
 
-    <Button
-        android:id="@+id/completeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Complete Quiz"
-        app:layout_constraintTop_toBottomOf="@id/saveButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+            <RadioButton
+                android:id="@+id/optionDRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option D"/>
+        </RadioGroup>
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete question"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp"/>
+        <Button
+            android:id="@+id/prevButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous"
+            app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Question"
+            app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            app:layout_constraintTop_toBottomOf="@id/correctOptionGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Delete question"
+            app:layout_constraintTop_toBottomOf="@id/saveButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/completeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Complete Quiz"
+            app:layout_constraintTop_toBottomOf="@id/deleteButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

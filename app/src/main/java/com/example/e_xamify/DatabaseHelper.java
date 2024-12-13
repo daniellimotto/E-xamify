@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "examify.db";
@@ -117,8 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO feedback (feedback_id, user_id, assignment_id, feedback_text, is_visible) " +
                 "VALUES (1, 2, 1, 'Great job! Perfect score.', 1)");
 
-        Log.d("DatabaseHelper", "Database seeded successfully with a single institution, teacher, student, quiz, and related data!");
-    }
+        }
 
 
     @Override

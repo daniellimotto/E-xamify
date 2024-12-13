@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -175,7 +174,6 @@ public class EditQuizInterface extends AppCompatActivity {
             Toast.makeText(this, "Invalid module selected", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.d("EditQuizInterface", "quizTypeId: " + quizTypeId + ", moduleId: " + moduleId + " user_id: " + user_id);
         ContentValues quizValues = new ContentValues();
         quizValues.put("quiz_title", quizTitle);
         quizValues.put("quiz_duration", quizDuration);

@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -154,11 +153,9 @@ public class MCQEditorActivity extends AppCompatActivity {
             cursor = db.rawQuery("SELECT * FROM mcq WHERE question_id = ?", new String[]{String.valueOf(questionId)});
             if (cursor.moveToFirst()) {
                 db.update("mcq", mcqValues, "question_id = ?", new String[]{String.valueOf(questionId)});
-                Log.d("SaveQuestion", "MCQ options updated for question_id: " + questionId);
-            } else {
+                } else {
                 db.insert("mcq", null, mcqValues);
-                Log.d("SaveQuestion", "MCQ options inserted for question_id: " + questionId);
-            }
+                }
             cursor.close();
 
             Toast.makeText(this, "Question and options saved successfully with Question ID: " + questionId, Toast.LENGTH_SHORT).show();

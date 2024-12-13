@@ -19,7 +19,6 @@ import java.util.List;
 
 
 public class StudentDashboardActivity extends AppCompatActivity {
-    private static final String TAG = "StudentDashboardActivity";
     private Spinner institutionSpinner;
     private Spinner moduleSpinner;
     private ListView assignmentListView;
@@ -101,7 +100,6 @@ public class StudentDashboardActivity extends AppCompatActivity {
             }
 
             if (institutions.isEmpty()) {
-                Log.w(TAG, "No institutions found for user ID: " + user_id);
                 Toast.makeText(this, "You are not enrolled in any institutions. Please enroll first.", Toast.LENGTH_LONG).show();
                 return;
             }

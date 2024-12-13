@@ -10,7 +10,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Button to Toggle Correct Answers -->
         <Button
             android:id="@+id/toggleCorrectAnswersButton"
             android:layout_width="match_parent"
@@ -18,7 +17,6 @@
             android:text="Show Correct Answers"
             android:layout_marginBottom="16dp" />
 
-        <!-- Results Layout -->
         <LinearLayout
             android:id="@+id/resultLayout"
             android:layout_width="match_parent"

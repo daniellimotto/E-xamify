@@ -24,7 +24,7 @@ public class QuizResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_result);
 
-        dbHelper = new DatabaseHelper(this); // Initialize dbHelper
+        dbHelper = new DatabaseHelper(this);
         assignmentId = getIntent().getIntExtra("assignmentId", -1);
 
         if (assignmentId == -1) {
@@ -48,7 +48,6 @@ public class QuizResultActivity extends AppCompatActivity {
         resultLayout = findViewById(R.id.resultLayout);
         toggleCorrectAnswersButton = findViewById(R.id.toggleCorrectAnswersButton);
 
-        // Ensure the button is visible
         toggleCorrectAnswersButton.setVisibility(View.VISIBLE);
     }
 
@@ -100,7 +99,7 @@ public class QuizResultActivity extends AppCompatActivity {
         questionView.setPadding(0, 0, 0, 8);
         questionContainer.addView(questionView);
 
-        int adjustedCorrectOption = correctOption - 1; // Assuming correctOption starts from 1
+        int adjustedCorrectOption = correctOption - 1;
         String[] options = {optionA, optionB, optionC, optionD};
 
         for (int i = 0; i < options.length; i++) {
@@ -126,7 +125,6 @@ public class QuizResultActivity extends AppCompatActivity {
             questionContainer.addView(optionView);
         }
 
-        // Add a divider
         View divider = new View(this);
         divider.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

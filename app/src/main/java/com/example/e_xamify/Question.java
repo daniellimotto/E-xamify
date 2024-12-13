@@ -1,6 +1,5 @@
 package com.example.e_xamify;
 
-import java.util.List;
 
 public class Question {
     private int question_id;

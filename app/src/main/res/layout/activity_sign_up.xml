@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
-
     <TextView
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
@@ -27,9 +26,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle" />
-
-    <!-- Password Warning Text -->
-
 
     <TextView
         android:id="@+id/passwordWarning"
@@ -56,20 +52,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/emailInput" />
-
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/passwordInput"-->
-    <!--        android:layout_width="377dp"-->
-    <!--        android:layout_height="46dp"-->
-    <!--        android:hint="Enter Password"-->
-    <!--        android:inputType="textPassword"-->
-
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.221" />-->
 
     <EditText
         android:id="@+id/confirmPasswordInput"
@@ -121,9 +103,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/userRoleLabel" />
 
-    <!-- Institution specific fields -->
-
-
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
@@ -143,7 +122,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userRoleLayout" /> <!-- Hidden by default -->
+        app:layout_constraintTop_toBottomOf="@id/userRoleLayout" />
 
     <EditText
         android:id="@+id/institutionPhoneInput"
@@ -155,7 +134,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/institutionNameInput" /> <!-- Hidden by default -->
+        app:layout_constraintTop_toBottomOf="@id/institutionNameInput" />
 
     <EditText
         android:id="@+id/institutionAddressInput"
@@ -166,10 +145,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/institutionPhoneInput" /> <!-- Hidden by default -->
-
-    <!-- Teacher specific fields -->
-    <!-- Hidden by default -->
+        app:layout_constraintTop_toBottomOf="@id/institutionPhoneInput" />
 
     <EditText
         android:id="@+id/teacherNameInput"
@@ -193,9 +169,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/teacherNameInput" /> <!-- Hidden by default -->
+        app:layout_constraintTop_toBottomOf="@id/teacherNameInput" />
 
-    <!-- Student specific fields -->
     <EditText
         android:id="@+id/studentNameInput"
         android:layout_width="0dp"
@@ -205,6 +180,6 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userRoleLayout" /> <!-- Hidden by default -->
+        app:layout_constraintTop_toBottomOf="@id/userRoleLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

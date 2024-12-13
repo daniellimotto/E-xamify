@@ -45,7 +45,6 @@ public class StudentEnrollModuleActivity extends AppCompatActivity {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Validate module key
         Cursor moduleCursor = db.rawQuery("SELECT module_id, institution_id FROM module WHERE module_key = ?",
                 new String[]{moduleKey});
 
@@ -53,7 +52,6 @@ public class StudentEnrollModuleActivity extends AppCompatActivity {
             int moduleId = moduleCursor.getInt(0);
             int institutionId = moduleCursor.getInt(1);
 
-            // Validate institution enrollment
             Cursor institutionCursor = db.rawQuery("SELECT * FROM student_institution WHERE student_id = ? AND institution_id = ?",
                     new String[]{String.valueOf(user_id), String.valueOf(institutionId)});
 
@@ -65,7 +63,6 @@ public class StudentEnrollModuleActivity extends AppCompatActivity {
             }
             institutionCursor.close();
 
-            // Validate module enrollment
             Cursor moduleCheckCursor = db.rawQuery("SELECT * FROM student_module WHERE user_id = ? AND module_id = ?",
                     new String[]{String.valueOf(user_id), String.valueOf(moduleId)});
 
@@ -77,7 +74,6 @@ public class StudentEnrollModuleActivity extends AppCompatActivity {
             }
             moduleCheckCursor.close();
 
-            // Enroll student in module
             db.execSQL("INSERT INTO student_module (user_id, module_id, enrollment_date) VALUES (?, ?, datetime('now'))",
                     new Object[]{user_id, moduleId});
 

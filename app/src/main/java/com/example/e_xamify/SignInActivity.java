@@ -75,6 +75,6 @@ public class SignInActivity extends AppCompatActivity {
         }
         intent.putExtra("user_id", user_id);
         startActivity(intent);
-        finish(); // Close SignInActivity
+        finish();
     }
 }

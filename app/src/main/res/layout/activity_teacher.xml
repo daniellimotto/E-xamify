@@ -20,7 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center" />
 
-    <!-- "Create New Assignment" Button -->
     <Button
         android:id="@+id/createAssignmentButton"
         android:layout_width="wrap_content"
@@ -32,7 +31,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center" />
 
-    <!-- "Create New Quiz" Button -->
     <Button
         android:id="@+id/createQuizButton"
         android:layout_width="wrap_content"

@@ -24,7 +24,6 @@ public class ModuleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_module);
 
-        // Initialize the database helper
         dbHelper = new DatabaseHelper(this);
         user_id = getIntent().getIntExtra("user_id", -1);
 
@@ -78,7 +77,7 @@ public class ModuleActivity extends AppCompatActivity {
             Toast.makeText(this, "Module creation failed. Please try again.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Module created successfully!", Toast.LENGTH_SHORT).show();
-            finish(); // Close the activity and return to the previous one
+            finish(); // Close activity
         }
     }
 

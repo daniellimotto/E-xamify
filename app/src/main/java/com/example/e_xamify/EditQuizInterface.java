@@ -112,8 +112,8 @@ public class EditQuizInterface extends AppCompatActivity {
         Cursor cursor = db.query("Quiz", null, "quiz_id = ?", new String[]{String.valueOf(quizId)}, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("quiz_title"));
-            int quizTypeId = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_type_id")); // Retrieve quiz type ID
-            int moduleId = cursor.getInt(cursor.getColumnIndexOrThrow("module_id")); // Retrieve module ID
+            int quizTypeId = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_type_id"));
+            int moduleId = cursor.getInt(cursor.getColumnIndexOrThrow("module_id"));
             String duration = cursor.getString(cursor.getColumnIndexOrThrow("quiz_duration"));
             String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
             boolean navigable = cursor.getInt(cursor.getColumnIndexOrThrow("quiz_navigable")) > 0;

@@ -44,15 +44,15 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private TextView timerText;
     private boolean isTabRestrictorEnabled;
-    private int tabSwitchCount = 0; // Track how many times the user switches tabs
-    private boolean isPenaltyApplied = false; // Whether the penalty has been applied
-    private CountDownTimer penaltyTimer; // Single instance for penalty timer
-    private boolean isSubmitting = false; // Track if the user is submitting
-    private boolean isTimerRunning = false; // Track if the penalty timer is running
+    private int tabSwitchCount = 0; // Track how many times the user switches tabs, Max given: 2, above 2 auto submission
+    private boolean isPenaltyApplied = false; // Boolean penalty applied or not
+    private CountDownTimer penaltyTimer; // Separate timer for quiting tab penalty timer: 10 seconds
+    private boolean isSubmitting = false;
+    private boolean isTimerRunning = false;
     private OnBackInvokedCallback onBackInvokedCallback;
 
 
-    private boolean isNavigable; // To control backward navigation
+    private boolean isNavigable; // Boolean to access whether the quiz can be move to previous or next question
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void showBackConfirmationDialog() {
@@ -60,8 +60,8 @@ public class AssignmentTakingActivity extends AppCompatActivity {
                 .setTitle("Submit Assignment")
                 .setMessage("Do you want to submit the assignment?")
                 .setPositiveButton("Submit", (dialog, which) -> {
-                    saveSelectedOption(); // Save the current selection
-                    submitAssignment();   // Submit the assignment
+                    saveSelectedOption();
+                    submitAssignment();
                 })
                 .setNegativeButton("Continue", (dialog, which) -> {
                     dialog.dismiss();
@@ -356,7 +356,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 101) { // 101 is the request code we used in Step 2
+        if (requestCode == 101) { // 101 is the request code used in Step 2
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
             } else {
@@ -396,7 +396,7 @@ public class AssignmentTakingActivity extends AppCompatActivity {
             public void onFinish() {
                 isTimerRunning = false;
                 if (!isSubmitting && (tabSwitchCount == 1 || tabSwitchCount == 2)) {
-                    applyPenalty(); // Apply penalty if user didn't return in time
+                    applyPenalty(); // Apply penalty if the user don't return on 10 second time
                 }
             }
         }.start();

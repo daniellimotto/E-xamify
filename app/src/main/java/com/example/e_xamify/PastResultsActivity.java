@@ -43,7 +43,7 @@ public class PastResultsActivity extends AppCompatActivity {
             if (position < quizIds.size()) {
                 int selectedQuizId = quizIds.get(position);
                 Intent intent = new Intent(PastResultsActivity.this, QuizResultActivity.class);
-                intent.putExtra("assignmentId", selectedQuizId); // Menggunakan nama parameter konsisten
+                intent.putExtra("assignmentId", selectedQuizId);
                 intent.putExtra("studentId", user_id);
                 startActivity(intent);
             } else {

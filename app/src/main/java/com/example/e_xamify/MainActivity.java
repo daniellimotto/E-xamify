@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButton);
         signUpButton = findViewById(R.id.signUpButton);
 
-        // Handle Sign In button click
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Handle Sign Up button click
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

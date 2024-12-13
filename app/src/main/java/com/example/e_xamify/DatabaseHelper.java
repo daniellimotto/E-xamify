@@ -18,103 +18,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (2, 'Coursework', 'Daily graded coursework')");
         db.execSQL("INSERT INTO quiz_type (quiz_type_id, type_name, type_description) VALUES (3, 'Exam', 'Graded exam')");
 
-        db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (1, 'MTH001', 'Math basics')");
-        db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (2, 'SCI001', 'Basic science concepts')");
-        db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (3, 'CAN001', 'Mobile Computing')");
-        db.execSQL("INSERT INTO module (module_id, module_name, module_description) VALUES (0, 'Others', 'Unclassified Module')");
 
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (1, 'Institution', 'Roles identification for institutions')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (2, 'Teacher', 'Roles identification for teachers')");
         db.execSQL("INSERT INTO user_role (user_role_id, role_name, role_description) VALUES (3, 'Student', 'Roles identification for students')");
 
         db.execSQL("INSERT INTO question_type (question_type_id, type_name, type_description) VALUES (1, 'MCQ', 'Multiple Choice Question')");
-
-
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (1, 'admin@mit.edu', 'adminpass', 'MIT Admin', 1, '2023-01-01')");
-        db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
-                "VALUES (1, 'Massachusetts Institute of Technology', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'MITKEY2023', '2023-01-01')");
-
-
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (2, 'teacher@mit.edu', 'teacherpass', 'Prof. John Smith', 2, '2023-06-15')");
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_img_url) " +
-                "VALUES (2, 'Prof. John Smith', 'Mathematics', NULL)");
-
-
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (3, 'student@mit.edu', 'studentpass', 'Alice Brown', 3, '2023-09-01')");
-        db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
-                "VALUES (3, 'Alice Brown', NULL)");
-
-
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (4, '3', '3', '3', 3, '2024-11-22')");
-        db.execSQL("INSERT INTO student (user_id, student_name, student_img_url) " +
-                "VALUES (4, '3', NULL)");
-        db.execSQL("INSERT INTO student_institution (student_institution_id, student_id, institution_id, enrollment_date) " +
-                "VALUES (2, 4, 6, '2024-11-22')");
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (5, '5', '5', '5', 2, '2024-11-22')");
-        db.execSQL("INSERT INTO teacher (user_id, teacher_name, teacher_field, teacher_img_url) " +
-                "VALUES (5, '5', 'Mathematics', NULL)");
-        db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
-                "VALUES (2, 5, 6, '2024-11-22')");
-        db.execSQL("INSERT INTO user (user_id, user_email, user_password, user_name, user_role_id, joined_date) " +
-                "VALUES (6, '6', '6', '6', 1, '2024-11-22')");
-        db.execSQL("INSERT INTO institution (user_id, institution_name, institution_phone, institution_address, institution_enrolment_key, institution_date_joined) " +
-                "VALUES (6, 'university', '+1234567890', '77 Massachusetts Ave, Cambridge, MA 02139', 'WOWUNI', '2024-11-22')");
-        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
-                "VALUES (5, 6, 'Math101', 'Maths', 'wow')");
-        db.execSQL("INSERT INTO student_module (student_module_ID, user_id, module_id, enrollment_date)" +
-                "VALUES (1, 4, 5, NULL)");
-        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions)" +
-                "VALUES (2, 1, 'Math101', 60, 'The duration of this assignment is 60 minutes. The questions are not navigable and you are not allowed to switch between other tabs. Please fill in your answer before going to the next question.', 100, 5, 0, 1, 5, 3 )");
-        db.execSQL("INSERT INTO assignment(assignment_id, quiz_id, user_id, status, attempt_number_left, mark, assignment_start_date, assignment_end_date, quiz_title)" +
-                "VALUES (2, 2, 4, 'pending', 100, NULL, 2024, 2026, NULL)");
-        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
-                "VALUES (2, 2, 1, 2, 3, 4, 2)");
-        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
-                "VALUES (3, 3, 1, 2, 3, 4, 1)");
-        db.execSQL("INSERT INTO mcq(option_id, question_id, optionA, optionB, optionC, optionD, correctOption)" +
-                "VALUES (4, 4, 1, 2, 3, 4, 4)");
-        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
-                "VALUES (2, 1, 2, '1+1', 1, NULL)");
-        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
-                "VALUES (3, 2, 2, '1+0', 1, NULL)");
-        db.execSQL("INSERT INTO question(question_id, question_number, quiz_id, question_text, question_type_id, question_img_url)" +
-                "VALUES (4, 3, 2, '2+2', 1, NULL)");
-
-
-        db.execSQL("INSERT INTO teacher_institution (teacher_institution_id, teacher_id, institution_id, enrollment_date) " +
-                "VALUES (1, 2, 1, '2023-06-15')");
-        db.execSQL("INSERT INTO student_institution (student_institution_id, student_id, institution_id, enrollment_date) " +
-                "VALUES (1, 3, 1, '2023-09-01')");
-
-
-        db.execSQL("INSERT INTO module (module_id, institution_id, module_name, module_description, module_key) " +
-                "VALUES (4, 1, 'Math Basics', 'Fundamentals of Mathematics', 'math')");
-
-
-        db.execSQL("INSERT INTO quiz (quiz_id, quiz_type_id, quiz_title, quiz_duration, instructions, quiz_attempts, user_id, quiz_navigable, quiz_tab_restrictor, module_id, num_questions) " +
-                "VALUES (1, 1, 'Math Quiz 101', 30, 'Answer all questions carefully.', 3, 2, 1, 0,4, 10)");
-
-        db.execSQL("INSERT INTO question (question_id, question_number, quiz_id, question_text, question_type_id, question_img_url) " +
-                "VALUES (1, 1, 1, 'What is 2 + 2?', 1, NULL)");
-        db.execSQL("INSERT INTO mcq (option_id, question_id, optionA, optionB, optionC, optionD, correctOption) " +
-                "VALUES (1, 1, '3', '4', '5', '6', 2)");
-
-
-        db.execSQL("INSERT INTO quiz_attempt (attempt_id, quiz_id, user_id, start_time, end_time, score, status) " +
-                "VALUES (1, 1, 3, '2023-09-15 10:00:00', '2023-09-15 10:30:00', 100, 'completed')");
-
-
-        db.execSQL("INSERT INTO quiz_submission (submission_id, assignment_id, question_id, user_id, selected_option_id, answer_text, is_correct, submission_date) " +
-                "VALUES (1, 1, 1, 3, 2, NULL, 1, '2023-09-15 10:15:00')");
-
-
-        db.execSQL("INSERT INTO feedback (feedback_id, user_id, assignment_id, feedback_text, is_visible) " +
-                "VALUES (1, 2, 1, 'Great job! Perfect score.', 1)");
 
         }
 
